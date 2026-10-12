@@ -117,10 +117,26 @@ function render() {
   var revealEl = document.getElementById('reveal');
   var f = FACTORS.find(function (x) { return x.id === selected; });
   if (f) {
+    var SPARKLES = [
+      { left: '6%', top: '-10px', size: '14px', color: '#C2410C', tx: '-14px', ty: '-16px', delay: '.05s', glyph: '✦' },
+      { left: '88%', top: '-10px', size: '13px', color: '#0E6B42', tx: '16px', ty: '-16px', delay: '.12s', glyph: '✧' },
+      { left: '46%', top: '-16px', size: '15px', color: '#FBBF24', tx: '4px', ty: '-20px', delay: '.02s', glyph: '✨' },
+      { left: '2%', top: '92%', size: '12px', color: '#9A3412', tx: '-16px', ty: '14px', delay: '.18s', glyph: '⋆' },
+      { left: '92%', top: '90%', size: '13px', color: '#0E6B42', tx: '14px', ty: '14px', delay: '.08s', glyph: '✦' },
+      { left: '-3%', top: '42%', size: '12px', color: '#FBBF24', tx: '-18px', ty: '0px', delay: '.14s', glyph: '✧' },
+      { left: '98%', top: '38%', size: '12px', color: '#C2410C', tx: '18px', ty: '-4px', delay: '.1s', glyph: '⋆' }
+    ];
+    var sparkleHtml = SPARKLES.map(function (s) {
+      return '<span style="position:absolute;left:' + s.left + ';top:' + s.top + ';font-size:' + s.size + ';color:' + s.color + ';pointer-events:none;z-index:2;--tx:' + s.tx + ';--ty:' + s.ty + ';animation:sparklePop .55s ease-out ' + s.delay + ' both">' + s.glyph + '</span>';
+    }).join('');
     revealEl.innerHTML =
-      '<div style="background:#F8F9FB;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;box-shadow:0 6px 18px rgba(0,0,0,0.1)">' +
-      '<div style="font-size:13px;color:#6B7280;text-decoration:line-through;text-decoration-color:#C8102E">' + ORIGINAL + '</div>' +
-      '<div style="font-size:15px;line-height:1.55;background:#F0F9F4;border-radius:10px;padding:10px 12px;color:#111827;font-weight:500">' + f.html + '</div>' +
+      '<div style="position:sticky;top:8px;z-index:6;background:#F8F9FB;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;box-shadow:0 6px 18px rgba(0,0,0,0.1);animation:revealFade .35s ease">' +
+      '<div style="font-size:13px;color:#6B7280;text-decoration:line-through;text-decoration-color:#C8102E;animation:strikeIn .25s ease">' + ORIGINAL + '</div>' +
+      '<div style="position:relative">' +
+      '<div style="position:absolute;inset:-10px;border-radius:16px;background:radial-gradient(circle, rgba(194,65,12,0.38), rgba(194,65,12,0) 70%);pointer-events:none;z-index:0;animation:poofFlash .6s ease-out"></div>' +
+      sparkleHtml +
+      '<div style="position:relative;z-index:1;font-size:15px;line-height:1.55;background:#F0F9F4;border-radius:10px;padding:10px 12px;color:#111827;font-weight:500;animation:magicReveal .6s ease .04s both">' + f.html + '</div>' +
+      '</div>' +
       '<div style="display:flex;gap:6px;align-items:flex-start;font-size:12.5px;line-height:1.5;color:#0E6B42"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0E6B42" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"></path></svg><span>' + f.tip + '</span></div>' +
       '</div>';
   } else {

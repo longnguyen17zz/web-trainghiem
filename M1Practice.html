@@ -45,8 +45,9 @@
 
   <div id="mascot" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 310px; z-index: 5"></div>
 
-  <div id="celebration" style="display: none; position: absolute; inset: 0; background: rgba(17,24,39,0.5); z-index: 20; align-items: center; justify-content: center;">
-    <div style="position: relative; width: 320px; max-height: 720px; overflow-y: auto; background: #FFFFFF; border-radius: 20px; padding: 22px 20px 18px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 20px 50px rgba(0,0,0,0.25)">
+  <div id="celebration" style="display: none; position: absolute; inset: 0; background: rgba(17,24,39,0.5); backdrop-filter: blur(2px); z-index: 20; align-items: center; justify-content: center; animation: backdropIn .22s ease">
+    <div id="confetti" style="position: absolute; left: 50%; top: 32%; width: 0; height: 0; pointer-events: none"></div>
+    <div style="position: relative; width: 320px; max-height: 720px; overflow-y: auto; background: #FFFFFF; border-radius: 20px; padding: 22px 20px 18px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 20px 50px rgba(0,0,0,0.25); animation: popupIn .32s cubic-bezier(.2,.9,.3,1.2)">
       <button onclick="closeCelebration()" aria-label="Đóng" style="position: absolute; right: 12px; top: 12px; width: 28px; height: 28px; border: 0; background: #F3F4F7; border-radius: 999px; display: flex; align-items: center; justify-content: center; padding: 0">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
       </button>
@@ -117,11 +118,30 @@ function pickRight(id) {
   connections = next; selected = null;
   render();
   if (Object.keys(next).length === PAIRS.length) {
-    setTimeout(function () { document.getElementById('celebration').style.display = 'flex'; renderCelebration(); }, 350);
+    setTimeout(function () { document.getElementById('celebration').style.display = 'flex'; renderCelebration(); spawnConfetti(); }, 350);
   }
 }
 function closeCelebration() { document.getElementById('celebration').style.display = 'none'; }
 function restart() { connections = {}; selected = null; closeCelebration(); render(); }
+
+var CONFETTI_COLORS = ['#C2410C', '#0E6B42', '#4338CA', '#8A4006', '#C8102E', '#1D4E89'];
+function spawnConfetti() {
+  var el = document.getElementById('confetti');
+  el.innerHTML = '';
+  var count = 18;
+  for (var i = 0; i < count; i++) {
+    var angle = (i * (360 / count)) * (Math.PI / 180);
+    var distance = 72 + (i % 3) * 22;
+    var tx = Math.round(Math.cos(angle) * distance);
+    var ty = Math.round(Math.sin(angle) * distance);
+    var size = 6 + (i % 3) * 2;
+    var color = CONFETTI_COLORS[i % CONFETTI_COLORS.length];
+    var delay = (i % 6) * 0.03;
+    var span = document.createElement('span');
+    span.style.cssText = 'position:absolute;left:0;top:0;border-radius:2px;--tx:' + tx + 'px;--ty:' + ty + 'px;width:' + size + 'px;height:' + size + 'px;background:' + color + ';animation:confettiPop 1.1s ease-out forwards;animation-delay:' + delay + 's;';
+    el.appendChild(span);
+  }
+}
 function pickMood(id) { picked = id; renderCelebration(); }
 function isAllDone() { return Object.keys(connections).length === PAIRS.length; }
 

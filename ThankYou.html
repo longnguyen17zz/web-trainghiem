@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cảm ơn</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div style="width: 390px; max-width: 100%; height: 844px; margin: 0 auto; position: relative; display: flex; flex-direction: column; background: #F3F4F7; font-family: 'Be Vietnam Pro', sans-serif; color: #111827; overflow: hidden">
+  <header style="height: 56px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; background: #FFFFFF; border-bottom: 1px solid #DDE1E8">
+    <div style="display: flex; align-items: center; gap: 10px">
+      <img src="logo.png" alt="" style="width: 24px; height: 36px; object-fit: contain">
+      <span style="font-size: 17px; font-weight: 700; letter-spacing: 0.01em"><span style="color: #D92D20">PPS</span> <span style="color: #E8890C">VIETNAM</span></span>
+    </div>
+  </header>
+
+  <main style="flex: 1; overflow-y: auto; padding: 40px 16px 16px; display: flex; flex-direction: column; gap: 20px; padding-bottom: 104px">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center">
+      <div style="width: 72px; height: 72px; border-radius: 999px; background: #E6F4EC; display: flex; align-items: center; justify-content: center"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0E6B42" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"></path></svg></div>
+      <h1 style="margin: 0; font-size: 26px; line-height: 1.3; font-weight: 700">Đã gửi! Kiểm tra Zalo của bạn nhé</h1>
+      <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #4B5563">Báo cáo và tài liệu sẽ tới trong vài phút. Đội ngũ của thầy Phúc có thể gọi để tư vấn lộ trình.</p>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+      <div style="font-size: 15px; font-weight: 700">Bạn còn 2 phương pháp chưa thử</div>
+      <a href="M1Setup.html" style="text-decoration: none; color: #111827; display: flex; gap: 12px; align-items: center; min-height: 52px">
+        <div style="width: 40px; height: 40px; flex-shrink: 0; border-radius: 10px; background: #FDECEE; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #C8102E">1</div>
+        <div style="flex: 1; font-size: 15px; font-weight: 600">Ghép câu từ vựng</div>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
+      </a>
+      <a href="M3Chat.html" style="text-decoration: none; color: #111827; display: flex; gap: 12px; align-items: center; min-height: 52px">
+        <div style="width: 40px; height: 40px; flex-shrink: 0; border-radius: 10px; background: #E6F4EC; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #0E6B42">3</div>
+        <div style="flex: 1; font-size: 15px; font-weight: 600">Phát triển ý</div>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
+      </a>
+    </div>
+  </main>
+
+  <footer style="flex-shrink: 0; background: #FFFFFF; border-top: 1px solid #DDE1E8; padding: 12px 16px 20px">
+    <a href="index.html" style="height: 52px; border-radius: 12px; background: #C2410C; color: #FFFFFF; font-size: 16px; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center">Xem chi tiết khoá học</a>
+  </footer>
+  <div id="mascot" style="position: absolute; right: 10px; bottom: 100px; width: 310px; z-index: 5"></div>
+</div>
+<script src="mascot.js"></script>
+<script>
+renderMascot(document.getElementById('mascot'), {
+  mood: 'happy',
+  message: 'Hẹn gặp bạn ở lớp của thầy Phúc nhé!'
+});
+</script>
+</body>
+</html>

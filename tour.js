@@ -23,7 +23,7 @@
       border-radius: 14px;
       border: 2.5px solid #EA580C;
       box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.72), 0 0 24px rgba(234, 88, 12, 0.6);
-      transition: top 0.15s ease, height 0.15s ease, width 0.15s ease, left 0.15s ease;
+      transition: top 0.18s ease, height 0.18s ease, width 0.18s ease, left 0.18s ease;
       pointer-events: none;
       z-index: 1000;
     }
@@ -48,8 +48,8 @@
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.06);
       z-index: 1001;
       box-sizing: border-box;
-      transition: top 0.2s ease, transform 0.2s ease;
-      animation: tourPop 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: top 0.22s ease, transform 0.2s ease;
+      animation: tourPop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
       font-family: 'Be Vietnam Pro', -apple-system, sans-serif;
     }
     @keyframes tourPop {
@@ -271,17 +271,25 @@
         return;
       }
 
-      // Cuộn chính xác phần tử vào đầu tầm nhìn (instant để đo tọa độ chuẩn 100%)
+      // Xử lý cuộn chính xác
       var scrollParent = getScrollParent(targetEl);
-      if (scrollParent && scrollParent !== window && scrollParent.scrollTop !== undefined) {
-        // Cuộn scroll container để target bắt đầu ngay trên đầu (chừa 8px lề)
-        var offsetTop = targetEl.offsetTop;
-        scrollParent.scrollTop = Math.max(0, offsetTop - 8);
-      } else {
-        targetEl.scrollIntoView({ behavior: 'auto', block: 'start' });
+      if (scrollParent && scrollParent !== window) {
+        if (self.currentIndex === 0) {
+          // Bước đầu tiên luôn đưa scrollParent về vị trí đầu trang (scrollTop = 0)
+          scrollParent.scrollTop = 0;
+        } else {
+          // Với các bước sau, kiểm tra xem target đã hiển thị đầy đủ chưa
+          var parentRect = scrollParent.getBoundingClientRect();
+          var targetRect = targetEl.getBoundingClientRect();
+          var isFullyVisible = (targetRect.top >= parentRect.top && targetRect.bottom <= parentRect.bottom);
+          if (!isFullyVisible) {
+            var diff = targetRect.top - parentRect.top;
+            scrollParent.scrollTop = Math.max(0, scrollParent.scrollTop + diff - 8);
+          }
+        }
       }
 
-      // Render nội dung Card
+      // Render nội dung Card Popover
       var isLast = this.currentIndex === this.steps.length - 1;
       var nextBtnLabel = step.btnLabel || (isLast ? 'Đã hiểu' : 'Tiếp theo ➔');
       this.card.innerHTML = `
@@ -299,10 +307,10 @@
         </div>
       `;
 
-      // Định vị ngay lập tức
+      // Định vị Spotlight Frame & Card ngay lập tức
       self.positionElements(targetEl, step, false);
 
-      // Đồng bộ thêm 1 frame kế tiếp để đảm bảo tuyệt đối
+      // Cập nhật lại 1 lần nữa ở frame kế tiếp để đảm bảo tuyệt đối
       requestAnimationFrame(function () {
         self.positionElements(targetEl, step, false);
       });
@@ -312,11 +320,21 @@
       var containerRect = this.container.getBoundingClientRect();
       var targetRect = targetEl.getBoundingClientRect();
 
+      var headerEl = this.container.querySelector('header');
+      var headerBottom = headerEl ? (headerEl.getBoundingClientRect().bottom - containerRect.top) : 0;
+
       var padding = typeof step.padding === 'number' ? step.padding : 6;
       var top = targetRect.top - containerRect.top - padding;
       var left = targetRect.left - containerRect.left - padding;
       var width = targetRect.width + padding * 2;
       var height = targetRect.height + padding * 2;
+
+      // Không bao giờ cho phép spotlight đè lên header nếu phần tử nằm trong main
+      if (targetEl.closest('main')) {
+        top = Math.max(headerBottom + 2, top);
+      } else {
+        top = Math.max(0, top);
+      }
 
       if (isDirectScroll) {
         this.frame.classList.add('no-transition');
@@ -324,30 +342,31 @@
         this.frame.classList.remove('no-transition');
       }
 
-      this.frame.style.top = Math.max(0, top) + 'px';
-      this.frame.style.left = Math.max(4, left) + 'px';
-      this.frame.style.width = width + 'px';
-      this.frame.style.height = height + 'px';
+      this.frame.style.top = Math.round(top) + 'px';
+      this.frame.style.left = Math.max(4, Math.round(left)) + 'px';
+      this.frame.style.width = Math.round(width) + 'px';
+      this.frame.style.height = Math.round(height) + 'px';
 
       // Định vị Card Popover thông minh:
       var cardHeight = 175;
       var spaceBelow = containerRect.height - (top + height);
+      var spaceAbove = top - headerBottom;
       var cardTop;
 
       if (spaceBelow >= cardHeight + 16) {
         // Đặt phía dưới target nếu đủ chỗ
         cardTop = top + height + 10;
-      } else if (top >= cardHeight + 16) {
+      } else if (spaceAbove >= cardHeight + 16) {
         // Đặt phía trên target nếu trên đủ chỗ
         cardTop = top - cardHeight - 10;
       } else {
         // Nếu target phủ dài màn hình (như mục chọn từ Bước 3):
-        // Đặt card ở nửa dưới màn hình để không che mất tiêu đề và các nút chọn nhanh ở đầu!
-        cardTop = Math.min(containerRect.height - cardHeight - 20, Math.max(top + 80, containerRect.height * 0.45));
+        // Đặt card ở nửa dưới màn hình để chừa trọn vẹn phần đầu mục (tiêu đề + toolbar + hàng từ đầu)
+        cardTop = Math.min(containerRect.height - cardHeight - 20, Math.max(top + 80, containerRect.height * 0.46));
       }
 
-      cardTop = Math.max(10, Math.min(containerRect.height - cardHeight - 10, cardTop));
-      this.card.style.top = cardTop + 'px';
+      cardTop = Math.max(headerBottom + 8, Math.min(containerRect.height - cardHeight - 10, cardTop));
+      this.card.style.top = Math.round(cardTop) + 'px';
     },
 
     next: function () {

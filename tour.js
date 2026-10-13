@@ -12,7 +12,7 @@
       z-index: 999;
       pointer-events: auto;
       overflow: hidden;
-      animation: tourFadeIn 0.25s ease forwards;
+      animation: tourFadeIn 0.2s ease forwards;
     }
     @keyframes tourFadeIn {
       from { opacity: 0; }
@@ -21,15 +21,18 @@
     .tour-spotlight-frame {
       position: absolute;
       border-radius: 14px;
-      border: 2px solid #EA580C;
-      box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.72), 0 0 20px rgba(234, 88, 12, 0.5);
-      transition: all 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+      border: 2.5px solid #EA580C;
+      box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.72), 0 0 24px rgba(234, 88, 12, 0.6);
+      transition: top 0.15s ease, height 0.15s ease, width 0.15s ease, left 0.15s ease;
       pointer-events: none;
       z-index: 1000;
     }
+    .tour-spotlight-frame.no-transition {
+      transition: none !important;
+    }
     @keyframes tourPulse {
-      0%, 100% { border-color: #EA580C; box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.72), 0 0 24px rgba(234, 88, 12, 0.6); }
-      50% { border-color: #F97316; box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.72), 0 0 10px rgba(234, 88, 12, 0.3); }
+      0%, 100% { border-color: #EA580C; box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.72), 0 0 24px rgba(234, 88, 12, 0.65); }
+      50% { border-color: #F97316; box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.72), 0 0 10px rgba(234, 88, 12, 0.35); }
     }
     .tour-spotlight-frame.pulsing {
       animation: tourPulse 2s infinite ease-in-out;
@@ -42,15 +45,15 @@
       background: #FFFFFF;
       border-radius: 18px;
       padding: 16px 18px 14px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.06);
       z-index: 1001;
       box-sizing: border-box;
-      transition: top 0.32s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s ease;
-      animation: tourPop 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: top 0.2s ease, transform 0.2s ease;
+      animation: tourPop 0.24s cubic-bezier(0.16, 1, 0.3, 1);
       font-family: 'Be Vietnam Pro', -apple-system, sans-serif;
     }
     @keyframes tourPop {
-      from { opacity: 0; transform: translateY(8px) scale(0.96); }
+      from { opacity: 0; transform: translateY(6px) scale(0.97); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
     .tour-badge {
@@ -160,6 +163,19 @@
   `;
   document.head.appendChild(tourStyle);
 
+  function getScrollParent(node) {
+    if (!node) return null;
+    var parent = node.parentElement;
+    while (parent && parent !== document.body) {
+      var style = window.getComputedStyle(parent);
+      if (style.overflowY === 'auto' || style.overflowY === 'scroll') {
+        return parent;
+      }
+      parent = parent.parentElement;
+    }
+    return window;
+  }
+
   window.AppTour = {
     overlay: null,
     frame: null,
@@ -167,17 +183,18 @@
     steps: [],
     currentIndex: 0,
     container: null,
+    scrollBound: false,
 
-    // Bắt đầu một tour với danh sách các bước
     start: function (steps, containerSelector, startStepIndex) {
       if (!steps || steps.length === 0) return;
       this.steps = steps;
       this.currentIndex = typeof startStepIndex === 'number' ? startStepIndex : 0;
-      this.container = document.querySelector(containerSelector || '.app-container') || document.body.firstElementChild || document.body;
+      this.container = document.querySelector(containerSelector || '#appShell') || document.body.firstElementChild || document.body;
 
       if (!this.overlay) {
         this.createTourElements();
       }
+      this.bindScrollWatcher();
       this.overlay.style.display = 'block';
       this.showCurrentStep();
     },
@@ -204,12 +221,34 @@
       this.frame = frame;
       this.card = card;
 
-      // Click vào vùng tối overlay thì đóng
       overlay.addEventListener('click', function (e) {
         if (e.target === overlay) {
           self.stop();
         }
       });
+    },
+
+    bindScrollWatcher: function () {
+      if (this.scrollBound) return;
+      this.scrollBound = true;
+      var self = this;
+      var handler = function () {
+        if (self.overlay && self.overlay.style.display !== 'none') {
+          self.updatePosition(true);
+        }
+      };
+      window.addEventListener('scroll', handler, true);
+      window.addEventListener('resize', handler);
+    },
+
+    updatePosition: function (isDirectScroll) {
+      if (this.currentIndex >= this.steps.length) return;
+      var step = this.steps[this.currentIndex];
+      if (!step) return;
+      var targetEl = typeof step.target === 'string' ? document.querySelector(step.target) : step.target;
+      if (targetEl) {
+        this.positionElements(targetEl, step, isDirectScroll);
+      }
     },
 
     showCurrentStep: function () {
@@ -222,7 +261,6 @@
       var step = this.steps[this.currentIndex];
       var targetEl = typeof step.target === 'string' ? document.querySelector(step.target) : step.target;
 
-      // Nếu target không tồn tại hoặc ẩn, tự chuyển bước tiếp
       if (!targetEl || targetEl.offsetParent === null) {
         if (this.currentIndex < this.steps.length - 1) {
           this.currentIndex++;
@@ -233,35 +271,19 @@
         return;
       }
 
-      // Cuộn phần tử vào tầm nhìn nếu cần
-      targetEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      // Cuộn chính xác phần tử vào đầu tầm nhìn (instant để đo tọa độ chuẩn 100%)
+      var scrollParent = getScrollParent(targetEl);
+      if (scrollParent && scrollParent !== window && scrollParent.scrollTop !== undefined) {
+        // Cuộn scroll container để target bắt đầu ngay trên đầu (chừa 8px lề)
+        var offsetTop = targetEl.offsetTop;
+        scrollParent.scrollTop = Math.max(0, offsetTop - 8);
+      } else {
+        targetEl.scrollIntoView({ behavior: 'auto', block: 'start' });
+      }
 
-      // Định vị Spotlight Frame
-      setTimeout(function () {
-        self.positionElements(targetEl, step);
-      }, 50);
-    },
-
-    positionElements: function (targetEl, step) {
-      var self = this;
-      var containerRect = this.container.getBoundingClientRect();
-      var targetRect = targetEl.getBoundingClientRect();
-
-      var padding = typeof step.padding === 'number' ? step.padding : 6;
-      var top = targetRect.top - containerRect.top - padding;
-      var left = targetRect.left - containerRect.left - padding;
-      var width = targetRect.width + padding * 2;
-      var height = targetRect.height + padding * 2;
-
-      this.frame.style.top = Math.max(0, top) + 'px';
-      this.frame.style.left = Math.max(4, left) + 'px';
-      this.frame.style.width = width + 'px';
-      this.frame.style.height = height + 'px';
-
+      // Render nội dung Card
       var isLast = this.currentIndex === this.steps.length - 1;
       var nextBtnLabel = step.btnLabel || (isLast ? 'Đã hiểu' : 'Tiếp theo ➔');
-
-      // Nội dung card popover
       this.card.innerHTML = `
         <button type="button" class="tour-btn-close" aria-label="Đóng" onclick="AppTour.stop()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"></path></svg>
@@ -277,21 +299,53 @@
         </div>
       `;
 
-      // Định vị Card ở phía dưới target nếu đủ chỗ, ngược lại ở phía trên
+      // Định vị ngay lập tức
+      self.positionElements(targetEl, step, false);
+
+      // Đồng bộ thêm 1 frame kế tiếp để đảm bảo tuyệt đối
+      requestAnimationFrame(function () {
+        self.positionElements(targetEl, step, false);
+      });
+    },
+
+    positionElements: function (targetEl, step, isDirectScroll) {
+      var containerRect = this.container.getBoundingClientRect();
+      var targetRect = targetEl.getBoundingClientRect();
+
+      var padding = typeof step.padding === 'number' ? step.padding : 6;
+      var top = targetRect.top - containerRect.top - padding;
+      var left = targetRect.left - containerRect.left - padding;
+      var width = targetRect.width + padding * 2;
+      var height = targetRect.height + padding * 2;
+
+      if (isDirectScroll) {
+        this.frame.classList.add('no-transition');
+      } else {
+        this.frame.classList.remove('no-transition');
+      }
+
+      this.frame.style.top = Math.max(0, top) + 'px';
+      this.frame.style.left = Math.max(4, left) + 'px';
+      this.frame.style.width = width + 'px';
+      this.frame.style.height = height + 'px';
+
+      // Định vị Card Popover thông minh:
       var cardHeight = 175;
       var spaceBelow = containerRect.height - (top + height);
       var cardTop;
 
       if (spaceBelow >= cardHeight + 16) {
+        // Đặt phía dưới target nếu đủ chỗ
         cardTop = top + height + 10;
       } else if (top >= cardHeight + 16) {
+        // Đặt phía trên target nếu trên đủ chỗ
         cardTop = top - cardHeight - 10;
       } else {
-        // Nếu không đủ cả 2, đặt ở đáy màn hình
-        cardTop = containerRect.height - cardHeight - 16;
+        // Nếu target phủ dài màn hình (như mục chọn từ Bước 3):
+        // Đặt card ở nửa dưới màn hình để không che mất tiêu đề và các nút chọn nhanh ở đầu!
+        cardTop = Math.min(containerRect.height - cardHeight - 20, Math.max(top + 80, containerRect.height * 0.45));
       }
 
-      // Giới hạn trong khung
       cardTop = Math.max(10, Math.min(containerRect.height - cardHeight - 10, cardTop));
       this.card.style.top = cardTop + 'px';
     },

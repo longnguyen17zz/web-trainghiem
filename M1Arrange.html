@@ -6,6 +6,26 @@
 <title>Phương pháp 1 — sắp xếp câu</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="style.css">
+<style>
+@keyframes shakeChip {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+.chip-wrong {
+  animation: shakeChip 0.4s ease;
+  border-color: #EF4444 !important;
+  color: #DC2626 !important;
+  background: #FEF2F2 !important;
+}
+@keyframes popChip {
+  0% { transform: scale(0.92); opacity: 0.5; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.chip-pop {
+  animation: popChip 0.25s ease-out;
+}
+</style>
 </head>
 <body>
 <div id="appShell" style="width: 390px; max-width: 100%; height: 844px; margin: 0 auto; position: relative; display: flex; flex-direction: column; background: #F3F4F7; font-family: 'Be Vietnam Pro', sans-serif; color: #111827; overflow: hidden">
@@ -28,82 +48,199 @@
   </div>
 
   <main style="flex: 1; overflow-y: auto; padding: 18px 16px 16px; display: flex; flex-direction: column; gap: 14px; padding-bottom: 104px">
-    <div style="background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px">
+    
+    <!-- THẺ TỪ TIẾNG ANH ĐANG ĐỌC (THAY THẾ CHO VIỆC HIỆN FULL CÂU CŨ) -->
+    <div id="promptCard" style="background: #FFFFFF; border: 1.5px solid #FED7AA; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 2px 8px rgba(194,65,12,0.06); transition: all 0.25s ease">
       <div style="display: flex; justify-content: space-between; align-items: center">
-        <span style="font-size: 12px; font-weight: 600; color: #C2410C; background: #FFEDD5; border-radius: 999px; padding: 4px 10px">Câu gốc</span>
-        <button type="button" onclick="speakSentence()" aria-label="Nghe câu" style="height: 30px; border: 0; border-radius: 999px; background: #FFEDD5; color: #C2410C; font-family: inherit; font-size: 12.5px; font-weight: 700; padding: 0 12px; display: flex; align-items: center; gap: 5px; cursor: pointer"><svg width="13" height="13" viewBox="0 0 24 24" fill="#C2410C"><path d="M7 5v14l11-7z"></path></svg>Nghe</button>
+        <span id="promptStepBadge" style="font-size: 11.5px; font-weight: 700; color: #C2410C; background: #FFEDD5; border-radius: 999px; padding: 3px 10px">🔊 Từ 1/10</span>
+        <button id="btnReplayWord" type="button" onclick="speakCurrentWord()" style="height: 30px; border: 0; border-radius: 999px; background: #FFEDD5; color: #C2410C; font-family: inherit; font-size: 12.5px; font-weight: 700; padding: 0 12px; display: flex; align-items: center; gap: 5px; cursor: pointer; transition: all 0.15s ease">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="#C2410C"><path d="M7 5v14l11-7z"></path></svg>
+          <span id="replayBtnText">Nghe lại từ</span>
+        </button>
       </div>
-      <div style="font-size: 16px; line-height: 1.55">Deforestation destroys the natural <span style="color: #C8102E; font-weight: 700">habitat</span> of many animals, so we must <span style="color: #C8102E; font-weight: 700">conserve</span> forests.</div>
+
+      <div id="promptBody">
+        <div id="currentEnglishWord" style="font-size: 24px; font-weight: 800; color: #0F172A; letter-spacing: -0.3px; line-height: 1.25">Deforestation</div>
+        <div id="promptInstruction" style="font-size: 12.5px; color: #64748B; margin-top: 4px">Lắng nghe phát âm và chạm từ tiếng Việt tương ứng bên dưới:</div>
+      </div>
     </div>
 
-    <!-- Khối Bước 8: Xếp lại bản dịch tiếng Việt -->
+    <!-- KHỐI BƯỚC 8: CÂU DỊCH TIẾNG VIỆT ĐANG GHÉP -->
     <div id="sectionStep8" style="display: flex; flex-direction: column; gap: 10px">
-      <div style="display: flex; flex-direction: gap: 4px">
-        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%">
-          <div style="font-size: 15px; font-weight: 700">Xếp lại bản dịch tiếng Việt cho đúng</div>
-          <span id="arrangeCounter" style="font-size: 12px; font-weight: 700; color: #C2410C; background: #FFEDD5; border-radius: 999px; padding: 2px 8px">2/10 từ</span>
-        </div>
-        <div style="font-size: 12.5px; color: #4B5563">Đọc kỹ câu gốc bên trên, chạm từng từ bên dưới theo đúng thứ tự.</div>
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <div style="font-size: 14px; font-weight: 700; color: #111827">Câu dịch tiếng Việt đã ghép:</div>
+        <span id="arrangeCounter" style="font-size: 11.5px; font-weight: 700; color: #C2410C; background: #FFEDD5; border-radius: 999px; padding: 2px 9px">Đã ghép 0/10</span>
       </div>
 
-      <div id="slots" style="background: #FFFFFF; border: 1.5px solid #DDE1E8; border-radius: 14px; padding: 12px; margin-right: 50px; display: flex; flex-wrap: wrap; gap: 8px; min-height: 84px; align-content: flex-start; box-sizing: border-box"></div>
+      <!-- Khay chứa các từ đã ghép -->
+      <div id="slots" style="background: #FFFFFF; border: 1.5px solid #DDE1E8; border-radius: 14px; padding: 12px; display: flex; flex-wrap: wrap; gap: 8px; min-height: 78px; align-content: flex-start; box-sizing: border-box"></div>
 
       <div id="feedback"></div>
 
-      <div style="display: flex; flex-direction: column; gap: 8px">
-        <div style="font-size: 13px; font-weight: 600; color: #4B5563">Chạm để thêm vào câu:</div>
-        <div id="pool" style="display: flex; flex-wrap: wrap; gap: 8px; padding-right: 50px"></div>
+      <!-- Bể các từ tiếng Việt để chọn theo từ tiếng Anh đang đọc -->
+      <div id="poolSection" style="display: flex; flex-direction: column; gap: 8px">
+        <div style="font-size: 13px; font-weight: 600; color: #4B5563">Chạm từ tiếng Việt đúng với từ tiếng Anh đang đọc:</div>
+        <div id="pool" style="display: flex; flex-wrap: wrap; gap: 8px"></div>
       </div>
     </div>
+
   </main>
 
   <footer style="flex-shrink: 0; background: #FFFFFF; border-top: 1px solid #DDE1E8; padding: 12px 16px 20px">
-    <a href="M1Practice.html" style="height: 52px; border-radius: 12px; background: #C2410C; color: #FFFFFF; font-size: 16px; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center">Tiếp tục</a>
+    <a id="btnFooterNext" href="M1Practice.html" style="height: 52px; border-radius: 12px; background: #C2410C; color: #FFFFFF; font-size: 16px; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 8px rgba(194,65,12,0.2)">
+      <span>Tiếp tục: Chạm từ nối nghĩa</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+    </a>
   </footer>
   <div id="mascot" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 310px; z-index: 10"></div>
 </div>
+
 <script src="mascot.js"></script>
 <script>
-function speakSentence() {
+// Danh sách 10 từ tiếng Anh & nghĩa tiếng Việt tương ứng
+var STEPS = [
+  { id: 'c1', en: 'Deforestation', vi: 'Nạn phá rừng' },
+  { id: 'c2', en: 'destroys', vi: 'huỷ hoại' },
+  { id: 'c3', en: 'habitat', vi: 'môi trường sống' },
+  { id: 'c4', en: 'natural', vi: 'tự nhiên' },
+  { id: 'c5', en: 'of many animals,', vi: 'của nhiều loài,' },
+  { id: 'c6', en: 'so', vi: 'vì vậy' },
+  { id: 'c7', en: 'we', vi: 'chúng ta' },
+  { id: 'c8', en: 'must', vi: 'phải' },
+  { id: 'c9', en: 'conserve', vi: 'bảo tồn' },
+  { id: 'c10', en: 'forests.', vi: 'rừng.' }
+];
+
+// Thứ tự xáo trộn ban đầu của các thẻ tiếng Việt trong pool
+var INITIAL_POOL_ORDER = ['c7', 'c3', 'c1', 'c9', 'c5', 'c2', 'c8', 'c4', 'c10', 'c6'];
+
+var currentStepIndex = 0; // Bắt đầu từ từ đầu tiên (c1: Deforestation)
+var placedItems = []; // Danh sách các từ tiếng Việt đã chọn đúng
+
+function speakWord(word) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(word);
+  u.lang = 'en-US';
+  u.rate = 0.60; // Tốc độ 0.60x rõ ràng từng âm tiết
+  var voices = window.speechSynthesis.getVoices();
+  for (var i = 0; i < voices.length; i++) {
+    if (voices[i].lang && voices[i].lang.indexOf('en') === 0) {
+      u.voice = voices[i];
+      break;
+    }
+  }
+  window.speechSynthesis.speak(u);
+}
+
+function speakFullSentence() {
   if (!('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
   var u = new SpeechSynthesisUtterance("Deforestation destroys the natural habitat of many animals, so we must conserve forests.");
   u.lang = 'en-US';
-  u.rate = 0.60; // Tốc độ 0.60x chậm rãi, rõ ràng từng âm tiết
+  u.rate = 0.60;
   window.speechSynthesis.speak(u);
 }
 
-// Chia nhỏ từng từ/cụm ngắn (1-2 từ), không để cụm từ dài
-var CHUNKS = {
-  c1: 'Nạn phá rừng',
-  c2: 'huỷ hoại',
-  c3: 'môi trường sống',
-  c4: 'tự nhiên',
-  c5: 'của nhiều loài,',
-  c6: 'vì vậy',
-  c7: 'chúng ta',
-  c8: 'phải',
-  c9: 'bảo tồn',
-  c10: 'rừng.'
-};
-var ORDER = ['c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10'];
-var POOL_ORDER = ['c7', 'c3', 'c9', 'c5', 'c8', 'c4', 'c10', 'c6'];
-var placed = ['c1', 'c2'];
+function speakCurrentWord() {
+  if (currentStepIndex < STEPS.length) {
+    speakWord(STEPS[currentStepIndex].en);
+  } else {
+    speakFullSentence();
+  }
+}
 
-var slotBase = 'min-height: 38px; border-radius: 10px; font-family: inherit; font-size: 14px; font-weight: 600; padding: 7px 14px; display: inline-flex; align-items: center; border: 0; cursor: pointer; transition: all 0.15s ease; box-sizing: border-box;';
-var poolBase = 'min-height: 40px; border-radius: 12px; font-family: inherit; font-size: 14px; font-weight: 600; padding: 8px 14px; border: 1.5px solid #DDE1E8; background: #FFFFFF; color: #111827; cursor: pointer; transition: all 0.15s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.04); box-sizing: border-box;';
+function handleChooseViWord(chosenId, btnEl) {
+  var target = STEPS[currentStepIndex];
+  if (!target) return;
+
+  if (chosenId === target.id) {
+    // CHỌN ĐÚNG: Thêm vào danh sách đã ghép, tiến sang từ tiếp theo
+    placedItems.push(target);
+    currentStepIndex++;
+
+    render();
+
+    // Tự động phát âm từ tiếng Anh tiếp theo
+    if (currentStepIndex < STEPS.length) {
+      setTimeout(function () {
+        speakWord(STEPS[currentStepIndex].en);
+      }, 350);
+    } else {
+      // Đã hoàn thành cả 10 từ -> đọc cả câu
+      setTimeout(function () {
+        speakFullSentence();
+      }, 400);
+    }
+  } else {
+    // CHỌN SAI: Hiệu ứng rung đỏ nhẹ trong 450ms, phát âm lại từ tiếng Anh để nhắc
+    if (btnEl) {
+      btnEl.classList.add('chip-wrong');
+      setTimeout(function () {
+        btnEl.classList.remove('chip-wrong');
+      }, 450);
+    }
+    speakWord(target.en);
+  }
+}
+
+function resetGame() {
+  currentStepIndex = 0;
+  placedItems = [];
+  render();
+  setTimeout(function () {
+    speakCurrentWord();
+  }, 200);
+}
 
 function render() {
+  var promptCard = document.getElementById('promptCard');
+  var promptBadge = document.getElementById('promptStepBadge');
+  var promptWord = document.getElementById('currentEnglishWord');
+  var promptInstruction = document.getElementById('promptInstruction');
+  var replayBtnText = document.getElementById('replayBtnText');
+  var counterEl = document.getElementById('arrangeCounter');
   var slotsEl = document.getElementById('slots');
   var poolEl = document.getElementById('pool');
+  var poolSection = document.getElementById('poolSection');
   var feedbackEl = document.getElementById('feedback');
-  var counterEl = document.getElementById('arrangeCounter');
-  var placedSet = {};
-  placed.forEach(function (id) { placedSet[id] = true; });
 
+  var isCompleted = currentStepIndex >= STEPS.length;
+
+  // 1. Cập nhật Prompt Card
+  if (!isCompleted) {
+    var cur = STEPS[currentStepIndex];
+    promptBadge.textContent = '🔊 Từ ' + (currentStepIndex + 1) + '/' + STEPS.length;
+    promptBadge.style.background = '#FFEDD5';
+    promptBadge.style.color = '#C2410C';
+
+    promptWord.innerHTML = cur.en;
+    promptInstruction.innerHTML = 'Nghe phát âm và chạm từ tiếng Việt tương ứng bên dưới:';
+    replayBtnText.textContent = 'Nghe lại từ';
+    promptCard.style.borderColor = '#FED7AA';
+    promptCard.style.background = '#FFFFFF';
+  } else {
+    // TRẠNG THÁI HOÀN THÀNH TOÀN BỘ CÂU
+    promptBadge.textContent = '✓ Hoàn thành 10/10 từ';
+    promptBadge.style.background = '#DCFCE7';
+    promptBadge.style.color = '#15803D';
+
+    promptWord.innerHTML = '<span style="font-size: 15.5px; font-weight: 700; color: #166534; line-height: 1.5">Deforestation destroys the natural <span style="color:#C8102E">habitat</span> of many animals, so we must <span style="color:#C8102E">conserve</span> forests.</span>' +
+      '<div style="font-size: 13px; color: #4B5563; font-weight: 500; margin-top: 6px; line-height: 1.45">(Nạn phá rừng huỷ hoại môi trường sống tự nhiên của nhiều loài, vì vậy chúng ta phải bảo tồn rừng.)</div>';
+
+    promptInstruction.innerHTML = '<div style="display:flex;gap:8px;margin-top:8px">' +
+      '<button type="button" onclick="speakFullSentence()" style="border:0;border-radius:999px;background:#15803D;color:#FFF;padding:6px 14px;font-size:12.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px"><svg width="13" height="13" viewBox="0 0 24 24" fill="#FFF"><path d="M7 5v14l11-7z"></path></svg>Nghe lại cả câu</button>' +
+      '<button type="button" onclick="resetGame()" style="border:1px solid #DDE1E8;border-radius:999px;background:#FFF;color:#4B5563;padding:6px 12px;font-size:12.5px;font-weight:600;cursor:pointer">⟳ Ghép lại</button>' +
+      '</div>';
+    replayBtnText.textContent = 'Nghe cả câu';
+    promptCard.style.borderColor = '#86EFAC';
+    promptCard.style.background = '#F0FDF4';
+  }
+
+  // 2. Cập nhật bộ đếm
   if (counterEl) {
-    counterEl.textContent = placed.length + '/' + ORDER.length + ' từ';
-    if (placed.length === ORDER.length) {
+    counterEl.textContent = 'Đã ghép ' + placedItems.length + '/' + STEPS.length;
+    if (isCompleted) {
       counterEl.style.background = '#DCFCE7';
       counterEl.style.color = '#15803D';
     } else {
@@ -112,64 +249,60 @@ function render() {
     }
   }
 
+  // 3. Render danh sách các từ đã ghép (Slots)
   slotsEl.innerHTML = '';
-  if (placed.length === 0) {
-    var emptyHint = document.createElement('div');
-    emptyHint.style.cssText = 'color: #94A3B8; font-size: 13.5px; font-style: italic; padding: 12px 6px; width: 100%;';
-    emptyHint.textContent = 'Chạm các từ bên dưới theo đúng thứ tự để ghép câu...';
-    slotsEl.appendChild(emptyHint);
+  if (placedItems.length === 0) {
+    var hint = document.createElement('div');
+    hint.style.cssText = 'color: #94A3B8; font-size: 13px; font-style: italic; padding: 14px 6px; width: 100%;';
+    hint.textContent = 'Chạm từ tiếng Việt tương ứng với từ tiếng Anh đang đọc...';
+    slotsEl.appendChild(hint);
   } else {
-    placed.forEach(function (id, i) {
-      var correct = ORDER[i] === id;
-      var btn = document.createElement('button');
-      btn.type = 'button';
-      btn.style.cssText = slotBase + (correct
-        ? 'border: 1.5px solid #B9E2C8; background: #E6F4EC; color: #0E6B42;'
-        : 'border: 1.5px solid #F3B9BE; background: #FDECEE; color: #A30D25;');
-      btn.textContent = CHUNKS[id];
-      btn.onclick = function () {
-        placed.splice(i, 1);
-        render();
-      };
-      slotsEl.appendChild(btn);
+    placedItems.forEach(function (item) {
+      var chip = document.createElement('span');
+      chip.className = 'chip-pop';
+      chip.style.cssText = 'min-height: 36px; border-radius: 10px; font-size: 13.5px; font-weight: 600; padding: 6px 12px; display: inline-flex; align-items: center; border: 1.5px solid #B9E2C8; background: #E6F4EC; color: #0E6B42; box-sizing: border-box;';
+      chip.innerHTML = '✓ ' + item.vi;
+      slotsEl.appendChild(chip);
     });
   }
 
+  // 4. Render các từ tiếng Việt còn lại trong Pool
   poolEl.innerHTML = '';
-  POOL_ORDER.filter(function (id) { return !placedSet[id]; }).forEach(function (id) {
-    var btn = document.createElement('button');
-    btn.type = 'button';
-    btn.style.cssText = poolBase;
-    btn.textContent = CHUNKS[id];
-    btn.onclick = function () {
-      if (placed.length < ORDER.length) {
-        placed = placed.concat([id]);
-        render();
-      }
-    };
-    poolEl.appendChild(btn);
-  });
+  if (!isCompleted) {
+    poolSection.style.display = 'flex';
+    var placedSet = {};
+    placedItems.forEach(function (it) { placedSet[it.id] = true; });
 
-  var allPlaced = placed.length === ORDER.length;
-  var allCorrect = allPlaced && placed.every(function (id, i) { return ORDER[i] === id; });
-  var hasMistake = placed.some(function (id, i) { return ORDER[i] !== id; });
+    INITIAL_POOL_ORDER.filter(function (id) { return !placedSet[id]; }).forEach(function (id) {
+      var stepObj = STEPS.find(function (s) { return s.id === id; });
+      if (!stepObj) return;
 
-  if (allPlaced || hasMistake) {
-    var style = allCorrect
-      ? 'background: #E6F4EC; color: #0E6B42; border-radius: 12px; padding: 10px 14px; font-size: 13.5px; font-weight: 600;'
-      : 'background: #FDECEE; color: #A30D25; border-radius: 12px; padding: 10px 14px; font-size: 13.5px; font-weight: 600;';
-    feedbackEl.innerHTML = '<div style="' + style + '">' + (allCorrect
-      ? 'Chính xác! Đúng thứ tự câu dịch rồi.'
-      : 'Có từ xếp sai thứ tự — chạm vào từ màu đỏ để bỏ ra rồi xếp lại.') + '</div>';
-  } else {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.style.cssText = 'min-height: 40px; border-radius: 12px; font-family: inherit; font-size: 14px; font-weight: 600; padding: 8px 14px; border: 1.5px solid #DDE1E8; background: #FFFFFF; color: #111827; cursor: pointer; transition: all 0.15s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.04); box-sizing: border-box;';
+      btn.textContent = stepObj.vi;
+      btn.onclick = function () {
+        handleChooseViWord(id, btn);
+      };
+      poolEl.appendChild(btn);
+    });
     feedbackEl.innerHTML = '';
+  } else {
+    poolSection.style.display = 'none';
+    feedbackEl.innerHTML = '<div style="background: #E6F4EC; color: #0E6B42; border-radius: 12px; padding: 12px 14px; font-size: 13.5px; font-weight: 600; display: flex; align-items: center; gap: 8px">' +
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0E6B42" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"></path></svg>' +
+      'Chuẩn xác! Bạn đã hoàn thành nối nghĩa 10 từ theo giọng đọc!' +
+      '</div>';
   }
 
+  // Mascot Thầy Phúc
   renderMascot(document.getElementById('mascot'), {
-    mood: allCorrect ? 'cheer' : (hasMistake ? 'sad' : 'idle'),
-    message: allCorrect ? 'Chuẩn luôn! Bạn ghép đúng cả câu dịch.' : (hasMistake ? 'Có từ chưa đúng chỗ, xem lại câu gốc nhé.' : 'Chạm từ tiếp theo bạn nghĩ là đúng thứ tự.')
+    mood: isCompleted ? 'cheer' : 'idle',
+    message: isCompleted ? 'Tuyệt vời! Bạn đã nghe và chọn đúng cả 10 từ.' : 'Lắng nghe từ tiếng Anh đang phát âm và chọn nghĩa tiếng Việt tương ứng nhé.'
   });
 }
+
+// Khởi chạy ban đầu
 render();
 
 // ==================== TOUR ONBOARDING (BƯỚC 8/10) ====================
@@ -179,18 +312,26 @@ function startArrangeTour() {
       target: '#sectionStep8',
       padding: 8,
       badge: 'Bước 8/10',
-      title: 'Sắp xếp lại câu nghĩa tiếng Việt',
-      desc: 'Đọc câu gốc tiếng Anh ở trên, sau đó chạm lần lượt từng từ tiếng Việt bên dưới theo đúng trật tự để hoàn thiện câu dịch hoàn chỉnh.',
-      btnLabel: 'Bắt đầu ghép ➔'
+      title: 'Luyện nghe & chọn nghĩa từng từ',
+      desc: 'Hệ thống sẽ đọc từng từ tiếng Anh. Bạn hãy lắng nghe phát âm và chạm từ tiếng Việt tương ứng bên dưới theo từng từ một.',
+      btnLabel: 'Bắt đầu nghe ➔',
+      onNext: function () {
+        setTimeout(function () {
+          speakCurrentWord();
+        }, 300);
+      }
     }
   ], '#appShell');
 }
 
-// Tự động mở tour lần đầu nếu chưa xem
+// Tự động mở tour lần đầu hoặc tự động phát âm từ đầu tiên
 setTimeout(function () {
   if (!sessionStorage.getItem('tour_arrange_viewed')) {
     sessionStorage.setItem('tour_arrange_viewed', '1');
     startArrangeTour();
+  } else {
+    // Nếu đã xem tour rồi, tự động phát âm từ đầu tiên sau 400ms
+    speakCurrentWord();
   }
 }, 450);
 </script>

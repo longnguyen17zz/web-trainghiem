@@ -257,7 +257,7 @@
 
           <!-- NÚT TIẾP TỤC SANG MỤC 5 -->
           <button type="button" onclick="continueToSection5('ai')" style="height: 48px; border: 0; border-radius: 12px; background: #C2410C; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 14px rgba(194,65,12,0.25); margin-top: 2px">
-            <span>Tiếp tục: Luyện nghe 2 câu này (Đủ 8 từ)</span>
+            <span>Tiếp tục: Luyện nghe 2 câu này</span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
           </button>
         </div>
@@ -632,7 +632,7 @@ function triggerAiGeneration(forceNew) {
 // 5. Bấm nút "Tiếp tục" ở hộp thông báo -> Mới trượt ra Mục 5: Luyện nghe song song
 function continueToSection5(fromSource) {
   var count = CURRENT_DISPLAY_SENTENCES.length;
-  var msg = 'Tuyệt vời! Bây giờ bạn hãy bấm vào nút Nghe ở mục 5 để luyện nghe 2 câu đã ghép đủ 8 từ nhé!';
+  var msg = 'Tuyệt vời! Bây giờ bạn hãy bấm vào nút Nghe ở mục 7 để luyện nghe 2 câu đã ghép đủ 8 từ nhé!';
 
   var sec5 = document.getElementById('section5');
   sec5.style.display = 'flex';

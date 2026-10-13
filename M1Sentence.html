@@ -177,7 +177,7 @@
               <span style="background: #166534; color: #FFFFFF; font-size: 11px; font-weight: 700; border-radius: 999px; padding: 2.5px 8px; display: inline-flex; align-items: center; white-space: nowrap; flex-shrink: 0">Bước 6/10</span>
               <span style="white-space: nowrap">Check kết quả (AI đã chấm)</span>
             </span>
-            <span style="font-size: 12px; font-weight: 700; color: #15803D; background: #DCFCE7; padding: 3px 8px; border-radius: 999px; white-space: nowrap; flex-shrink: 0">8/8 từ (100%)</span>
+            <!-- <span style="font-size: 12px; font-weight: 700; color: #15803D; background: #DCFCE7; padding: 3px 8px; border-radius: 999px; white-space: nowrap; flex-shrink: 0">8/8 từ (100%)</span> -->
           </div>
 
           <!-- Câu 1: Câu người dùng tự đặt (AI sửa chuẩn) -->
@@ -209,7 +209,7 @@
 
           <!-- NÚT TIẾP TỤC ĐỂ NGƯỜI DÙNG BẤM QUA PHẦN 5 -->
           <button type="button" onclick="continueToSection5('self')" style="height: 48px; border: 0; border-radius: 12px; background: #C2410C; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 14px rgba(194,65,12,0.25); margin-top: 2px">
-            <span>Tiếp tục: Luyện nghe 2 câu này (Đủ 8 từ)</span>
+            <span>Tiếp tục: Luyện nghe 2 câu này</span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
           </button>
         </div>
@@ -224,7 +224,7 @@
               <span style="background: #C2410C; color: #FFFFFF; font-size: 11px; font-weight: 700; border-radius: 999px; padding: 2.5px 8px; display: inline-flex; align-items: center; white-space: nowrap; flex-shrink: 0">Bước 6/10</span>
               <span style="white-space: nowrap">Check kết quả (AI đã đặt)</span>
             </span>
-            <span style="font-size: 12px; font-weight: 700; color: #C2410C; background: #FFEDD5; padding: 3px 8px; border-radius: 999px; white-space: nowrap; flex-shrink: 0">Đủ 8/8 từ (100%)</span>
+            <!-- <span style="font-size: 12px; font-weight: 700; color: #C2410C; background: #FFEDD5; padding: 3px 8px; border-radius: 999px; white-space: nowrap; flex-shrink: 0">Đủ 8/8 từ (100%)</span> -->
           </div>
 
           <!-- Câu 1: Gồm 6 từ vựng -->
@@ -277,11 +277,21 @@
     <!-- Mặc định ẩn, CHỈ hiển thị sau khi người dùng bấm nút "Tiếp tục" ở hộp kết quả trên -->
     <div id="section5" style="display: none; flex-direction: column; gap: 14px">
       <!-- Tiêu đề mục 5 (Đã bỏ nút lặp lại và đoạn mô tả thừa) -->
-      <div style="display: flex; flex-direction: column; gap: 3px; border-top: 2px dashed #E5E7EB; padding-top: 16px">
+      <div style="display: flex; flex-direction: column; gap: 6px; border-top: 2px dashed #E5E7EB; padding-top: 16px">
         <h2 style="margin: 0; font-size: clamp(14px, 3.8vw, 15.5px); font-weight: 700; display: flex; align-items: center; gap: 6px; white-space: nowrap; letter-spacing: -0.2px">
           <span style="background: #0E6B42; color: #FFFFFF; font-size: 11px; font-weight: 700; border-radius: 999px; padding: 2.5px 8px; display: inline-flex; align-items: center; white-space: nowrap; flex-shrink: 0">Bước 7/10</span>
           <span style="white-space: nowrap">Luyện nghe song song câu Anh - Việt</span>
         </h2>
+
+        <!-- Tùy chỉnh tốc độ đọc: Mặc định 0.75x (Chậm rõ) -->
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748B">
+          <span>Giọng đọc bản xứ chuẩn IPA:</span>
+          <div style="display: flex; align-items: center; gap: 3px; background: #F1F5F9; border: 1px solid #E2E8F0; border-radius: 999px; padding: 2px 4px">
+            <span style="font-size: 11px; color: #64748B; font-weight: 500; margin-left: 4px">Tốc độ:</span>
+            <button id="btnSpeed075" type="button" onclick="setVoiceSpeed(0.75)" style="border: 0; border-radius: 999px; padding: 2.5px 8px; font-size: 11.5px; font-weight: 700; background: #0E6B42; color: #FFFFFF; cursor: pointer; transition: all 0.2s">0.75x (Chậm rõ)</button>
+            <button id="btnSpeed100" type="button" onclick="setVoiceSpeed(1.0)" style="border: 0; border-radius: 999px; padding: 2.5px 8px; font-size: 11.5px; font-weight: 600; background: transparent; color: #64748B; cursor: pointer; transition: all 0.2s">1.0x (Tự nhiên)</button>
+          </div>
+        </div>
       </div>
 
       <!-- Danh sách các thẻ câu Karaoke Song Ngữ -->
@@ -431,6 +441,36 @@ var isLoopMode = false;
 var activePlayingSentenceId = null;
 var activeChunkTimer = null;
 var currentAiCredits = 2;
+var currentVoiceSpeed = 0.75; // Mặc định 0.75x để nghe chậm rãi, rõ từng từ cho người học
+
+function setVoiceSpeed(speed) {
+  currentVoiceSpeed = speed;
+  var b075 = document.getElementById('btnSpeed075');
+  var b100 = document.getElementById('btnSpeed100');
+  if (b075 && b100) {
+    if (speed === 0.75) {
+      b075.style.background = '#0E6B42';
+      b075.style.color = '#FFFFFF';
+      b075.style.fontWeight = '700';
+      b100.style.background = 'transparent';
+      b100.style.color = '#64748B';
+      b100.style.fontWeight = '600';
+    } else {
+      b100.style.background = '#0E6B42';
+      b100.style.color = '#FFFFFF';
+      b100.style.fontWeight = '700';
+      b075.style.background = 'transparent';
+      b075.style.color = '#64748B';
+      b075.style.fontWeight = '600';
+    }
+  }
+  // Nếu đang đọc thì dừng và phát lại với tốc độ mới
+  if (activePlayingSentenceId) {
+    var sid = activePlayingSentenceId;
+    stopCurrentPlayback();
+    playKaraokeSentence(sid);
+  }
+}
 
 // 1. Chuyển đổi giữa 2 chế độ: Tôi tự đặt câu vs AI đặt cho tôi
 function selectMode(mode) {
@@ -572,7 +612,7 @@ function triggerAiGeneration(forceNew) {
     hideAiLoading();
     CURRENT_DISPLAY_SENTENCES = ALL_AI_SENTENCES;
 
-    // Cập nhật thanh tiến độ: Đủ 8/8 từ (100%)
+    // Cập nhật thanh tiến độ: Đủ Durd
     var allKeys = TARGET_WORDS.map(function (w) { return w.key; });
     renderWordChips(allKeys);
 
@@ -738,7 +778,9 @@ function playKaraokeSentence(sentenceId) {
       }
 
       currentChunkIdx++;
-      activeChunkTimer = setTimeout(streamNextChunk, chunk.duration);
+      var speedRatio = 0.88 / currentVoiceSpeed;
+      var duration = Math.round(chunk.duration * speedRatio);
+      activeChunkTimer = setTimeout(streamNextChunk, duration);
     } else {
       // Đã phát và hiển thị xong trọn vẹn cả câu
       if (sentence.chunks.length > 0) {
@@ -820,7 +862,7 @@ function speakFullText(text, onEndCallback) {
 
   var utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'en-US';
-  utterance.rate = 0.88; // Tốc độ vừa phải, rõ từng âm tiết
+  utterance.rate = currentVoiceSpeed; // Mặc định 0.75x, nghe chậm rãi, rõ từng âm tiết cho người học
 
   var voices = window.speechSynthesis.getVoices();
   var enVoice = null;

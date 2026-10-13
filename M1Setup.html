@@ -766,7 +766,7 @@ function speakWord(event, text) {
 
   var utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'en-US';
-  utterance.rate = 0.88;
+  utterance.rate = 0.80; // Tốc độ phát âm từ vựng chuẩn, rõ từng âm tiết
 
   var voices = window.speechSynthesis.getVoices();
   for (var i = 0; i < voices.length; i++) {

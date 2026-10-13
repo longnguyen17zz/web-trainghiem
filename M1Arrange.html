@@ -69,7 +69,7 @@ function speakSentence() {
   window.speechSynthesis.cancel();
   var u = new SpeechSynthesisUtterance("Deforestation destroys the natural habitat of many animals, so we must conserve forests.");
   u.lang = 'en-US';
-  u.rate = 0.88;
+  u.rate = 0.75; // Tốc độ 0.75x chậm rãi, rõ ràng từng âm tiết
   window.speechSynthesis.speak(u);
 }
 

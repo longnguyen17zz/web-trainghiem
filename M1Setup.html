@@ -248,6 +248,10 @@ main {
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg>
     </a>
     <div style="flex: 1; font-size: 16px; font-weight: 600">Ghép câu từ vựng</div>
+    <button type="button" class="tour-help-trigger" onclick="startSetupTour()" title="Xem hướng dẫn các bước">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+      <span>Hướng dẫn</span>
+    </button>
     <span style="font-size: 12px; font-weight: 600; color: #C2410C; background: #FFEDD5; border-radius: 999px; padding: 6px 10px">Còn 3 lượt AI</span>
   </header>
 
@@ -778,6 +782,53 @@ function speakWord(event, text) {
 // ==================== KHỞI TẠO BAN ĐẦU ====================
 // Mặc định chọn "Trung cấp" và tự mở Mục 2 & 3
 selectLevel('intermediate');
+
+// ==================== TOUR ONBOARDING (BƯỚC 1 -> BƯỚC 4) ====================
+function startSetupTour() {
+  AppTour.start([
+    {
+      target: '#btnLevel_intermediate',
+      padding: 8,
+      badge: 'Bước 1/10',
+      title: 'Chọn trình độ tiếng Anh',
+      desc: 'Chọn trình độ (Cơ bản, Trung cấp, Nâng cao) để hệ thống lọc kho từ vựng và câu ghép phù hợp nhất với năng lực của bạn.',
+      btnLabel: 'Tiếp theo ➔'
+    },
+    {
+      target: '#topicCardsContainer',
+      padding: 6,
+      badge: 'Bước 2/10',
+      title: 'Chọn chủ đề yêu thích',
+      desc: 'Vuốt ngang để khám phá các chủ đề (Môi trường, Công nghệ, Giáo dục...) và bấm chọn 1 chủ đề bạn muốn luyện hôm nay.',
+      btnLabel: 'Tiếp theo ➔'
+    },
+    {
+      target: '#sectionWords',
+      padding: 8,
+      badge: 'Bước 3/10',
+      title: 'Chọn từ trong chủ đề',
+      desc: 'Bấm "Chọn nhanh 8 từ" hoặc chạm từng từ trong lưới để chọn đủ 8 từ vựng cần thiết để chuẩn bị ghép câu.',
+      btnLabel: 'Tiếp theo ➔'
+    },
+    {
+      target: '#btnContinue',
+      padding: 6,
+      badge: 'Bước 4/10',
+      title: 'Tiếp tục với 8 từ',
+      desc: 'Sau khi đã chọn đủ 8 từ vựng, bấm nút này để chuyển sang bước ghép câu AI thông minh!',
+      btnLabel: 'Bắt đầu ngay ➔'
+    }
+  ], '#appShell');
+}
+
+// Tự động gợi ý mở tour lần đầu
+setTimeout(function () {
+  if (!sessionStorage.getItem('tour_setup_viewed')) {
+    sessionStorage.setItem('tour_setup_viewed', '1');
+    startSetupTour();
+  }
+}, 450);
 </script>
+<script src="tour.js"></script>
 </body>
 </html>

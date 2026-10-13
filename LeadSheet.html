@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div style="width: 390px; max-width: 100%; height: 844px; margin: 0 auto; position: relative; background: #F3F4F7; font-family: 'Be Vietnam Pro', sans-serif; color: #111827; overflow: hidden">
+<div id="appShell" style="width: 390px; max-width: 100%; height: 844px; margin: 0 auto; position: relative; background: #F3F4F7; font-family: 'Be Vietnam Pro', sans-serif; color: #111827; overflow: hidden">
   <div aria-hidden="true" style="display: flex; flex-direction: column">
     <div style="height: 56px; background: #FFFFFF; display: flex; align-items: center; padding: 0 16px; font-size: 16px; font-weight: 600">Chấm writing</div>
     <div style="padding: 16px; display: flex; flex-direction: column; gap: 12px">
@@ -62,6 +62,29 @@
 <script src="mascot.js"></script>
 <script>
 renderMascot(document.getElementById('mascotSmall'), { mood: 'happy', bubble: false, size: 76 });
+
+// ==================== TOUR ONBOARDING (BƯỚC 10/10) ====================
+function startLeadTour() {
+  AppTour.start([
+    {
+      target: '#contact',
+      padding: 8,
+      badge: 'Bước 10/10',
+      title: 'Mở khóa nhận toàn bộ tài liệu',
+      desc: 'Nhập số điện thoại (Zalo) hoặc Email để nhận bản viết lại đầy đủ, phân tích 8 khía cạnh ngữ pháp và bộ tài liệu nâng band độc quyền.',
+      btnLabel: 'Đã hiểu ➔'
+    }
+  ], '#appShell');
+}
+
+// Tự động mở tour lần đầu nếu chưa xem
+setTimeout(function () {
+  if (!sessionStorage.getItem('tour_lead_viewed')) {
+    sessionStorage.setItem('tour_lead_viewed', '1');
+    startLeadTour();
+  }
+}, 450);
 </script>
+<script src="tour.js"></script>
 </body>
 </html>

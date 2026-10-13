@@ -3,97 +3,781 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Phương pháp 1 — chọn chủ đề và từ</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Phương pháp 1 — Chọn trình độ, chủ đề và từ vựng</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="style.css">
+<style>
+@keyframes fadeInSlide {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.appear-anim {
+  animation: fadeInSlide 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Hide scrollbar for smooth native swiping */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ==================== CARD CHỦ ĐỀ (DÙNG BACKGROUND-IMAGE PHONG CẢNH 100%) ==================== */
+.topic-card {
+  width: 295px;
+  min-width: 295px;
+  height: 154px;
+  flex-shrink: 0;
+  border-radius: 24px;
+  padding: 16px 16px 14px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+  scroll-snap-align: start;
+  background-size: cover;
+  background-position: center right;
+  background-repeat: no-repeat;
+  opacity: 0.9;
+}
+.topic-card:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.1);
+}
+.topic-card.active {
+  opacity: 1;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px -4px rgba(15, 23, 42, 0.14), 0 2px 6px -1px rgba(15, 23, 42, 0.06);
+}
+
+/* Vòng tròn Progress Badge ở góc trên phải (Giống y hệt Reference 0/5) */
+.topic-badge-wrapper {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+.topic-badge-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 42px;
+  height: 42px;
+  transform: rotate(-90deg);
+}
+.topic-badge-text {
+  position: relative;
+  z-index: 4;
+  color: #FFFFFF;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+/* Nét khoanh tròn từ "One", "Two" trong tiêu đề bài học (Lesson One) */
+.lesson-number-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #0F172A;
+  border-radius: 999px;
+  padding: 0 7px;
+  font-weight: 700;
+  font-size: 13.5px;
+  line-height: 1.2;
+  margin: 0 3px;
+}
+
+/* Nút Action Pill bo tròn ở góc dưới trái (Start / Chọn học) */
+.card-action-pill {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  transition: all 0.2s ease;
+  z-index: 3;
+}
+.card-action-pill.inactive {
+  background: #FED7AA;
+  color: #7C2D12;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.card-action-pill.active {
+  background: #EA580C;
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(234, 88, 12, 0.32);
+}
+
+/* ==================== CARD TỪ VỰNG LƯỚI 3 CỘT (BỎ CHECKBOX) ==================== */
+.word-card {
+  border-radius: 14px;
+  background: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  padding: 9px 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 82px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-sizing: border-box;
+  position: relative;
+  user-select: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+.word-card:hover {
+  border-color: #CBD5E1;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+}
+.word-card:active {
+  transform: scale(0.97);
+}
+
+/* Speaker icon button */
+.speaker-btn {
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
+}
+.speaker-btn:hover {
+  transform: scale(1.12);
+}
+/* Layout Shell: Fix chân trang luôn hiển thị ở đáy màn hình */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #F1F5F9;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-shell {
+  width: 390px;
+  max-width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  max-height: 844px;
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #F8FAFC;
+  color: #0F172A;
+  overflow: hidden;
+  box-shadow: 0 0 32px rgba(15, 23, 42, 0.08);
+}
+
+#appFooter {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 390px;
+  box-sizing: border-box;
+  background: #FFFFFF;
+  border-top: 1px solid #E2E8F0;
+  padding: 12px 16px max(16px, env(safe-area-inset-bottom, 16px));
+  z-index: 100;
+  box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.08);
+}
+
+@media (max-width: 480px) {
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: #F8FAFC;
+  }
+  .app-shell {
+    width: 100% !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    max-height: none !important;
+    box-shadow: none !important;
+  }
+  #appFooter {
+    left: 0 !important;
+    transform: none !important;
+    max-width: 100% !important;
+  }
+}
+
+main {
+  min-height: 0 !important;
+  flex: 1 1 0% !important;
+  padding-bottom: 96px !important;
+}
+</style>
 </head>
 <body>
-<div style="width: 390px; max-width: 100%; height: 844px; margin: 0 auto; position: relative; display: flex; flex-direction: column; background: #F3F4F7; font-family: 'Be Vietnam Pro', sans-serif; color: #111827; overflow: hidden">
-  <header style="height: 56px; flex-shrink: 0; display: flex; align-items: center; gap: 4px; padding: 0 12px 0 4px; background: #FFFFFF; border-bottom: 1px solid #DDE1E8">
-    <a href="index.html" aria-label="Quay lại" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg></a>
+<div id="appShell" class="app-shell">
+  <!-- Header -->
+  <header style="height: 56px; flex-shrink: 0; display: flex; align-items: center; gap: 4px; padding: 0 12px 0 4px; background: #FFFFFF; border-bottom: 1px solid #E2E8F0">
+    <a href="index.html" aria-label="Quay lại" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg>
+    </a>
     <div style="flex: 1; font-size: 16px; font-weight: 600">Ghép câu từ vựng</div>
     <span style="font-size: 12px; font-weight: 600; color: #C2410C; background: #FFEDD5; border-radius: 999px; padding: 6px 10px">Còn 3 lượt AI</span>
   </header>
 
-  <main style="flex: 1; overflow-y: auto; padding: 18px 16px 16px; display: flex; flex-direction: column; gap: 20px; padding-bottom: 104px">
-    <!-- 1. Chọn trình độ -->
-    <div style="display: flex; flex-direction: column; gap: 10px">
-      <div style="font-size: 15px; font-weight: 700; color: #111827; display: flex; align-items: center; gap: 8px">
-        <span style="width: 22px; height: 22px; border-radius: 999px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0">1</span>
-        <span>Chọn trình độ</span>
-      </div>
-      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: #E7E9EE; border-radius: 12px; padding: 4px; gap: 4px">
-        <button type="button" style="height: 40px; border: 0; border-radius: 8px; background: transparent; font-family: inherit; font-size: 14px; font-weight: 600; color: #4B5563; cursor: pointer">Cơ bản</button>
-        <button type="button" style="height: 40px; border: 0; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 700; color: #111827; box-shadow: 0 1px 3px rgba(17,24,39,0.12); cursor: pointer">Trung cấp</button>
-        <button type="button" style="height: 40px; border: 0; border-radius: 8px; background: transparent; font-family: inherit; font-size: 14px; font-weight: 600; color: #4B5563; cursor: pointer">Nâng cao</button>
-      </div>
-    </div>
-
-    <!-- 2. Chọn chủ đề -->
-    <div style="display: flex; flex-direction: column; gap: 10px">
-      <div style="font-size: 15px; font-weight: 700; color: #111827; display: flex; align-items: center; gap: 8px">
-        <span style="width: 22px; height: 22px; border-radius: 999px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0">2</span>
-        <span>Chọn chủ đề</span>
-      </div>
-      <div style="display: flex; gap: 8px; overflow-x: auto; margin: 0 -16px; padding: 0 16px">
-        <button type="button" style="height: 40px; flex-shrink: 0; padding: 0 14px; border: 1.5px solid #C2410C; border-radius: 999px; background: #FFEDD5; font-family: inherit; font-size: 14px; font-weight: 600; color: #C2410C; cursor: pointer">Environment</button>
-        <button type="button" style="height: 40px; flex-shrink: 0; padding: 0 14px; border: 1px solid #DDE1E8; border-radius: 999px; background: #FFFFFF; font-family: inherit; font-size: 14px; color: #111827; cursor: pointer">Education</button>
-        <button type="button" style="height: 40px; flex-shrink: 0; padding: 0 14px; border: 1px solid #DDE1E8; border-radius: 999px; background: #FFFFFF; font-family: inherit; font-size: 14px; color: #111827; cursor: pointer">Technology</button>
-        <button type="button" style="height: 40px; flex-shrink: 0; padding: 0 14px; border: 1px solid #DDE1E8; border-radius: 999px; background: #FFFFFF; font-family: inherit; font-size: 14px; color: #111827; cursor: pointer">Health</button>
-      </div>
-    </div>
-
-    <!-- 3. Chọn các từ trong 30 từ -->
+  <!-- Main Scrollable Area (min-height: 0 là chìa khóa để flex item co giãn và cuộn độc lập) -->
+  <main style="flex: 1 1 0%; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 18px 16px 16px; display: flex; flex-direction: column; gap: 20px; padding-bottom: 24px">
+    
+    <!-- ==================== 1. CHỌN TRÌNH ĐỘ ==================== -->
     <div style="display: flex; flex-direction: column; gap: 10px">
       <div style="display: flex; justify-content: space-between; align-items: center">
-        <div style="font-size: 15px; font-weight: 700; color: #111827; display: flex; align-items: center; gap: 8px">
-          <span style="width: 22px; height: 22px; border-radius: 999px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0">3</span>
-          <span>Chọn các từ trong 30 từ</span>
+        <div style="font-size: 15px; font-weight: 700; color: #0F172A; display: flex; align-items: center; gap: 8px">
+          <span style="width: 22px; height: 22px; border-radius: 999px; background: #0F172A; color: #FFFFFF; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0">1</span>
+          <span>Chọn trình độ</span>
         </div>
-        <span style="font-size: 13px; font-weight: 600; color: #C2410C">Đã chọn 8/10</span>
+        <span id="levelHintBadge" style="font-size: 11.5px; color: #64748B; font-weight: 500">Bấm chọn để mở chủ đề</span>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: #E2E8F0; border-radius: 12px; padding: 4px; gap: 4px">
+        <button id="btnLevel_basic" type="button" onclick="selectLevel('basic')" style="height: 40px; border: 0; border-radius: 8px; background: transparent; font-family: inherit; font-size: 14px; font-weight: 600; color: #64748B; cursor: pointer; transition: all 0.2s">Cơ bản</button>
+        <button id="btnLevel_intermediate" type="button" onclick="selectLevel('intermediate')" style="height: 40px; border: 0; border-radius: 8px; background: transparent; font-family: inherit; font-size: 14px; font-weight: 600; color: #64748B; cursor: pointer; transition: all 0.2s">Trung cấp</button>
+        <button id="btnLevel_advanced" type="button" onclick="selectLevel('advanced')" style="height: 40px; border: 0; border-radius: 8px; background: transparent; font-family: inherit; font-size: 14px; font-weight: 600; color: #64748B; cursor: pointer; transition: all 0.2s">Nâng cao</button>
+      </div>
+    </div>
+
+    <!-- Line phân cách giữa Bước 1 và Bước 2 -->
+    <div id="dividerStep1" style="height: 1px; background: #E2E8F0; margin: 2px 0"></div>
+
+    <!-- ==================== 2. CHỌN CHỦ ĐỀ (DẠNG CARD THẺ NGANG THEO REFERENCE) ==================== -->
+    <div id="sectionTopic" style="display: none; flex-direction: column; gap: 10px" class="appear-anim">
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <div style="font-size: 15px; font-weight: 700; color: #0F172A; display: flex; align-items: center; gap: 8px">
+          <span style="width: 22px; height: 22px; border-radius: 999px; background: #0F172A; color: #FFFFFF; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0">2</span>
+          <span>Chọn chủ đề</span>
+        </div>
+        <span style="font-size: 11.5px; color: #64748B; font-weight: 500">Vuốt ngang để chọn ➔</span>
       </div>
 
-    <div style="background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 16px; overflow: hidden">
-      <label style="display: flex; align-items: center; gap: 12px; padding: 10px 8px 10px 16px; border-bottom: 1px solid #EEF0F4; background: #FFF7ED">
-        <input type="checkbox" checked="checked" style="width: 20px; height: 20px; accent-color: #C2410C; margin: 0">
-        <div style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 16px; font-weight: 600">deforestation</span><span style="font-size: 13px; color: #4B5563">nạn phá rừng</span></div>
-        <button aria-label="Nghe deforestation" style="width: 44px; height: 44px; border: 0; border-radius: 999px; background: #FFEDD5; display: flex; align-items: center; justify-content: center; padding: 0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C2410C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4z"></path><path d="M15.5 8.5a5 5 0 010 7"></path></svg></button>
-      </label>
-      <label style="display: flex; align-items: center; gap: 12px; padding: 10px 8px 10px 16px; border-bottom: 1px solid #EEF0F4; background: #FFF7ED">
-        <input type="checkbox" checked="checked" style="width: 20px; height: 20px; accent-color: #C2410C; margin: 0">
-        <div style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 16px; font-weight: 600">habitat</span><span style="font-size: 13px; color: #4B5563">môi trường sống</span></div>
-        <button aria-label="Nghe habitat" style="width: 44px; height: 44px; border: 0; border-radius: 999px; background: #FFEDD5; display: flex; align-items: center; justify-content: center; padding: 0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C2410C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4z"></path><path d="M15.5 8.5a5 5 0 010 7"></path></svg></button>
-      </label>
-      <label style="display: flex; align-items: center; gap: 12px; padding: 10px 8px 10px 16px; border-bottom: 1px solid #EEF0F4">
-        <input type="checkbox" style="width: 20px; height: 20px; accent-color: #C2410C; margin: 0">
-        <div style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 16px; font-weight: 600">emission</span><span style="font-size: 13px; color: #4B5563">khí thải</span></div>
-        <button aria-label="Nghe emission" style="width: 44px; height: 44px; border: 0; border-radius: 999px; background: #F3F4F7; display: flex; align-items: center; justify-content: center; padding: 0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4z"></path><path d="M15.5 8.5a5 5 0 010 7"></path></svg></button>
-      </label>
-      <label style="display: flex; align-items: center; gap: 12px; padding: 10px 8px 10px 16px; border-bottom: 1px solid #EEF0F4; background: #FFF7ED">
-        <input type="checkbox" checked="checked" style="width: 20px; height: 20px; accent-color: #C2410C; margin: 0">
-        <div style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 16px; font-weight: 600">conserve</span><span style="font-size: 13px; color: #4B5563">bảo tồn</span></div>
-        <button aria-label="Nghe conserve" style="width: 44px; height: 44px; border: 0; border-radius: 999px; background: #FFEDD5; display: flex; align-items: center; justify-content: center; padding: 0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C2410C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4z"></path><path d="M15.5 8.5a5 5 0 010 7"></path></svg></button>
-      </label>
-      <label style="display: flex; align-items: center; gap: 12px; padding: 10px 8px 10px 16px">
-        <input type="checkbox" checked="checked" style="width: 20px; height: 20px; accent-color: #C2410C; margin: 0">
-        <div style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 16px; font-weight: 600">renewable</span><span style="font-size: 13px; color: #4B5563">có thể tái tạo</span></div>
-        <button aria-label="Nghe renewable" style="width: 44px; height: 44px; border: 0; border-radius: 999px; background: #FFEDD5; display: flex; align-items: center; justify-content: center; padding: 0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C2410C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4z"></path><path d="M15.5 8.5a5 5 0 010 7"></path></svg></button>
-      </label>
+      <!-- Container các card thẻ ngang cuộn mượt -->
+      <div id="topicCardsContainer" class="no-scrollbar" style="display: flex; gap: 12px; overflow-x: auto; padding: 4px 2px 10px; margin: 0 -16px; padding-left: 16px; padding-right: 16px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch">
+        <!-- Render động bằng Javascript -->
+      </div>
     </div>
-    <button style="height: 44px; border: 0; background: transparent; color: #C2410C; font-family: inherit; font-size: 15px; font-weight: 600">Xem thêm 25 từ</button>
+
+    <!-- Line phân cách giữa Bước 2 và Bước 3 -->
+    <div id="dividerStep2" style="display: none; height: 1px; background: #E2E8F0; margin: 2px 0" class="appear-anim"></div>
+
+    <!-- ==================== 3. CHỌN TỪ TRONG CHỦ ĐỀ (LƯỚI GRID 3 TỪ 1 HÀNG - VIỀN & NỀN THEO CHỦ ĐỀ) ==================== -->
+    <div id="sectionWords" style="display: none; flex-direction: column; gap: 10px" class="appear-anim">
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <div style="font-size: 15px; font-weight: 700; color: #0F172A; display: flex; align-items: center; gap: 8px">
+          <span style="width: 22px; height: 22px; border-radius: 999px; background: #0F172A; color: #FFFFFF; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0">3</span>
+          <span>Chọn từ trong chủ đề</span>
+        </div>
+        <span id="selectedCountBadge" style="font-size: 12px; font-weight: 700; color: #C2410C; background: #FFEDD5; border-radius: 999px; padding: 3px 9px">Đã chọn 8/8 từ</span>
+      </div>
+
+      <!-- Thanh công cụ chọn nhanh -->
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px">
+        <span style="color: #64748B" id="topicWordTotalText">Kho từ: 18 từ vựng</span>
+        <div style="display: flex; gap: 8px">
+          <button id="btnQuick8" type="button" onclick="selectQuick8()" style="border: 0; background: transparent; color: #EA580C; font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer; padding: 0; text-decoration: underline">Chọn nhanh 8 từ</button>
+          <span style="color: #CBD5E1">|</span>
+          <button type="button" onclick="clearAllWords()" style="border: 0; background: transparent; color: #64748B; font-family: inherit; font-size: 12px; font-weight: 500; cursor: pointer; padding: 0">Bỏ chọn hết</button>
+        </div>
+      </div>
+
+      <!-- Lưới Grid 3 cột từ vựng (Không checkbox, highlight viền & nền theo chủ đề) -->
+      <div id="wordGridContainer" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+        <!-- Render động bằng Javascript -->
+      </div>
+    </div>
+
   </main>
 
-  <footer style="flex-shrink: 0; background: #FFFFFF; border-top: 1px solid #DDE1E8; padding: 12px 16px 20px">
-    <a href="M1Sentence.html" style="height: 52px; border-radius: 12px; background: #C2410C; color: #FFFFFF; font-size: 16px; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center">Tiếp tục với 8 từ</a>
+  <!-- Footer luôn cố định ở đáy khi chọn chủ đề -->
+  <footer id="appFooter" style="display: none; position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 390px; box-sizing: border-box; background: #FFFFFF; border-top: 1px solid #E2E8F0; padding: 12px 16px max(16px, env(safe-area-inset-bottom, 16px)); z-index: 100; box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.08)">
+    <a id="btnContinue" href="M1Sentence.html" style="height: 52px; border-radius: 12px; background: #EA580C; color: #FFFFFF; font-size: 16px; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 4px 14px rgba(234, 88, 12, 0.25)">
+      Tiếp tục với 8 từ
+    </a>
   </footer>
-  <div id="mascot" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 310px; z-index: 5"></div>
+
+  <!-- Mascot Thầy Phúc (Lơ lửng ở giữa bên phải) -->
+  <div id="mascot" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 310px; z-index: 30; pointer-events: none"></div>
 </div>
+
 <script src="mascot.js"></script>
 <script>
-renderMascot(document.getElementById('mascot'), {
-  mood: 'idle',
-  message: 'Tick đủ 8–10 từ nhé. Bấm loa để nghe phát âm trước.'
-});
+// ==================== DỮ LIỆU CÁC CHỦ ĐỀ (THEO REFERENCE DESIGN) ====================
+var TOPICS_DATA = [
+  {
+    id: 'environment',
+    lessonNum: 'One',
+    lessonAction: 'Learn',
+    lessonTitle: 'Environment',
+    desc: 'Khám phá sinh thái, khí hậu và bảo tồn hành tinh.',
+    image: 'bg_env.jpg',
+    cardBg: 'linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.88) 46%, rgba(255,255,255,0.32) 75%, rgba(255,255,255,0) 100%), url(bg_env.jpg)',
+    bgColor: '#E0F2FE',
+    cardBorder: '1.5px solid #BAE6FD',
+    badgeRingColor: '#38BDF8',
+    themeColor: '#059669',
+    themeLightBg: '#ECFDF5',
+    themeDarkText: '#065F46',
+    words: [
+      { id: 'w1', en: 'deforestation', vi: 'phá rừng' },
+      { id: 'w2', en: 'habitat', vi: 'môi trường sống' },
+      { id: 'w3', en: 'conserve', vi: 'bảo tồn' },
+      { id: 'w4', en: 'renewable', vi: 'tái tạo' },
+      { id: 'w5', en: 'pollution', vi: 'ô nhiễm' },
+      { id: 'w6', en: 'ecosystem', vi: 'hệ sinh thái' },
+      { id: 'w7', en: 'sustainable', vi: 'bền vững' },
+      { id: 'w8', en: 'recycle', vi: 'tái chế' },
+      { id: 'w9', en: 'emission', vi: 'khí thải' },
+      { id: 'w10', en: 'biodiversity', vi: 'đa dạng sinh thái' },
+      { id: 'w11', en: 'climate', vi: 'khí hậu' },
+      { id: 'w12', en: 'preservation', vi: 'gìn giữ' },
+      { id: 'w13', en: 'solar', vi: 'quang năng' },
+      { id: 'w14', en: 'wildlife', vi: 'động vật hoang dã' },
+      { id: 'w15', en: 'atmosphere', vi: 'khí quyển' },
+      { id: 'w16', en: 'drought', vi: 'hạn hán' },
+      { id: 'w17', en: 'glacier', vi: 'sông băng' },
+      { id: 'w18', en: 'ecology', vi: 'sinh thái học' }
+    ]
+  },
+  {
+    id: 'technology',
+    lessonNum: 'Two',
+    lessonAction: 'Explore',
+    lessonTitle: 'Digital AI & Tech',
+    desc: 'Làm quen thuật toán, phần mềm và thế giới số.',
+    image: 'bg_tech.jpg',
+    cardBg: 'linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.88) 46%, rgba(255,255,255,0.32) 75%, rgba(255,255,255,0) 100%), url(bg_tech.jpg)',
+    bgColor: '#EEF2FF',
+    cardBorder: '1.5px solid #C7D2FE',
+    badgeRingColor: '#818CF8',
+    themeColor: '#4F46E5',
+    themeLightBg: '#EEF2FF',
+    themeDarkText: '#3730A3',
+    words: [
+      { id: 't1', en: 'algorithm', vi: 'thuật toán' },
+      { id: 't2', en: 'automation', vi: 'tự động hóa' },
+      { id: 't3', en: 'cybersecurity', vi: 'an ninh mạng' },
+      { id: 't4', en: 'database', vi: 'cơ sở dữ liệu' },
+      { id: 't5', en: 'device', vi: 'thiết bị' },
+      { id: 't6', en: 'innovation', vi: 'đổi mới' },
+      { id: 't7', en: 'network', vi: 'mạng lưới' },
+      { id: 't8', en: 'software', vi: 'phần mềm' },
+      { id: 't9', en: 'virtual', vi: 'ảo' },
+      { id: 't10', en: 'artificial', vi: 'nhân tạo' },
+      { id: 't11', en: 'interface', vi: 'giao diện' },
+      { id: 't12', en: 'digital', vi: 'kỹ thuật số' },
+      { id: 't13', en: 'cloud', vi: 'điện toán mây' },
+      { id: 't14', en: 'processor', vi: 'bộ vi xử lý' },
+      { id: 't15', en: 'hardware', vi: 'phần cứng' }
+    ]
+  },
+  {
+    id: 'education',
+    lessonNum: 'Three',
+    lessonAction: 'Master',
+    lessonTitle: 'Education & Study',
+    desc: 'Chương trình học thuật, tri thức và nghiên cứu.',
+    image: 'bg_edu.jpg',
+    cardBg: 'linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.88) 46%, rgba(255,255,255,0.32) 75%, rgba(255,255,255,0) 100%), url(bg_edu.jpg)',
+    bgColor: '#FEF9C3',
+    cardBorder: '1.5px solid #FDE68A',
+    badgeRingColor: '#F59E0B',
+    themeColor: '#D97706',
+    themeLightBg: '#FFFBEB',
+    themeDarkText: '#92400E',
+    words: [
+      { id: 'e1', en: 'curriculum', vi: 'chương trình học' },
+      { id: 'e2', en: 'evaluate', vi: 'đánh giá' },
+      { id: 'e3', en: 'scholarship', vi: 'học bổng' },
+      { id: 'e4', en: 'academic', vi: 'thuộc học thuật' },
+      { id: 'e5', en: 'discipline', vi: 'tính kỷ luật' },
+      { id: 'e6', en: 'knowledge', vi: 'tri thức' },
+      { id: 'e7', en: 'lecture', vi: 'bài giảng' },
+      { id: 'e8', en: 'assignment', vi: 'bài tập' },
+      { id: 'e9', en: 'graduation', vi: 'tốt nghiệp' },
+      { id: 'e10', en: 'literacy', vi: 'biết chữ' },
+      { id: 'e11', en: 'research', vi: 'nghiên cứu' },
+      { id: 'e12', en: 'tuition', vi: 'học phí' },
+      { id: 'e13', en: 'mentor', vi: 'người hướng dẫn' },
+      { id: 'e14', en: 'semester', vi: 'học kỳ' },
+      { id: 'e15', en: 'certificate', vi: 'chứng chỉ' }
+    ]
+  },
+  {
+    id: 'health',
+    lessonNum: 'Four',
+    lessonAction: 'Practice',
+    lessonTitle: 'Health & Wellness',
+    desc: 'Lối sống lành mạnh, dinh dưỡng và thể chất.',
+    image: 'bg_health.jpg',
+    cardBg: 'linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.88) 46%, rgba(255,255,255,0.32) 75%, rgba(255,255,255,0) 100%), url(bg_health.jpg)',
+    bgColor: '#FFE4E6',
+    cardBorder: '1.5px solid #FECDD3',
+    badgeRingColor: '#FB7185',
+    themeColor: '#E11D48',
+    themeLightBg: '#FFF1F2',
+    themeDarkText: '#9F1239',
+    words: [
+      { id: 'h1', en: 'nutrition', vi: 'dinh dưỡng' },
+      { id: 'h2', en: 'exercise', vi: 'tập luyện' },
+      { id: 'h3', en: 'immunity', vi: 'miễn dịch' },
+      { id: 'h4', en: 'mental', vi: 'tinh thần' },
+      { id: 'h5', en: 'symptom', vi: 'triệu chứng' },
+      { id: 'h6', en: 'treatment', vi: 'điều trị' },
+      { id: 'h7', en: 'wellness', vi: 'sống khỏe' },
+      { id: 'h8', en: 'dietary', vi: 'chế độ ăn' },
+      { id: 'h9', en: 'hygiene', vi: 'vệ sinh' },
+      { id: 'h10', en: 'recovery', vi: 'hồi phục' },
+      { id: 'h11', en: 'vitality', vi: 'sinh lực' },
+      { id: 'h12', en: 'therapy', vi: 'trị liệu' },
+      { id: 'h13', en: 'medication', vi: 'dược phẩm' },
+      { id: 'h14', en: 'calorie', vi: 'calo' },
+      { id: 'h15', en: 'diagnosis', vi: 'chẩn đoán' }
+    ]
+  }
+];
+
+// Trạng thái ứng dụng
+var selectedLevel = null;
+var selectedTopicId = null;
+var selectedWordIds = [];
+
+// ==================== 1. CHỌN TRÌNH ĐỘ ====================
+function selectLevel(lvl) {
+  selectedLevel = lvl;
+  
+  // Cập nhật giao diện 3 nút trình độ
+  var levels = ['basic', 'intermediate', 'advanced'];
+  levels.forEach(function (key) {
+    var btn = document.getElementById('btnLevel_' + key);
+    if (key === lvl) {
+      btn.style.background = '#FFFFFF';
+      btn.style.color = '#0F172A';
+      btn.style.fontWeight = '700';
+      btn.style.boxShadow = '0 1px 3px rgba(15,23,42,0.12)';
+    } else {
+      btn.style.background = 'transparent';
+      btn.style.color = '#64748B';
+      btn.style.fontWeight = '600';
+      btn.style.boxShadow = 'none';
+    }
+  });
+
+  document.getElementById('levelHintBadge').textContent = '✓ Đã chọn ' + (lvl === 'basic' ? 'Cơ bản' : (lvl === 'intermediate' ? 'Trung cấp' : 'Nâng cao'));
+  document.getElementById('levelHintBadge').style.color = '#15803D';
+  document.getElementById('levelHintBadge').style.fontWeight = '700';
+
+  // Hiển thị Mục 2: Chọn chủ đề
+  var secTopic = document.getElementById('sectionTopic');
+  secTopic.style.display = 'flex';
+
+  // Render các thẻ ngang chủ đề
+  renderTopicCards();
+
+  // Tự động chọn Environment nếu chưa chọn
+  if (!selectedTopicId) {
+    selectTopic('environment');
+  }
+
+  // Cuộn nhẹ tới Mục 2
+  setTimeout(function () {
+    secTopic.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 100);
+}
+
+// ==================== 2. CHỌN CHỦ ĐỀ (DÙNG BACKGROUND-IMAGE CHUẨN XÁC) ====================
+function renderTopicCards() {
+  var container = document.getElementById('topicCardsContainer');
+  var html = '';
+
+  TOPICS_DATA.forEach(function (topic) {
+    var isActive = topic.id === selectedTopicId;
+    var badgeCountText = isActive ? (selectedWordIds.length + '/8') : ('0/8');
+    var ringOffset = isActive ? 35 : 85;
+
+    // Viền hài hòa ăn khớp: Khi đang chọn thì dùng viền 2px tiệp màu chủ đề, khi chưa chọn dùng viền xám nhạt 1.5px
+    var cardBorder = isActive ? ('2px solid ' + topic.themeColor) : '1.5px solid #CBD5E1';
+
+    // Toàn bộ nền là background-image kết hợp gradient, không chèn thẻ <img>
+    html += '<div id="topic_card_' + topic.id + '" class="topic-card ' + (isActive ? 'active' : '') + '" onclick="selectTopic(\'' + topic.id + '\')" style="background-color: ' + topic.bgColor + '; background-image: ' + topic.cardBg + '; border: ' + cardBorder + '">';
+    
+    // Circular Progress Ring Badge ở góc trên phải (nền đen + vòng cung viền)
+    html += '<div class="topic-badge-wrapper">';
+    html += '<svg class="topic-badge-svg" viewBox="0 0 42 42">';
+    html += '<circle cx="21" cy="21" r="17" fill="#0F172A" stroke="rgba(255,255,255,0.18)" stroke-width="2.5"></circle>';
+    html += '<circle cx="21" cy="21" r="17" fill="none" stroke="' + topic.badgeRingColor + '" stroke-width="2.5" stroke-dasharray="106.8" stroke-dashoffset="' + ringOffset + '" stroke-linecap="round"></circle>';
+    html += '</svg>';
+    html += '<span class="topic-badge-text">' + badgeCountText + '</span>';
+    html += '</div>';
+
+    // Cột nội dung bên trái (KHÔNG CÒN THẺ IMG TRONG DOM)
+    html += '<div style="display: flex; flex-direction: column; max-width: 172px; z-index: 2">';
+    
+    // Tên chủ đề chính (chỉ hiện tên chủ đề theo yêu cầu)
+    html += '<div style="font-size: 17px; font-weight: 700; color: #0F172A; line-height: 1.25; letter-spacing: -0.01em">';
+    html += topic.lessonTitle;
+    html += '</div>';
+
+    // Đoạn mô tả ngắn gọn
+    html += '<div style="font-size: 11.5px; color: #475569; line-height: 1.35; margin: 5px 0 10px">';
+    html += topic.desc;
+    html += '</div>';
+
+    // Nút Pill Action (Start / Đang chọn tiệp màu chủ đề)
+    if (isActive) {
+      html += '<span class="card-action-pill" style="background: ' + topic.themeColor + '; color: #FFFFFF; box-shadow: 0 2px 8px rgba(0,0,0,0.18)">';
+      html += '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6L9 17l-5-5"></path></svg>';
+      html += '<span>Đang chọn</span>';
+      html += '</span>';
+    } else {
+      html += '<span class="card-action-pill inactive">';
+      html += '<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="opacity:0.85"><path d="M5 3l14 9-14 9V3z"></path></svg>';
+      html += '<span>Chọn học</span>';
+      html += '</span>';
+    }
+
+    html += '</div>'; // Hết cột trái
+    html += '</div>'; // Hết thẻ card
+  });
+
+  container.innerHTML = html;
+}
+
+function selectTopic(topicId) {
+  selectedTopicId = topicId;
+
+  // Cập nhật lại giao diện các card chủ đề
+  renderTopicCards();
+
+  // Tìm dữ liệu chủ đề
+  var topic = TOPICS_DATA.find(function (t) { return t.id === topicId; });
+  if (!topic) return;
+
+  // Mặc định chọn 8 từ đầu tiên của chủ đề này
+  selectedWordIds = topic.words.slice(0, 8).map(function (w) { return w.id; });
+
+  // Cập nhật màu nút tiện ích "Chọn nhanh 8 từ" theo màu chủ đề
+  var btnQ8 = document.getElementById('btnQuick8');
+  if (btnQ8) btnQ8.style.color = topic.themeColor;
+
+  // Hiển thị Mục 3: Chọn từ trong chủ đề và Line phân cách
+  var secWords = document.getElementById('sectionWords');
+  secWords.style.display = 'flex';
+  var div2 = document.getElementById('dividerStep2');
+  if (div2) div2.style.display = 'block';
+
+  // Fill danh sách từ vựng vào lưới Grid 3 cột
+  renderWordGrid(topic);
+
+  // Cập nhật thống kê và nút tiếp tục
+  updateSelectionSummary();
+
+  // Tự động cuộn card đang chọn vào giữa tầm nhìn
+  setTimeout(function () {
+    var activeCard = document.getElementById('topic_card_' + topicId);
+    if (activeCard) {
+      activeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+  }, 50);
+
+  // Thầy Phúc nhắc nhở (để bubble: false để không che lấp bài, bấm vào avatar sẽ nói)
+  renderMascot(document.getElementById('mascot'), {
+    mood: 'happy',
+    message: 'Chủ đề "' + topic.lessonTitle + '" có ' + topic.words.length + ' từ. Hãy chọn ít nhất 8 từ bạn thích nhé!',
+    bubble: false
+  });
+}
+
+// ==================== 3. CHỌN TỪ TRONG CHỦ ĐỀ (LƯỚI GRID 3 CỘT - BỎ CHECKBOX) ====================
+function renderWordGrid(topic) {
+  document.getElementById('topicWordTotalText').textContent = 'Kho từ: ' + topic.words.length + ' từ vựng';
+  var grid = document.getElementById('wordGridContainer');
+  var html = '';
+
+  topic.words.forEach(function (word) {
+    var isChecked = selectedWordIds.indexOf(word.id) !== -1;
+    
+    // Style động: Khi chọn -> nhận Viền + Nền đồng bộ với chủ đề bên trên
+    var cardBorder = isChecked ? ('2px solid ' + topic.themeColor) : '1.5px solid #E2E8F0';
+    var cardBg = isChecked ? topic.themeLightBg : '#FFFFFF';
+    var cardShadow = isChecked ? ('0 3px 10px rgba(0,0,0,0.06)') : 'none';
+    var enColor = isChecked ? topic.themeDarkText : '#0F172A';
+    var viColor = isChecked ? topic.themeColor : '#64748B';
+    var speakerBg = isChecked ? 'rgba(255,255,255,0.85)' : '#F1F5F9';
+    var speakerStroke = isChecked ? topic.themeColor : '#64748B';
+
+    html += '<div id="word_card_' + word.id + '" class="word-card" onclick="toggleWordSelection(\'' + word.id + '\')" style="border: ' + cardBorder + '; background: ' + cardBg + '; box-shadow: ' + cardShadow + '">';
+    
+    // Hàng trên: Loa phát âm ở góc phải (KHÔNG CÒN CHECKBOX)
+    html += '<div style="display: flex; justify-content: flex-end; align-items: center">';
+    html += '<button type="button" class="speaker-btn" onclick="speakWord(event, \'' + word.en + '\')" style="background: ' + speakerBg + '" title="Nghe phát âm">';
+    html += '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="' + speakerStroke + '" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4z"></path><path d="M15.5 8.5a5 5 0 010 7"></path></svg>';
+    html += '</button>';
+    html += '</div>';
+
+    // Từ tiếng Anh (in đậm, to rõ)
+    html += '<div style="font-size: 13.5px; font-weight: 700; color: ' + enColor + '; line-height: 1.25; margin-top: 3px; word-break: break-word">';
+    html += word.en;
+    html += '</div>';
+
+    // Nghĩa tiếng Việt (xuống dòng dưới)
+    html += '<div style="font-size: 11.5px; color: ' + viColor + '; line-height: 1.2; margin-top: 3px; word-break: break-word">';
+    html += word.vi;
+    html += '</div>';
+
+    html += '</div>';
+  });
+
+  grid.innerHTML = html;
+}
+
+// Bật / tắt chọn từ
+function toggleWordSelection(wordId) {
+  var idx = selectedWordIds.indexOf(wordId);
+  if (idx !== -1) {
+    selectedWordIds.splice(idx, 1);
+  } else {
+    selectedWordIds.push(wordId);
+  }
+
+  // Render lại lưới từ của chủ đề hiện tại
+  var topic = TOPICS_DATA.find(function (t) { return t.id === selectedTopicId; });
+  if (topic) renderWordGrid(topic);
+
+  updateSelectionSummary();
+}
+
+// Chọn nhanh 8 từ
+function selectQuick8() {
+  var topic = TOPICS_DATA.find(function (t) { return t.id === selectedTopicId; });
+  if (!topic) return;
+  selectedWordIds = topic.words.slice(0, 8).map(function (w) { return w.id; });
+  renderWordGrid(topic);
+  updateSelectionSummary();
+}
+
+// Bỏ chọn tất cả
+function clearAllWords() {
+  selectedWordIds = [];
+  var topic = TOPICS_DATA.find(function (t) { return t.id === selectedTopicId; });
+  if (topic) renderWordGrid(topic);
+  updateSelectionSummary();
+}
+
+// Cập nhật số lượng và nút tiếp tục
+function updateSelectionSummary() {
+  var count = selectedWordIds.length;
+  var badge = document.getElementById('selectedCountBadge');
+  var btn = document.getElementById('btnContinue');
+  var footer = document.getElementById('appFooter');
+  var topic = TOPICS_DATA.find(function (t) { return t.id === selectedTopicId; });
+  var themeColor = topic ? topic.themeColor : '#EA580C';
+
+  // Hiển thị footer ngay lập tức nếu đã chọn chủ đề
+  if (footer) {
+    if (selectedTopicId) {
+      footer.style.display = 'block';
+      footer.style.position = 'fixed';
+      footer.style.bottom = '0';
+    } else {
+      footer.style.display = 'none';
+    }
+  }
+
+  // Cập nhật số lượng trên vòng tròn Progress Badge của Thẻ chủ đề
+  if (topic) {
+    var card = document.getElementById('topic_card_' + topic.id);
+    if (card) {
+      var badgeTextEl = card.querySelector('.topic-badge-text');
+      var badgeRingEl = card.querySelectorAll('.topic-badge-svg circle')[1];
+      if (badgeTextEl) badgeTextEl.textContent = count + '/8';
+      if (badgeRingEl) {
+        var ratio = Math.min(1, count / 8);
+        var dashOffset = 106.8 * (1 - ratio);
+        badgeRingEl.setAttribute('stroke-dashoffset', dashOffset);
+      }
+    }
+  }
+
+  if (count >= 8) {
+    badge.textContent = '✓ Đã chọn ' + count + ' từ';
+    badge.style.background = '#DCFCE7';
+    badge.style.color = '#15803D';
+
+    btn.textContent = 'Tiếp tục với ' + count + ' từ';
+    btn.style.background = themeColor;
+    btn.style.boxShadow = '0 4px 14px rgba(0, 0, 0, 0.2)';
+    btn.style.pointerEvents = 'auto';
+    btn.style.opacity = '1';
+  } else {
+    badge.textContent = 'Đã chọn ' + count + '/8 từ';
+    badge.style.background = '#FFEDD5';
+    badge.style.color = '#C2410C';
+
+    btn.textContent = 'Hãy chọn thêm ' + (8 - count) + ' từ (cần 8 từ)';
+    btn.style.background = '#94A3B8';
+    btn.style.boxShadow = 'none';
+    btn.style.pointerEvents = 'none';
+    btn.style.opacity = '0.9';
+  }
+}
+
+// ==================== PHÁT ÂM TIẾNG ANH (WEB SPEECH API) ====================
+function speakWord(event, text) {
+  if (event) event.stopPropagation();
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+
+  var utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'en-US';
+  utterance.rate = 0.88;
+
+  var voices = window.speechSynthesis.getVoices();
+  for (var i = 0; i < voices.length; i++) {
+    if (voices[i].lang && voices[i].lang.indexOf('en') === 0) {
+      utterance.voice = voices[i];
+      break;
+    }
+  }
+
+  window.speechSynthesis.speak(utterance);
+}
+
+// ==================== KHỞI TẠO BAN ĐẦU ====================
+// Mặc định chọn "Trung cấp" và tự mở Mục 2 & 3
+selectLevel('intermediate');
 </script>
 </body>
 </html>

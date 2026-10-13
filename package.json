@@ -1,0 +1,10 @@
+{
+  "name": "pps-vietnam-web-trainghiem",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PPS Vietnam - Web trải nghiệm 3 phương pháp",
+  "scripts": {
+    "dev": "npx serve -l 3000 .",
+    "start": "npx serve -l 3000 ."
+  }
+}

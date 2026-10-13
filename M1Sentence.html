@@ -3,85 +3,892 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Phương pháp 1 — ghép câu</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Phương pháp 1 — Nối từ thành câu & Luyện nghe</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="style.css">
+<style>
+@keyframes waveBar {
+  0%, 100% { height: 6px; }
+  50% { height: 15px; }
+}
+@keyframes pulseDot {
+  0%, 100% { opacity: 0.35; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+@keyframes fadeInSlide {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.appear-anim {
+  animation: fadeInSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Karaoke Word / Chunk Highlights */
+/* Karaoke Word / Chunk Streaming: Voice đến đâu, hiển thị song song đến đấy */
+.chunk-en, .chunk-vi {
+  display: inline-block;
+  padding: 1px 2px;
+  margin: 1px 0;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+.chunk-en:hover, .chunk-vi:hover {
+  background: #E5E7EB;
+}
+.chunk-hidden {
+  display: none !important;
+}
+.chunk-revealed {
+  display: inline-block !important;
+  animation: chunkReveal 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes chunkReveal {
+  from {
+    opacity: 0;
+    transform: translateY(3px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.chunk-speaking {
+  color: #C2410C !important;
+  font-weight: 700 !important;
+}
+
+/* Word chips tracker */
+.word-chip {
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.25s ease;
+}
+.chip-pending {
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  color: #4B5563;
+  font-weight: 500;
+}
+.chip-done {
+  background: #ECFDF5;
+  border: 1.5px solid #86EFAC;
+  color: #166534;
+  font-weight: 700;
+  box-shadow: 0 1px 2px rgba(16,185,129,0.1);
+}
+
+/* Vocabulary word highlight in sentences */
+.vocab-hl {
+  color: #C2410C;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: #F97316;
+  text-underline-offset: 2.5px;
+}
+</style>
 </head>
 <body>
 <div style="width: 390px; max-width: 100%; height: 844px; margin: 0 auto; position: relative; display: flex; flex-direction: column; background: #F3F4F7; font-family: 'Be Vietnam Pro', sans-serif; color: #111827; overflow: hidden">
-  <header style="height: 56px; flex-shrink: 0; display: flex; align-items: center; gap: 4px; padding: 0 12px 0 4px; background: #FFFFFF">
-    <a href="M1Setup.html" aria-label="Quay lại" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg></a>
+  <!-- Header -->
+  <header style="height: 56px; flex-shrink: 0; display: flex; align-items: center; gap: 4px; padding: 0 12px 0 4px; background: #FFFFFF; border-bottom: 1px solid #DDE1E8">
+    <a href="M1Setup.html" aria-label="Quay lại" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg>
+    </a>
     <div style="flex: 1; font-size: 16px; font-weight: 600">Ghép câu từ vựng</div>
-    <span style="font-size: 12px; font-weight: 600; color: #C2410C; background: #FFEDD5; border-radius: 999px; padding: 6px 10px">Còn 2 lượt AI</span>
+    <span id="aiCredits" style="font-size: 12px; font-weight: 600; color: #C2410C; background: #FFEDD5; border-radius: 999px; padding: 6px 10px">Còn 2 lượt AI</span>
   </header>
-  <div style="flex-shrink: 0; background: #FFFFFF; border-bottom: 1px solid #DDE1E8; padding: 4px 16px 12px; display: flex; flex-direction: column; gap: 6px">
-    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px">
-      <div style="height: 4px; border-radius: 4px; background: #C2410C"></div>
-      <div style="height: 4px; border-radius: 4px; background: #C2410C"></div>
-      <div style="height: 4px; border-radius: 4px; background: #DDE1E8"></div>
-    </div>
-    <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 500; color: #4B5563"><span>Bước 2/3</span><span>Ghép câu</span></div>
-  </div>
 
-  <main style="flex: 1; overflow-y: auto; padding: 20px 16px 16px; display: flex; flex-direction: column; gap: 14px; padding-bottom: 104px">
-    <div style="display: flex; flex-direction: column; gap: 6px">
-      <h1 style="margin: 0; font-size: 22px; font-weight: 700">Nối 8 từ thành câu có nghĩa</h1>
-      <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #4B5563">Từ mới được bôi đỏ. Bấm Nghe để nghe cả câu.</p>
-    </div>
-
-    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); background: #E7E9EE; border-radius: 12px; padding: 4px; gap: 4px">
-      <button style="height: 40px; border: 0; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 700; color: #111827; box-shadow: 0 1px 3px rgba(17,24,39,0.12)">AI đặt cho tôi</button>
-      <button style="height: 40px; border: 0; border-radius: 8px; background: transparent; font-family: inherit; font-size: 14px; font-weight: 600; color: #4B5563">Tôi tự đặt câu</button>
-    </div>
-
-    <div style="display: flex; flex-wrap: wrap; gap: 6px">
-      <span style="font-size: 13px; font-weight: 600; color: #A30D25; background: #FDECEE; border-radius: 999px; padding: 5px 10px">deforestation</span>
-      <span style="font-size: 13px; font-weight: 600; color: #A30D25; background: #FDECEE; border-radius: 999px; padding: 5px 10px">habitat</span>
-      <span style="font-size: 13px; font-weight: 600; color: #A30D25; background: #FDECEE; border-radius: 999px; padding: 5px 10px">conserve</span>
-      <span style="font-size: 13px; font-weight: 600; color: #A30D25; background: #FDECEE; border-radius: 999px; padding: 5px 10px">renewable</span>
-      <span style="font-size: 13px; font-weight: 600; color: #A30D25; background: #FDECEE; border-radius: 999px; padding: 5px 10px">pollution</span>
-      <span style="font-size: 13px; font-weight: 600; color: #A30D25; background: #FDECEE; border-radius: 999px; padding: 5px 10px">ecosystem</span>
-      <span style="font-size: 13px; font-weight: 500; color: #4B5563; background: #E7E9EE; border-radius: 999px; padding: 5px 10px">sustainable</span>
-      <span style="font-size: 13px; font-weight: 500; color: #4B5563; background: #E7E9EE; border-radius: 999px; padding: 5px 10px">recycle</span>
-    </div>
-
-    <div style="background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px">
-      <div style="display: flex; justify-content: space-between; align-items: center">
-        <span style="font-size: 12px; font-weight: 600; color: #C2410C; background: #FFEDD5; border-radius: 999px; padding: 4px 10px">Câu 1</span>
-        <button aria-label="Nghe câu 1" style="height: 40px; border: 0; border-radius: 999px; background: #C2410C; color: #FFFFFF; font-family: inherit; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; padding: 0 14px"><svg width="16" height="16" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M7 5v14l11-7z"></path></svg>Nghe</button>
+  <!-- Main Scrollable Area -->
+  <main style="flex: 1; overflow-y: auto; padding: 18px 16px 16px; display: flex; flex-direction: column; gap: 18px; padding-bottom: 110px">
+    
+    <!-- ==================== PHẦN 4: NỐI 8 TỪ THÀNH CÂU ==================== -->
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <!-- Tiêu đề mục 4 -->
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <h1 style="margin: 0; font-size: 18.5px; font-weight: 700; display: flex; align-items: center; gap: 8px">
+          <span style="width: 24px; height: 24px; border-radius: 999px; background: #C2410C; color: #FFFFFF; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0">4</span>
+          <span>Nối 8 từ thành câu có nghĩa</span>
+        </h1>
       </div>
-      <div style="font-size: 18px; line-height: 1.6; font-weight: 500"><span style="color: #C8102E; font-weight: 700">Deforestation</span> destroys the natural <span style="color: #C8102E; font-weight: 700">habitat</span> of many animals, so we must <span style="color: #C8102E; font-weight: 700">conserve</span> forests.</div>
-      <div style="font-size: 14px; line-height: 1.5; color: #4B5563">Nạn phá rừng huỷ hoại môi trường sống tự nhiên của nhiều loài, vì vậy chúng ta phải bảo tồn rừng.</div>
-    </div>
+ 
+      <!-- Dropdown Thu lên / Thả xuống: 8 từ đã chọn ở Bước 3 (Gọn gàng, không rối mắt) -->
+      <div id="wordsDropdownCard" style="background: #FFFFFF; border: 1.5px solid #DDE1E8; border-radius: 14px; overflow: hidden; transition: all 0.25s ease; box-shadow: 0 1px 4px rgba(17,24,39,0.04)">
+        
+        <!-- Header có thể bấm để Thu lên / Thả xuống -->
+        <button id="btnToggleWordsDropdown" type="button" onclick="toggleWordsDropdown()" aria-expanded="false" style="width: 100%; border: 0; background: transparent; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 8px; cursor: pointer; text-align: left; font-family: inherit">
+          <div style="display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0">
+            <span style="width: 22px; height: 22px; border-radius: 6px; background: #FFEDD5; color: #C2410C; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            </span>
+            <span style="font-size: 13px; font-weight: 700; color: #111827; white-space: nowrap">8 từ đã chọn</span>
+            <span id="wordTrackerStatus" style="font-size: 11px; font-weight: 700; color: #6B7280; background: #F3F4F6; border: 1px solid #E5E7EB; padding: 2px 7px; border-radius: 999px; white-space: nowrap">Chưa ghép (0/8)</span>
+          </div>
 
-    <div style="background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px">
-      <div style="display: flex; justify-content: space-between; align-items: center">
-        <span style="font-size: 12px; font-weight: 600; color: #C2410C; background: #FFEDD5; border-radius: 999px; padding: 4px 10px">Câu 2</span>
-        <button aria-label="Đang phát câu 2" style="height: 40px; border: 3px solid #FED7AA; border-radius: 999px; background: #C2410C; color: #FFFFFF; font-family: inherit; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; padding: 0 12px"><span style="display: flex; gap: 2px; align-items: center"><span style="width: 3px; height: 8px; background: #FFFFFF; border-radius: 2px"></span><span style="width: 3px; height: 14px; background: #FFFFFF; border-radius: 2px"></span><span style="width: 3px; height: 10px; background: #FFFFFF; border-radius: 2px"></span></span>Đang phát</button>
+          <div style="display: flex; align-items: center; gap: 4px; flex-shrink: 0">
+            <span id="dropdownToggleLabel" style="font-size: 12px; color: #C2410C; font-weight: 600">Xem từ</span>
+            <svg id="dropdownChevronIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C2410C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+        </button>
+
+        <!-- Dropdown body chứa danh sách chip từ vựng (Thu lên / Thả xuống) -->
+        <div id="wordsDropdownContent" style="display: none; padding: 0 14px 12px; border-top: 1px dashed #E5E7EB; padding-top: 10px" class="appear-anim">
+          <p style="margin: 0 0 8px; font-size: 12px; color: #6B7280">Ghép câu từ các từ vựng bạn đã chọn ở Bước 3:</p>
+          <div id="wordChipsList" style="display: flex; flex-wrap: wrap; gap: 6px">
+            <!-- Render tự động bởi JS -->
+          </div>
+        </div>
+
       </div>
-      <div style="font-size: 18px; line-height: 1.6; font-weight: 500">Switching to <span style="color: #C8102E; font-weight: 700">renewable</span> energy reduces air <span style="color: #C8102E; font-weight: 700">pollution</span> and protects the <span style="color: #C8102E; font-weight: 700">ecosystem</span>.</div>
-      <div style="font-size: 14px; line-height: 1.5; color: #4B5563">Chuyển sang năng lượng tái tạo giúp giảm ô nhiễm không khí và bảo vệ hệ sinh thái.</div>
+
+      <!-- Tab chọn: ĐẨY "Tôi tự đặt câu" LÊN TRƯỚC VÀ LÀM MẶC ĐỊNH -->
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); background: #E7E9EE; border-radius: 12px; padding: 4px; gap: 4px">
+        <button id="tabSelf" type="button" onclick="selectMode('self')" style="height: 40px; border: 0; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 700; color: #111827; box-shadow: 0 1px 3px rgba(17,24,39,0.12); cursor: pointer; transition: all 0.2s">Tôi tự đặt câu</button>
+        <button id="tabAi" type="button" onclick="selectMode('ai')" style="height: 40px; border: 0; border-radius: 8px; background: transparent; font-family: inherit; font-size: 14px; font-weight: 600; color: #4B5563; cursor: pointer; transition: all 0.2s">AI đặt cho tôi</button>
+      </div>
+
+      <!-- KHU VỰC 1 (MẶC ĐỊNH): TÔI TỰ ĐẶT CÂU -->
+      <div id="selfModePanel" style="display: flex; flex-direction: column; gap: 10px">
+        <div style="background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+          <label for="userSentenceInput" style="font-size: 13.5px; font-weight: 600; color: #111827">Nhập câu tiếng Anh của bạn:</label>
+          <textarea id="userSentenceInput" rows="3" placeholder="Nhập câu chứa ít nhất 1–2 từ vựng ở trên, ví dụ: Deforestation destroy natural habitat and cause pollution so we should recycle..." style="width: 100%; border: 1.5px solid #DDE1E8; border-radius: 10px; padding: 10px; font-family: inherit; font-size: 14px; resize: vertical; box-sizing: border-box; outline: none; background: #F9FAFB"></textarea>
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px">
+            <button type="button" onclick="fillExampleSentence()" style="border: 0; background: transparent; color: #C2410C; font-family: inherit; font-size: 12.5px; font-weight: 600; padding: 0; cursor: pointer; text-decoration: underline">
+              + Điền câu mẫu thử nghiệm
+            </button>
+            <span style="font-size: 12px; color: #6B7280">AI sẽ chấm & ghép đủ 8 từ</span>
+          </div>
+
+          <button id="btnGradeSentence" type="button" onclick="gradeUserSentence()" style="height: 44px; border: 0; border-radius: 10px; background: #0E6B42; color: #FFFFFF; font-family: inherit; font-size: 14.5px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            <span>Gửi câu để AI chấm & hoàn thiện 8 từ</span>
+          </button>
+        </div>
+
+        <!-- HỘP THÔNG BÁO KẾT QUẢ CHẤM CÂU: ĐỦ CẢ 8 TỪ VỰNG -->
+        <div id="gradeResultBox" style="display: none; background: #F0FDF4; border: 1.5px solid #86EFAC; border-radius: 14px; padding: 14px; flex-direction: column; gap: 10px" class="appear-anim">
+          <div style="display: flex; justify-content: space-between; align-items: center">
+            <span style="font-size: 13.5px; font-weight: 700; color: #166534; display: flex; align-items: center; gap: 6px">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              AI đã chấm & ghép đủ 8/8 từ vựng!
+            </span>
+            <span style="font-size: 12px; font-weight: 700; color: #15803D; background: #DCFCE7; padding: 3px 8px; border-radius: 999px">8/8 từ (100%)</span>
+          </div>
+
+          <!-- Câu 1: Câu người dùng tự đặt (AI sửa chuẩn) -->
+          <div style="background: #FFFFFF; border: 1.5px solid #BBF7D0; border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px">
+            <div style="display: flex; justify-content: space-between; align-items: center">
+              <span style="font-size: 12px; color: #15803D; font-weight: 700">CÂU 1 · CÂU BẠN ĐẶT (AI SỬA CHUẨN):</span>
+              <span style="font-size: 11px; color: #15803D; font-weight: 600; background: #DCFCE7; padding: 1px 6px; border-radius: 4px">4 từ</span>
+            </div>
+            <div style="font-size: 12px; color: #991B1B"><b>Trước khi sửa:</b> <span id="userOriginalSentence" style="text-decoration: line-through; opacity: 0.85"></span></div>
+            <div style="font-size: 13.5px; color: #166534; font-weight: 600; line-height: 1.45"><b>Sau khi AI sửa:</b> <span id="userCorrectedSentence"></span></div>
+            <div style="font-size: 12px; color: #6B7280" id="userCorrectedSentenceVi">
+              (Nạn phá rừng huỷ hoại môi trường sống tự nhiên và gây ra ô nhiễm, vì vậy chúng ta phải tái chế rác thải.)
+            </div>
+          </div>
+
+          <!-- Câu 2: AI ghép bổ sung cho 4 từ còn lại -->
+          <div style="background: #FFFFFF; border: 1.5px solid #FED7AA; border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px">
+            <div style="display: flex; justify-content: space-between; align-items: center">
+              <span style="font-size: 12px; color: #C2410C; font-weight: 700">CÂU 2 · AI BỔ SUNG CHO CÁC TỪ CÒN LẠI:</span>
+              <span style="font-size: 11px; color: #9A3412; font-weight: 600; background: #FFEDD5; padding: 1px 6px; border-radius: 4px">4 từ</span>
+            </div>
+            <div style="font-size: 13.5px; color: #9A3412; font-weight: 600; line-height: 1.45" id="userCompSentenceEn">
+              To <span class="vocab-hl">conserve</span> our <span class="vocab-hl">ecosystem</span>, we should adopt <span class="vocab-hl">sustainable</span> habits and use <span class="vocab-hl">renewable</span> energy.
+            </div>
+            <div style="font-size: 12px; color: #6B7280" id="userCompSentenceVi">
+              (Để bảo tồn hệ sinh thái của chúng ta, chúng ta nên thực hành các thói quen bền vững và sử dụng năng lượng tái tạo.)
+            </div>
+          </div>
+
+          <!-- Nhận xét & Giải thích rõ ràng -->
+          <!-- <div style="font-size: 12.5px; color: #14532D; line-height: 1.45; background: #DCFCE7; padding: 8px 10px; border-radius: 8px">
+            💡 <b>Tổng kết:</b> Đã ghép thành công trọn vẹn <b>đủ cả 8/8 từ vựng</b> vào 2 câu trên. Hãy bấm Tiếp tục để luyện nghe nhé!
+          </div> -->
+
+          <!-- NÚT TIẾP TỤC ĐỂ NGƯỜI DÙNG BẤM QUA PHẦN 5 -->
+          <button type="button" onclick="continueToSection5('self')" style="height: 48px; border: 0; border-radius: 12px; background: #C2410C; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 14px rgba(194,65,12,0.25); margin-top: 2px">
+            <span>Tiếp tục: Luyện nghe 2 câu này (Đủ 8 từ)</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- KHU VỰC 2: AI ĐẶT CHO TÔI -->
+      <div id="aiModePanel" style="display: none; flex-direction: column; gap: 10px">
+        <div style="background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+          <div style="font-size: 13.5px; color: #4B5563; line-height: 1.45">
+            Mô hình AI sẽ tự động liên kết trọn vẹn 8 từ thành các câu ngữ cảnh tự nhiên, chuẩn văn phong IELTS.
+          </div>
+          <button id="btnAiGenerate" type="button" onclick="triggerAiGeneration()" style="height: 44px; border: 0; border-radius: 10px; background: #C2410C; color: #FFFFFF; font-family: inherit; font-size: 14.5px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"></path></svg>
+            <span>Bấm để AI tạo câu ngay (Ghép đủ 8 từ)</span>
+          </button>
+        </div>
+
+        <!-- HỘP THÔNG BÁO AI TẠO XONG: CÓ NÚT TIẾP TỤC ĐỂ QUA MỤC 5 -->
+        <div id="aiResultBox" style="display: none; background: #FFF7ED; border: 1.5px solid #FDBA74; border-radius: 14px; padding: 14px; flex-direction: column; gap: 10px" class="appear-anim">
+          <div style="display: flex; justify-content: space-between; align-items: center">
+            <span style="font-size: 13.5px; font-weight: 700; color: #9A3412; display: flex; align-items: center; gap: 6px">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9A3412" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              AI đã ghép xong 3 câu từ đủ 8 từ vựng!
+            </span>
+            <span style="font-size: 12px; font-weight: 700; color: #C2410C; background: #FFEDD5; padding: 3px 8px; border-radius: 999px">Đủ 8/8 từ (100%)</span>
+          </div>
+          <!-- Bảng kê 3 câu và các từ vựng -->
+          <div style="display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; color: #7C2D12">
+            <div style="background: #FFFFFF; border: 1px solid #FED7AA; border-radius: 8px; padding: 6px 10px">
+              <b>Câu 1 (3 từ):</b> <span style="color:#C2410C; font-weight:600">deforestation, habitat, conserve</span>
+            </div>
+            <div style="background: #FFFFFF; border: 1px solid #FED7AA; border-radius: 8px; padding: 6px 10px">
+              <b>Câu 2 (3 từ):</b> <span style="color:#C2410C; font-weight:600">renewable, pollution, ecosystem</span>
+            </div>
+            <div style="background: #FFFFFF; border: 1px solid #FED7AA; border-radius: 8px; padding: 6px 10px">
+              <b>Câu 3 (2 từ):</b> <span style="color:#C2410C; font-weight:600">sustainable, recycle</span>
+            </div>
+          </div>
+          <div style="font-size: 12.5px; color: #7C2D12; line-height: 1.45">
+            Cả 8 từ vựng đã được ghép trọn vẹn vào 3 câu ngữ cảnh chuẩn IELTS. Hãy bấm tiếp tục để luyện nghe song song nhé!
+          </div>
+          <!-- NÚT TIẾP TỤC SANG MỤC 5 -->
+          <button type="button" onclick="continueToSection5('ai')" style="height: 48px; border: 0; border-radius: 12px; background: #C2410C; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 14px rgba(194,65,12,0.25); margin-top: 2px">
+            <span>Tiếp tục: Luyện nghe 3 câu này (Đủ 8 từ)</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Trạng thái AI loading khi đang xử lý câu -->
+      <div id="aiLoadingBox" style="display: none; background: #FFF7ED; border: 1px solid #FED7AA; border-radius: 12px; padding: 10px 14px; align-items: center; justify-content: space-between; font-size: 13px; color: #C2410C; font-weight: 600">
+        <span id="aiLoadingText" style="display: flex; align-items: center; gap: 6px">
+          <span style="display: inline-block; width: 8px; height: 8px; border-radius: 999px; background: #C2410C; animation: pulseDot 1s infinite"></span>
+          AI đang phân tích câu...
+        </span>
+        <span style="font-size: 11.5px; color: #9A3412">GPT-4o</span>
+      </div>
     </div>
 
-    <div style="background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px">
-      <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: #C2410C"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C2410C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"></path></svg>AI đang ghép câu 3 với 2 từ còn lại…</div>
-      <div style="height: 14px; border-radius: 6px; background: #EEF0F4"></div>
-      <div style="height: 14px; width: 75%; border-radius: 6px; background: #EEF0F4"></div>
+    <!-- ==================== PHẦN 5: LUYỆN NGHE SONG SONG ==================== -->
+    <!-- Mặc định ẩn, CHỈ hiển thị sau khi người dùng bấm nút "Tiếp tục" ở hộp kết quả trên -->
+    <div id="section5" style="display: none; flex-direction: column; gap: 14px">
+      <!-- Tiêu đề mục 5 (Đã bỏ nút lặp lại và đoạn mô tả thừa) -->
+      <div style="display: flex; flex-direction: column; gap: 3px; border-top: 2px dashed #E5E7EB; padding-top: 16px">
+        <h2 style="margin: 0; font-size: 18.5px; font-weight: 700; display: flex; align-items: center; gap: 8px">
+          <span style="width: 24px; height: 24px; border-radius: 999px; background: #0E6B42; color: #FFFFFF; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0">5</span>
+          <span>Luyện nghe song song</span>
+        </h2>
+      </div>
+
+      <!-- Danh sách các thẻ câu Karaoke Song Ngữ -->
+      <div id="sentenceCardsContainer" style="display: flex; flex-direction: column; gap: 14px">
+        <!-- Render động bằng JavaScript -->
+      </div>
     </div>
+
   </main>
 
+  <!-- Footer -->
   <footer style="flex-shrink: 0; background: #FFFFFF; border-top: 1px solid #DDE1E8; padding: 8px 16px 20px; display: flex; flex-direction: column; gap: 4px">
-    <a href="M1Arrange.html" style="height: 52px; border-radius: 12px; background: #C2410C; color: #FFFFFF; font-size: 16px; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center">Luyện tập với 8 từ</a>
-    <button style="height: 40px; border: 0; background: transparent; color: #C2410C; font-family: inherit; font-size: 14px; font-weight: 600">Đặt lại câu khác (tốn 1 lượt AI)</button>
+    <a href="M1Arrange.html" style="height: 52px; border-radius: 12px; background: #C2410C; color: #FFFFFF; font-size: 16px; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center">Tiếp tục: Luyện ghép từ</a>
+    <button type="button" onclick="selectMode('ai'); triggerAiGeneration()" style="height: 40px; border: 0; background: transparent; color: #C2410C; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Đặt lại câu khác (tốn 1 lượt AI)</button>
   </footer>
-  <div id="mascot" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 310px; z-index: 5"></div>
+
+  <!-- Mascot Thầy Phúc (Lơ lửng bên phải, không che bài) -->
+  <div id="mascot" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 310px; z-index: 10"></div>
 </div>
+
 <script src="mascot.js"></script>
 <script>
-renderMascot(document.getElementById('mascot'), {
-  mood: 'thinking',
-  message: 'Để ý các từ màu đỏ, đó là từ mới của bạn đấy!'
-});
+// Dữ liệu 8 từ vựng đã chọn từ Bước 3
+var TARGET_WORDS = [
+  { key: 'deforestation', en: 'deforestation', vi: 'phá rừng' },
+  { key: 'habitat', en: 'habitat', vi: 'môi trường sống' },
+  { key: 'conserve', en: 'conserve', vi: 'bảo tồn' },
+  { key: 'renewable', en: 'renewable', vi: 'tái tạo' },
+  { key: 'pollution', en: 'pollution', vi: 'ô nhiễm' },
+  { key: 'ecosystem', en: 'ecosystem', vi: 'hệ sinh thái' },
+  { key: 'sustainable', en: 'sustainable', vi: 'bền vững' },
+  { key: 'recycle', en: 'recycle', vi: 'tái chế' }
+];
+
+// Highlight các từ vựng mục tiêu trong câu
+function highlightVocab(text) {
+  if (!text) return '';
+  var pattern = /\b(deforestation|habitats?|conserve[a-z]*|renewable|pollution[a-z]*|ecosystems?|sustainable|recycl[a-z]*)\b/gi;
+  return text.replace(pattern, function (m) {
+    return '<span class="vocab-hl">' + m + '</span>';
+  });
+}
+
+// Cập nhật trạng thái hiển thị 8 chip từ vựng
+function renderWordChips(usedKeys) {
+  usedKeys = usedKeys || [];
+  var container = document.getElementById('wordChipsList');
+  if (!container) return;
+  var html = '';
+  var count = 0;
+  TARGET_WORDS.forEach(function (w) {
+    var isDone = usedKeys.indexOf(w.key) !== -1;
+    if (isDone) count++;
+    html += '<span class="word-chip ' + (isDone ? 'chip-done' : 'chip-pending') + '">';
+    html += (isDone ? '✓ ' : '') + '<b>' + w.en + '</b> <span style="font-size:11px;opacity:0.85">(' + w.vi + ')</span>';
+    html += '</span>';
+  });
+  container.innerHTML = html;
+
+  var statusBadge = document.getElementById('wordTrackerStatus');
+  if (statusBadge) {
+    if (count === 8) {
+      statusBadge.textContent = '✓ Đã ghép đủ 8/8 từ';
+      statusBadge.style.background = '#DCFCE7';
+      statusBadge.style.color = '#15803D';
+      statusBadge.style.border = '1px solid #86EFAC';
+    } else if (count > 0) {
+      statusBadge.textContent = 'Đã ghép ' + count + '/8 từ';
+      statusBadge.style.background = '#FEF3C7';
+      statusBadge.style.color = '#92400E';
+      statusBadge.style.border = '1px solid #FCD34D';
+    } else {
+      statusBadge.textContent = 'Chưa ghép (0/8)';
+      statusBadge.style.background = '#F3F4F6';
+      statusBadge.style.color = '#6B7280';
+      statusBadge.style.border = '1px solid #E5E7EB';
+    }
+  }
+}
+
+// ==================== BẬT / TẮT DROPDOWN THU LÊN THẢ XUỐNG ====================
+function toggleWordsDropdown() {
+  var content = document.getElementById('wordsDropdownContent');
+  var chevron = document.getElementById('dropdownChevronIcon');
+  var label = document.getElementById('dropdownToggleLabel');
+  var btn = document.getElementById('btnToggleWordsDropdown');
+  if (!content) return;
+
+  var isHidden = content.style.display === 'none' || content.style.display === '';
+  if (isHidden) {
+    content.style.display = 'block';
+    if (chevron) chevron.style.transform = 'rotate(180deg)';
+    if (label) label.textContent = 'Thu gọn';
+    if (btn) btn.setAttribute('aria-expanded', 'true');
+  } else {
+    content.style.display = 'none';
+    if (chevron) chevron.style.transform = 'rotate(0deg)';
+    if (label) label.textContent = 'Xem từ';
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+  }
+}
+
+// Dữ liệu 3 câu mẫu của AI (chia nhỏ từng từ / cụm 1-2 từ ngắn, bao trọn 8 từ vựng)
+var ALL_AI_SENTENCES = [
+  {
+    id: 1,
+    tag: 'Câu 1 · Hệ sinh thái & rừng',
+    vocabBadge: 'deforestation, habitat, conserve (3 từ)',
+    fullTextEn: 'Deforestation destroys the natural habitat of many animals, so we must conserve forests.',
+    chunks: [
+      { id: 0, en: 'Deforestation', vi: 'Nạn phá rừng', duration: 750 },
+      { id: 1, en: 'destroys', vi: 'huỷ hoại', duration: 550 },
+      { id: 2, en: 'the natural', vi: 'tự nhiên', duration: 500 },
+      { id: 3, en: 'habitat', vi: 'môi trường sống', duration: 650 },
+      { id: 4, en: 'of many', vi: 'của nhiều', duration: 500 },
+      { id: 5, en: 'animals,', vi: 'loài động vật,', duration: 650 },
+      { id: 6, en: 'so we', vi: 'vì vậy chúng ta', duration: 500 },
+      { id: 7, en: 'must', vi: 'phải', duration: 450 },
+      { id: 8, en: 'conserve', vi: 'bảo tồn', duration: 650 },
+      { id: 9, en: 'forests.', vi: 'các khu rừng.', duration: 650 }
+    ]
+  },
+  {
+    id: 2,
+    tag: 'Câu 2 · Năng lượng & ô nhiễm',
+    vocabBadge: 'renewable, pollution, ecosystem (3 từ)',
+    fullTextEn: 'Switching to renewable energy reduces air pollution and protects the ecosystem.',
+    chunks: [
+      { id: 0, en: 'Switching to', vi: 'Chuyển sang', duration: 650 },
+      { id: 1, en: 'renewable', vi: 'tái tạo', duration: 650 },
+      { id: 2, en: 'energy', vi: 'năng lượng', duration: 550 },
+      { id: 3, en: 'reduces', vi: 'giúp giảm', duration: 550 },
+      { id: 4, en: 'air', vi: 'không khí', duration: 450 },
+      { id: 5, en: 'pollution', vi: 'ô nhiễm', duration: 700 },
+      { id: 6, en: 'and', vi: 'và', duration: 400 },
+      { id: 7, en: 'protects', vi: 'bảo vệ', duration: 550 },
+      { id: 8, en: 'the ecosystem.', vi: 'hệ sinh thái.', duration: 750 }
+    ]
+  },
+  {
+    id: 3,
+    tag: 'Câu 3 · Bền vững & tái chế',
+    vocabBadge: 'sustainable, recycle (2 từ)',
+    fullTextEn: 'Adopting sustainable habits and recycling waste help preserve our natural habitats.',
+    chunks: [
+      { id: 0, en: 'Adopting', vi: 'Thực hành', duration: 650 },
+      { id: 1, en: 'sustainable', vi: 'bền vững', duration: 700 },
+      { id: 2, en: 'habits', vi: 'các thói quen', duration: 600 },
+      { id: 3, en: 'and recycling', vi: 'và tái chế', duration: 750 },
+      { id: 4, en: 'waste', vi: 'rác thải', duration: 550 },
+      { id: 5, en: 'help', vi: 'giúp', duration: 450 },
+      { id: 6, en: 'preserve', vi: 'gìn giữ', duration: 550 },
+      { id: 7, en: 'our natural', vi: 'tự nhiên', duration: 600 },
+      { id: 8, en: 'habitats.', vi: 'môi trường sống.', duration: 750 }
+    ]
+  }
+];
+
+var CURRENT_DISPLAY_SENTENCES = [];
+var currentMode = 'self'; // Mặc định là 'self' (Tôi tự đặt câu)
+var isLoopMode = false;
+var activePlayingSentenceId = null;
+var activeChunkTimer = null;
+var currentAiCredits = 2;
+
+// 1. Chuyển đổi giữa 2 chế độ: Tôi tự đặt câu vs AI đặt cho tôi
+function selectMode(mode) {
+  currentMode = mode;
+  var tabSelf = document.getElementById('tabSelf');
+  var tabAi = document.getElementById('tabAi');
+  var panelSelf = document.getElementById('selfModePanel');
+  var panelAi = document.getElementById('aiModePanel');
+
+  if (mode === 'self') {
+    tabSelf.style.background = '#FFFFFF';
+    tabSelf.style.fontWeight = '700';
+    tabSelf.style.color = '#111827';
+    tabSelf.style.boxShadow = '0 1px 3px rgba(17,24,39,0.12)';
+    tabAi.style.background = 'transparent';
+    tabAi.style.fontWeight = '600';
+    tabAi.style.color = '#4B5563';
+    tabAi.style.boxShadow = 'none';
+
+    panelSelf.style.display = 'flex';
+    panelAi.style.display = 'none';
+
+    renderMascot(document.getElementById('mascot'), {
+      mood: 'idle',
+      message: 'Hãy thử gõ câu tiếng Anh có từ vựng ở trên, AI sẽ chấm và ghép nốt các từ còn lại cho bạn!'
+    });
+  } else {
+    tabAi.style.background = '#FFFFFF';
+    tabAi.style.fontWeight = '700';
+    tabAi.style.color = '#111827';
+    tabAi.style.boxShadow = '0 1px 3px rgba(17,24,39,0.12)';
+    tabSelf.style.background = 'transparent';
+    tabSelf.style.fontWeight = '600';
+    tabSelf.style.color = '#4B5563';
+    tabSelf.style.boxShadow = 'none';
+
+    panelAi.style.display = 'flex';
+    panelSelf.style.display = 'none';
+
+    renderMascot(document.getElementById('mascot'), {
+      mood: 'idle',
+      message: 'Bấm nút "Tạo câu ngay" để AI ghép đủ 8 từ thành các câu mẫu chuẩn IELTS nhé!'
+    });
+  }
+}
+
+// 2. Điền câu mẫu cho chế độ tự đặt
+function fillExampleSentence() {
+  document.getElementById('userSentenceInput').value = 'Deforestation destroy natural habitat and cause pollution so we should recycle.';
+}
+
+// 3. AI Chấm câu của người dùng & ghép thêm câu cho các từ còn lại để ĐỦ 8 TỪ
+function gradeUserSentence() {
+  var text = document.getElementById('userSentenceInput').value.trim();
+  if (!text) {
+    alert('Vui lòng nhập một câu tiếng Anh của bạn trước nhé!');
+    return;
+  }
+
+  showAiLoading('AI đang chấm ngữ pháp & ghép nối các từ còn lại...');
+  document.getElementById('gradeResultBox').style.display = 'none';
+
+  setTimeout(function () {
+    hideAiLoading();
+
+    // Điền câu gốc và câu sửa vào hộp kết quả
+    document.getElementById('userOriginalSentence').textContent = text;
+    var corrected = 'Deforestation destroys the natural habitat and causes pollution, so we must recycle waste.';
+    document.getElementById('userCorrectedSentence').innerHTML = highlightVocab(corrected);
+    var viEl = document.getElementById('userCorrectedSentenceVi');
+    if (viEl) viEl.textContent = '(Nạn phá rừng huỷ hoại môi trường sống tự nhiên và gây ra ô nhiễm, vì vậy chúng ta phải tái chế rác thải.)';
+
+    // Hiển thị hộp chấm điểm (người dùng xem kết quả tại chỗ)
+    var gradeBox = document.getElementById('gradeResultBox');
+    gradeBox.style.display = 'flex';
+
+    // CẢ 2 CÂU BAO QUÁT TRỌN VẸN ĐỦ 8/8 TỪ VỰNG:
+    // Câu 1: deforestation, habitat, pollution, recycle (4 từ)
+    // Câu 2: conserve, ecosystem, sustainable, renewable (4 từ)
+    CURRENT_DISPLAY_SENTENCES = [
+      {
+        id: 1,
+        tag: 'Câu 1 · Bạn tự đặt (AI sửa chuẩn)',
+        vocabBadge: 'deforestation, habitat, pollution, recycle (4 từ)',
+        fullTextEn: corrected,
+        chunks: [
+          { id: 0, en: 'Deforestation', vi: 'Nạn phá rừng', duration: 750 },
+          { id: 1, en: 'destroys', vi: 'huỷ hoại', duration: 550 },
+          { id: 2, en: 'the natural', vi: 'tự nhiên', duration: 500 },
+          { id: 3, en: 'habitat', vi: 'môi trường sống', duration: 650 },
+          { id: 4, en: 'and causes', vi: 'và gây ra', duration: 550 },
+          { id: 5, en: 'pollution,', vi: 'ô nhiễm,', duration: 700 },
+          { id: 6, en: 'so we', vi: 'vì vậy chúng ta', duration: 500 },
+          { id: 7, en: 'must', vi: 'phải', duration: 450 },
+          { id: 8, en: 'recycle', vi: 'tái chế', duration: 650 },
+          { id: 9, en: 'waste.', vi: 'rác thải.', duration: 600 }
+        ]
+      },
+      {
+        id: 2,
+        tag: 'Câu 2 · AI bổ sung để đủ 8 từ',
+        vocabBadge: 'conserve, ecosystem, sustainable, renewable (4 từ)',
+        fullTextEn: 'To conserve our ecosystem, we should adopt sustainable habits and use renewable energy.',
+        chunks: [
+          { id: 0, en: 'To conserve', vi: 'Để bảo tồn', duration: 650 },
+          { id: 1, en: 'our', vi: 'của chúng ta', duration: 450 },
+          { id: 2, en: 'ecosystem,', vi: 'hệ sinh thái,', duration: 750 },
+          { id: 3, en: 'we should', vi: 'chúng ta nên', duration: 550 },
+          { id: 4, en: 'adopt', vi: 'thực hành', duration: 550 },
+          { id: 5, en: 'sustainable', vi: 'bền vững', duration: 700 },
+          { id: 6, en: 'habits', vi: 'thói quen', duration: 550 },
+          { id: 7, en: 'and use', vi: 'và sử dụng', duration: 500 },
+          { id: 8, en: 'renewable', vi: 'tái tạo', duration: 700 },
+          { id: 9, en: 'energy.', vi: 'năng lượng.', duration: 650 }
+        ]
+      }
+    ];
+
+    // Cập nhật thanh tiến độ: Đủ 8/8 từ (100%)
+    var allKeys = TARGET_WORDS.map(function (w) { return w.key; });
+    renderWordChips(allKeys);
+
+    // Cuộn nhẹ để thấy trọn vẹn kết quả chấm
+    gradeBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    // Thầy Phúc nhắc xem nhận xét và bấm Tiếp tục
+    renderMascot(document.getElementById('mascot'), {
+      mood: 'happy',
+      message: 'AI đã chấm câu của bạn và bổ sung thêm Câu 2 để ghép trọn vẹn đủ cả 8/8 từ vựng rồi nhé!'
+    });
+  }, 1100);
+}
+
+// 4. AI tạo thẳng các câu (Bao quát trọn vẹn cả 8 từ vựng)
+function triggerAiGeneration() {
+  showAiLoading('AI đang kết nối 8 từ thành các câu ngữ cảnh IELTS...');
+  document.getElementById('aiResultBox').style.display = 'none';
+
+  if (currentAiCredits > 0) {
+    currentAiCredits--;
+    document.getElementById('aiCredits').textContent = 'Còn ' + currentAiCredits + ' lượt AI';
+  }
+
+  setTimeout(function () {
+    hideAiLoading();
+    CURRENT_DISPLAY_SENTENCES = ALL_AI_SENTENCES;
+
+    // Cập nhật thanh tiến độ: Đủ 8/8 từ (100%)
+    var allKeys = TARGET_WORDS.map(function (w) { return w.key; });
+    renderWordChips(allKeys);
+
+    var aiBox = document.getElementById('aiResultBox');
+    aiBox.style.display = 'flex';
+    aiBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    renderMascot(document.getElementById('mascot'), {
+      mood: 'happy',
+      message: 'AI đã ghép đủ 8/8 từ vào 3 câu hoàn chỉnh! Hãy bấm Tiếp tục để bắt đầu luyện nghe.'
+    });
+  }, 1100);
+}
+
+// 5. Bấm nút "Tiếp tục" ở hộp thông báo -> Mới trượt ra Mục 5: Luyện nghe song song
+function continueToSection5(fromSource) {
+  var count = CURRENT_DISPLAY_SENTENCES.length;
+  var msg = (fromSource === 'self')
+    ? 'Tuyệt vời! Bây giờ bạn hãy bấm vào nút Nghe ở mục 5 để luyện nghe 2 câu đã ghép đủ 8 từ nhé!'
+    : 'Tuyệt vời! Bây giờ bạn hãy bấm vào nút Nghe ở mục 5 để luyện nghe 3 câu đã ghép đủ 8 từ nhé!';
+
+  var sec5 = document.getElementById('section5');
+  sec5.style.display = 'flex';
+  sec5.classList.add('appear-anim');
+
+  renderSentenceCards();
+
+  // Scroll mượt xuống Mục 5
+  setTimeout(function () {
+    sec5.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 80);
+
+  // Thầy Phúc chúc mừng & đọc voice
+  renderMascot(document.getElementById('mascot'), {
+    mood: 'cheer',
+    message: msg
+  });
+  speakMascotText(msg, document.querySelector('[data-mascot-avatar]'));
+}
+
+function showAiLoading(msg) {
+  var box = document.getElementById('aiLoadingBox');
+  document.getElementById('aiLoadingText').innerHTML = '<span style="display:inline-block;width:8px;height:8px;border-radius:999px;background:#C2410C;animation:pulseDot 1s infinite"></span> ' + msg;
+  box.style.display = 'flex';
+}
+
+function hideAiLoading() {
+  document.getElementById('aiLoadingBox').style.display = 'none';
+}
+
+// 6. Render các thẻ câu Karaoke Song Ngữ (Khởi tạo ẩn, voice đến đâu hiện từ song song đến đấy)
+function renderSentenceCards() {
+  var container = document.getElementById('sentenceCardsContainer');
+  if (!container) return;
+  var html = '';
+
+  CURRENT_DISPLAY_SENTENCES.forEach(function (sentence) {
+    html += '<div id="card_s_' + sentence.id + '" style="background: #FFFFFF; border: 1.5px solid #DDE1E8; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 2px 6px rgba(17,24,39,0.04); transition: border-color 0.2s">';
+    
+    // Header thẻ câu: Tag + Nút Nghe
+    html += '<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px">';
+    html += '<span style="font-size: 12px; font-weight: 700; color: #C2410C; background: #FFEDD5; border-radius: 999px; padding: 3px 12px; display: inline-block; width: fit-content">' + sentence.tag + '</span>';
+    html += '<button id="btn_play_' + sentence.id + '" type="button" onclick="playKaraokeSentence(' + sentence.id + ')" style="height: 36px; border: 0; border-radius: 999px; background: #C2410C; color: #FFFFFF; font-family: inherit; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; padding: 0 14px; cursor: pointer; transition: all 0.2s; flex-shrink: 0">';
+    html += '<svg width="14" height="14" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M7 5v14l11-7z"></path></svg>Nghe';
+    html += '</button>';
+    html += '</div>';
+
+    // Dòng tiếng Anh (Khởi tạo ẩn, voice đọc đến đâu hiện chữ đến đó)
+    html += '<div id="line_en_' + sentence.id + '" style="font-size: 15.5px; line-height: 1.6; font-weight: 500; color: #111827; min-height: 48px">';
+    html += '<div id="placeholder_en_' + sentence.id + '" style="font-size: 13.5px; color: #94A3B8; font-style: italic; display: flex; align-items: center; gap: 6px; padding: 4px 0">';
+    html += '<svg width="15" height="15" viewBox="0 0 24 24" fill="#94A3B8"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg>';
+    html += 'Bấm nút "Nghe" để voice chạy & hiện từ song song...</div>';
+    sentence.chunks.forEach(function (chunk) {
+      html += '<span class="chunk-en chunk-hidden" id="chunk_en_' + sentence.id + '_' + chunk.id + '" onclick="playSingleChunk(' + sentence.id + ',' + chunk.id + ')">' + highlightVocab(chunk.en) + '</span> ';
+    });
+    html += '</div>';
+
+    // Dòng tiếng Việt song song (Khởi tạo ẩn, voice đọc đến đâu hiện nghĩa đồng thời đến đó)
+    html += '<div id="line_vi_' + sentence.id + '" style="font-size: 13.5px; line-height: 1.5; color: #4B5563; background: #F9FAFB; padding: 8px 10px; border-radius: 10px; border-left: 3px solid #DDE1E8; min-height: 38px">';
+    html += '<div id="placeholder_vi_' + sentence.id + '" style="font-size: 12.5px; color: #9CA3AF; font-style: italic">Nghĩa tiếng Việt xuất hiện đồng thời theo giọng đọc...</div>';
+    sentence.chunks.forEach(function (chunk) {
+      html += '<span class="chunk-vi chunk-hidden" id="chunk_vi_' + sentence.id + '_' + chunk.id + '" onclick="playSingleChunk(' + sentence.id + ',' + chunk.id + ')">' + chunk.vi + '</span> ';
+    });
+    html += '</div>';
+
+    html += '</div>';
+  });
+
+  container.innerHTML = html;
+}
+
+// 7. Karaoke Song Ngữ: Voice đến đâu, hiển thị song song Anh - Việt đến đấy
+function playKaraokeSentence(sentenceId) {
+  var sentence = CURRENT_DISPLAY_SENTENCES.find(function (s) { return s.id === sentenceId; });
+  if (!sentence) return;
+
+  // Nếu đang phát câu này thì bấm để dừng
+  if (activePlayingSentenceId === sentenceId) {
+    stopCurrentPlayback();
+    return;
+  }
+
+  // Dừng phát câu trước nếu có
+  stopCurrentPlayback();
+  activePlayingSentenceId = sentenceId;
+
+  // Cập nhật giao diện nút bấm sang "Đang đọc..."
+  var playBtn = document.getElementById('btn_play_' + sentenceId);
+  if (playBtn) {
+    playBtn.innerHTML = '<span style="display:inline-flex;gap:3px;align-items:center;margin-right:2px">' +
+      '<span style="width:3px;height:7px;background:#FFF;border-radius:2px;animation:waveBar 0.8s infinite"></span>' +
+      '<span style="width:3px;height:13px;background:#FFF;border-radius:2px;animation:waveBar 0.8s 0.2s infinite"></span>' +
+      '<span style="width:3px;height:9px;background:#FFF;border-radius:2px;animation:waveBar 0.8s 0.4s infinite"></span>' +
+      '</span>Đang đọc…';
+    playBtn.style.background = '#0E6B42';
+  }
+
+  // Tô viền thẻ câu đang phát
+  var cardEl = document.getElementById('card_s_' + sentenceId);
+  if (cardEl) cardEl.style.borderColor = '#0E6B42';
+
+  // Ẩn placeholder hướng dẫn
+  var phEn = document.getElementById('placeholder_en_' + sentenceId);
+  var phVi = document.getElementById('placeholder_vi_' + sentenceId);
+  if (phEn) phEn.style.display = 'none';
+  if (phVi) phVi.style.display = 'none';
+
+  // Reset toàn bộ các chunk về trạng thái ẩn để hiển thị từ đầu theo voice
+  sentence.chunks.forEach(function (chunk) {
+    var enEl = document.getElementById('chunk_en_' + sentenceId + '_' + chunk.id);
+    var viEl = document.getElementById('chunk_vi_' + sentenceId + '_' + chunk.id);
+    if (enEl) enEl.className = 'chunk-en chunk-hidden';
+    if (viEl) viEl.className = 'chunk-vi chunk-hidden';
+  });
+
+  // Trình tự hiển thị song song từng cụm theo giọng đọc
+  var currentChunkIdx = 0;
+
+  function streamNextChunk() {
+    if (activePlayingSentenceId !== sentenceId) return;
+
+    if (currentChunkIdx < sentence.chunks.length) {
+      var chunk = sentence.chunks[currentChunkIdx];
+
+      // Bỏ trạng thái speaking của chunk trước đó (nhưng vẫn giữ hiển thị)
+      if (currentChunkIdx > 0) {
+        var prevChunk = sentence.chunks[currentChunkIdx - 1];
+        var prevEn = document.getElementById('chunk_en_' + sentenceId + '_' + prevChunk.id);
+        var prevVi = document.getElementById('chunk_vi_' + sentenceId + '_' + prevChunk.id);
+        if (prevEn) prevEn.classList.remove('chunk-speaking');
+        if (prevVi) prevVi.classList.remove('chunk-speaking');
+      }
+
+      // Hiển thị đồng thời cả tiếng Anh và tiếng Việt cho cụm hiện tại theo giọng đọc
+      var enEl = document.getElementById('chunk_en_' + sentenceId + '_' + chunk.id);
+      var viEl = document.getElementById('chunk_vi_' + sentenceId + '_' + chunk.id);
+      if (enEl) {
+        enEl.classList.remove('chunk-hidden');
+        enEl.classList.add('chunk-revealed', 'chunk-speaking');
+      }
+      if (viEl) {
+        viEl.classList.remove('chunk-hidden');
+        viEl.classList.add('chunk-revealed', 'chunk-speaking');
+      }
+
+      currentChunkIdx++;
+      activeChunkTimer = setTimeout(streamNextChunk, chunk.duration);
+    } else {
+      // Đã phát và hiển thị xong trọn vẹn cả câu
+      if (sentence.chunks.length > 0) {
+        var lastChunk = sentence.chunks[sentence.chunks.length - 1];
+        var lastEn = document.getElementById('chunk_en_' + sentenceId + '_' + lastChunk.id);
+        var lastVi = document.getElementById('chunk_vi_' + sentenceId + '_' + lastChunk.id);
+        if (lastEn) lastEn.classList.remove('chunk-speaking');
+        if (lastVi) lastVi.classList.remove('chunk-speaking');
+      }
+
+      activePlayingSentenceId = null;
+      if (playBtn) {
+        playBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"></path><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>Nghe lại';
+        playBtn.style.background = '#C2410C';
+      }
+      if (cardEl) cardEl.style.borderColor = '#DDE1E8';
+    }
+  }
+
+  // Bắt đầu đọc audio câu tiếng Anh
+  speakFullText(sentence.fullTextEn);
+  streamNextChunk();
+}
+
+// 8. Đọc riêng 1 từ / cụm khi người dùng click vào từ đó sau khi đã hiển thị
+function playSingleChunk(sentenceId, chunkId) {
+  var sentence = CURRENT_DISPLAY_SENTENCES.find(function (s) { return s.id === sentenceId; });
+  if (!sentence) return;
+  var chunk = sentence.chunks.find(function (c) { return c.id === chunkId; });
+  if (!chunk) return;
+
+  stopCurrentPlayback();
+
+  document.querySelectorAll('[id^="chunk_en_' + sentenceId + '_"], [id^="chunk_vi_' + sentenceId + '_"]').forEach(function (el) {
+    el.classList.remove('chunk-speaking');
+  });
+
+  var enEl = document.getElementById('chunk_en_' + sentenceId + '_' + chunk.id);
+  var viEl = document.getElementById('chunk_vi_' + sentenceId + '_' + chunk.id);
+  if (enEl) enEl.classList.add('chunk-speaking');
+  if (viEl) viEl.classList.add('chunk-speaking');
+
+  var wordToSpeak = chunk.en.replace(/[.,!?;:]/g, '').trim();
+  speakFullText(wordToSpeak, function () {
+    if (enEl) enEl.classList.remove('chunk-speaking');
+    if (viEl) viEl.classList.remove('chunk-speaking');
+  });
+}
+
+function stopCurrentPlayback() {
+  if (activeChunkTimer) {
+    clearTimeout(activeChunkTimer);
+    activeChunkTimer = null;
+  }
+  if (window.speechSynthesis) {
+    window.speechSynthesis.cancel();
+  }
+  if (activePlayingSentenceId) {
+    var prevId = activePlayingSentenceId;
+    activePlayingSentenceId = null;
+
+    document.querySelectorAll('[id^="chunk_en_' + prevId + '_"], [id^="chunk_vi_' + prevId + '_"]').forEach(function (el) {
+      el.classList.remove('chunk-speaking');
+    });
+
+    var playBtn = document.getElementById('btn_play_' + prevId);
+    if (playBtn) {
+      playBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"></path><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>Nghe lại';
+      playBtn.style.background = '#C2410C';
+    }
+    var cardEl = document.getElementById('card_s_' + prevId);
+    if (cardEl) cardEl.style.borderColor = '#DDE1E8';
+  }
+}
+
+function speakFullText(text, onEndCallback) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+
+  var utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'en-US';
+  utterance.rate = 0.88; // Tốc độ vừa phải, rõ từng âm tiết
+
+  var voices = window.speechSynthesis.getVoices();
+  var enVoice = null;
+  for (var i = 0; i < voices.length; i++) {
+    if (voices[i].lang && voices[i].lang.indexOf('en') === 0) {
+      enVoice = voices[i];
+      break;
+    }
+  }
+  if (enVoice) utterance.voice = enVoice;
+
+  if (onEndCallback) {
+    utterance.onend = onEndCallback;
+    utterance.onerror = onEndCallback;
+  }
+
+  window.speechSynthesis.speak(utterance);
+}
+
+// 9. Bật / Tắt chế độ nghe lặp lại vô tận
+function toggleLoopMode() {
+  isLoopMode = !isLoopMode;
+  var btn = document.getElementById('btnLoopToggle');
+  var label = document.getElementById('loopLabel');
+  if (btn && label) {
+    if (isLoopMode) {
+      btn.style.background = '#E6F4EC';
+      btn.style.borderColor = '#0E6B42';
+      btn.style.color = '#0E6B42';
+      label.textContent = 'Lặp lại: BẬT';
+    } else {
+      btn.style.background = '#FFFFFF';
+      btn.style.borderColor = '#DDE1E8';
+      btn.style.color = '#4B5563';
+      label.textContent = 'Lặp lại: Tắt';
+    }
+  }
+}
+
+// Khởi chạy ban đầu: Chế độ "Tôi tự đặt câu" làm mặc định
+selectMode('self');
+renderWordChips([]);
 </script>
 </body>
 </html>

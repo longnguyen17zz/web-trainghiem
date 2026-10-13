@@ -2,69 +2,259 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Trang chủ trải nghiệm</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>PPS VIETNAM - Trải nghiệm 3 Phương Pháp</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="style.css">
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0;
+    padding: 0;
+    background: #E2E8F0;
+    font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #0F172A;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+  }
+  .app-container {
+    width: 100%;
+    max-width: 420px;
+    min-height: 100vh;
+    background: #F8FAFC;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    box-shadow: 0 0 25px rgba(15, 23, 42, 0.08);
+  }
+  .fresh-card {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 22px;
+    min-height: 175px;
+    padding: 16px 18px;
+    position: relative;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center right;
+    background-repeat: no-repeat;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .fresh-card:active {
+    transform: scale(0.985);
+  }
+</style>
 </head>
 <body>
-<div style="width: 390px; max-width: 100%; height: 844px; margin: 0 auto; position: relative; display: flex; flex-direction: column; background: #F3F4F7; font-family: 'Be Vietnam Pro', sans-serif; color: #111827; overflow: hidden">
-  <header style="height: 56px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; background: #FFFFFF; border-bottom: 1px solid #DDE1E8">
+
+<div class="app-container">
+  <!-- HEADER SÁNG TRẮNG, MINT BADGE THÂN THIỆN -->
+  <header style="height: 56px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; background: #FFFFFF; border-bottom: 1px solid #E2E8F0; position: sticky; top: 0; z-index: 40">
     <div style="display: flex; align-items: center; gap: 10px">
-      <img src="logo.png" alt="" style="width: 24px; height: 36px; object-fit: contain">
-      <span style="font-size: 17px; font-weight: 700; letter-spacing: 0.01em"><span style="color: #D92D20">PPS</span> <span style="color: #E8890C">VIETNAM</span></span>
+      <img src="logo.png" alt="PPS Logo" style="width: 24px; height: 34px; object-fit: contain">
+      <span style="font-size: 17px; font-weight: 800; letter-spacing: 0.01em">
+        <span style="color: #D92D20">PPS</span> <span style="color: #E8890C">VIETNAM</span>
+      </span>
     </div>
-    <span style="font-size: 12px; font-weight: 600; color: #C2410C; background: #FFEDD5; border-radius: 999px; padding: 6px 10px">Học thử miễn phí</span>
+    <span style="font-size: 12px; font-weight: 700; color: #15803D; background: #DCFCE7; border: 1px solid #BBF7D0; border-radius: 999px; padding: 4px 10px">
+      Học thử miễn phí
+    </span>
   </header>
 
-  <main style="flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 16px; padding-bottom: 104px">
-    <div style="position: relative; overflow: hidden; border-radius: 20px; padding: 20px 20px 22px; background: linear-gradient(135deg, #B42318 0%, #C2410C 70%, #D9620F 100%); color: #FFFFFF; display: flex; flex-direction: column; gap: 10px">
-      <img src="logo.png" alt="" style="position: absolute; right: -22px; bottom: -30px; width: 132px; opacity: 0.28">
-      <div style="font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase">Học thử cùng thầy Phúc</div>
-      <h1 style="margin: 0; font-size: 26px; line-height: 1.25; font-weight: 700; max-width: 290px">Thử 3 phương pháp học tiếng Anh, có AI kèm cặp</h1>
-      <p style="margin: 0; font-size: 15px; line-height: 1.5; max-width: 280px">Làm trong 3–5 phút, xem kết quả ngay. Không cần đăng ký để bắt đầu.</p>
+  <!-- NỘI DUNG CHÍNH TRÊN NỀN F8FAFC TƯƠI MÁT -->
+  <main style="flex: 1; padding: 14px 16px 100px; display: flex; flex-direction: column; gap: 14px">
+
+    <!-- HERO BANNER TƯƠI MÁT, TRẺ TRUNG, THÂN THIỆN -->
+    <div style="position: relative; overflow: hidden; border-radius: 20px; padding: 18px; background: linear-gradient(135deg, #ECFDF5 0%, #F0FDF4 50%, #F0F9FF 100%); border: 1.5px solid #A7F3D0; box-shadow: 0 4px 16px rgba(16, 185, 129, 0.08); display: flex; flex-direction: column; gap: 10px">
+      <img src="logo.png" alt="" style="position: absolute; right: -20px; bottom: -25px; width: 120px; opacity: 0.06; pointer-events: none">
+
+      <!-- Teacher Tag -->
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+        <div style="display: flex; align-items: center; gap: 8px; background: #FFFFFF; border: 1px solid #BBF7D0; padding: 3px 12px 3px 4px; border-radius: 999px; box-shadow: 0 1px 4px rgba(0,0,0,0.03)">
+          <img src="teacher.png" alt="Thầy Phúc" style="width: 26px; height: 26px; border-radius: 999px; object-fit: cover; border: 1.5px solid #10B981">
+          <span style="font-size: 11.5px; font-weight: 700; color: #15803D">HỌC THỬ CÙNG THẦY PHÚC</span>
+        </div>
+        <!-- <span style="font-size: 11px; font-weight: 700; color: #0284C7; background: #E0F2FE; border: 1px solid #BAE6FD; padding: 3px 9px; border-radius: 999px">AI Kèm Cặp</span> -->
+      </div>
+
+      <h1 style="margin: 0; font-size: 20px; line-height: 1.34; font-weight: 800; color: #0F172A">
+        Trải nghiệm 3 phương pháp tiếng Anh độc quyền PPS
+      </h1>
+
+      <p style="margin: 0; font-size: 13px; line-height: 1.48; color: #475569">
+        Làm trong 3–5 phút, nhận xét kết quả AI trực tiếp. Hoàn toàn miễn phí, không cần đăng ký tài khoản.
+      </p>
+
+      <!-- 3 Micro Tags tươi mát -->
+      <div style="display: flex; flex-wrap: wrap; gap: 6px; padding-top: 2px">
+        <!-- <span style="background: #FFFFFF; border: 1px solid #A7F3D0; color: #047857; padding: 3px 9px; border-radius: 8px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px">⚡ Chỉ 3–5 phút</span>
+        <span style="background: #FFFFFF; border: 1px solid #BAE6FD; color: #0369A1; padding: 3px 9px; border-radius: 8px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px">🎯 AI sửa lỗi tức thì</span>
+        <span style="background: #FFFFFF; border: 1px solid #FED7AA; color: #C2410C; padding: 3px 9px; border-radius: 8px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px">🎁 Tặng tài liệu</span> -->
+      </div>
     </div>
 
-    <div style="display: flex; flex-direction: column; gap: 12px">
-      <a href="M1Setup.html" style="text-decoration: none; color: #111827; background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 16px; padding: 16px; display: flex; gap: 14px; align-items: center">
-        <div style="width: 48px; height: 48px; flex-shrink: 0; border-radius: 12px; background: #FDECEE; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #C8102E">1</div>
-        <div style="flex: 1; display: flex; flex-direction: column; gap: 2px">
-          <div style="font-size: 16px; font-weight: 700">Ghép câu từ vựng</div>
-          <div style="font-size: 13px; line-height: 1.45; color: #4B5563">Nhớ 8–10 từ mới qua câu có nghĩa, nghe phát âm, luyện nghĩa</div>
-        </div>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
-      </a>
-      <a href="M2Writing.html" style="text-decoration: none; color: #111827; background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 16px; padding: 16px; display: flex; gap: 14px; align-items: center">
-        <div style="width: 48px; height: 48px; flex-shrink: 0; border-radius: 12px; background: #FFEDD5; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #C2410C">2</div>
-        <div style="flex: 1; display: flex; flex-direction: column; gap: 2px">
-          <div style="font-size: 16px; font-weight: 700">Chấm writing & nâng band</div>
-          <div style="font-size: 13px; line-height: 1.45; color: #4B5563">Viết 1 đoạn ngắn, AI chấm 1 khía cạnh ngữ pháp và viết lại chuẩn IELTS</div>
-        </div>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
-      </a>
-      <a href="M3Mindmap.html" style="text-decoration: none; color: #111827; background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 16px; padding: 16px; display: flex; gap: 14px; align-items: center">
-        <div style="width: 48px; height: 48px; flex-shrink: 0; border-radius: 12px; background: #E6F4EC; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #0E6B42">3</div>
-        <div style="flex: 1; display: flex; flex-direction: column; gap: 2px">
-          <div style="font-size: 16px; font-weight: 700">Phát triển ý</div>
-          <div style="font-size: 13px; line-height: 1.45; color: #4B5563">Trả lời 4 câu hỏi, AI hỏi tiếp bám theo ý của bạn</div>
-        </div>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
-      </a>
+    <!-- TIÊU ĐỀ PHẦN PHƯƠNG PHÁP -->
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 2px 2px 0">
+      <span style="font-size: 14.5px; font-weight: 800; color: #0F172A">Chọn 1 phương pháp để bắt đầu:</span>
+      <span style="font-size: 12px; font-weight: 700; color: #059669">3 nguyên tắc</span>
     </div>
 
-    <div style="background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 12px">
-      <div style="font-size: 15px; font-weight: 700">Trải nghiệm diễn ra thế nào?</div>
-      <div style="display: flex; gap: 12px; align-items: flex-start"><span style="width: 24px; height: 24px; flex-shrink: 0; border-radius: 999px; background: #F3F4F7; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center">1</span><span style="font-size: 14px; line-height: 1.5; color: #4B5563">Chọn phương pháp và làm theo từng bước</span></div>
-      <div style="display: flex; gap: 12px; align-items: flex-start"><span style="width: 24px; height: 24px; flex-shrink: 0; border-radius: 999px; background: #F3F4F7; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center">2</span><span style="font-size: 14px; line-height: 1.5; color: #4B5563">Xem kết quả AI ngay trên điện thoại</span></div>
-      <div style="display: flex; gap: 12px; align-items: flex-start"><span style="width: 24px; height: 24px; flex-shrink: 0; border-radius: 999px; background: #F3F4F7; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center">3</span><span style="font-size: 14px; line-height: 1.5; color: #4B5563">Muốn nhận full báo cáo và tài liệu? Để lại SĐT/email</span></div>
+    <!-- DANH SÁCH 3 CARD THEO PHONG CÁCH TƯƠI MÁT CỦA M1SETUP -->
+    <div style="display: flex; flex-direction: column; gap: 14px">
+
+      <!-- CARD 1: GHÉP CÂU TỪ VỰNG (CARD NỔI BẬT NHẤT - HÌNH card_home_m1.jpg ĐỒI HOA NẮNG VÀNG TƯƠI MÁT) -->
+      <a href="M1Setup.html" class="fresh-card" style="background-image: linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.90) 52%, rgba(255,255,255,0.25) 78%, rgba(255,255,255,0) 100%), url('card_home_m1.jpg'); border: 2px solid #059669; box-shadow: 0 4px 18px rgba(5, 150, 105, 0.12)">
+        <!-- Top Badges Row -->
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <span style="background: #DCFCE7; color: #15803D; border: 1px solid #86EFAC; font-size: 11px; font-weight: 700; border-radius: 999px; padding: 3px 10px; display: inline-flex; align-items: center; gap: 4px">
+            <span>🔥</span> NT 1 · ĐƯỢC CHỌN NHIỀU NHẤT
+          </span>
+          <span style="font-size: 11.5px; font-weight: 700; color: #059669; background: #FFFFFF; border: 1px solid #BBF7D0; padding: 2.5px 8px; border-radius: 999px">
+            ⏱ 3 phút
+          </span>
+        </div>
+
+        <!-- Content Area -->
+        <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 14px">
+          <div style="display: flex; align-items: center; justify-content: space-between">
+            <span style="font-size: 17px; font-weight: 800; color: #0F172A; letter-spacing: -0.01em">
+              Ghép câu từ vựng ngữ cảnh
+            </span>
+            <div style="width: 28px; height: 28px; border-radius: 999px; background: #059669; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3)">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
+            </div>
+          </div>
+
+          <div style="font-size: 12.5px; line-height: 1.45; color: #475569; max-width: 250px">
+            Nhớ 8–10 từ qua câu có nghĩa. AI sửa ngữ pháp, luyện phát âm voice song ngữ & nối nghĩa.
+          </div>
+
+          <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px">
+            <span style="font-size: 11px; color: #166534; background: #F0FDF4; border: 1px solid #BBF7D0; padding: 2.5px 8px; border-radius: 6px; font-weight: 600">✓ Chọn 8 từ</span>
+            <span style="font-size: 11px; color: #166534; background: #F0FDF4; border: 1px solid #BBF7D0; padding: 2.5px 8px; border-radius: 6px; font-weight: 600">✓ AI chấm câu</span>
+            <span style="font-size: 11px; color: #166534; background: #F0FDF4; border: 1px solid #BBF7D0; padding: 2.5px 8px; border-radius: 6px; font-weight: 600">✓ Luyện nghe voice</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- CARD 2: CHẤM WRITING & NÂNG BAND (HÌNH card_home_m2.jpg BAN CÔNG NẮNG ẤM & GÓC HỌC) -->
+      <a href="M2Writing.html" class="fresh-card" style="background-image: linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.90) 52%, rgba(255,255,255,0.25) 78%, rgba(255,255,255,0) 100%), url('card_home_m2.jpg'); border: 1.5px solid #E2E8F0; box-shadow: 0 2px 10px rgba(0,0,0,0.04)">
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <span style="background: #EEF2FF; color: #4338CA; border: 1px solid #C7D2FE; font-size: 11px; font-weight: 700; border-radius: 999px; padding: 3px 9px; display: inline-flex; align-items: center; gap: 4px">
+            <span>✍️</span> NT 2 · IELTS & GIAO TIẾP
+          </span>
+          <span style="font-size: 11.5px; font-weight: 700; color: #4338CA; background: #FFFFFF; border: 1px solid #C7D2FE; padding: 2.5px 8px; border-radius: 999px">
+            ⏱ 4 phút
+          </span>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 14px">
+          <div style="display: flex; align-items: center; justify-content: space-between">
+            <span style="font-size: 17px; font-weight: 800; color: #0F172A">
+              Chấm Writing & nâng band
+            </span>
+            <div style="width: 28px; height: 28px; border-radius: 999px; background: #F1F5F9; display: flex; align-items: center; justify-content: center">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
+            </div>
+          </div>
+
+          <div style="font-size: 12.5px; line-height: 1.45; color: #475569; max-width: 250px">
+            Viết 1 đoạn ngắn, AI phân tích lỗi ngữ pháp và viết lại câu chuẩn band cao hơn.
+          </div>
+
+          <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px">
+            <span style="font-size: 11px; color: #4338CA; background: #EEF2FF; border: 1px solid #C7D2FE; padding: 2.5px 8px; border-radius: 6px; font-weight: 600">✓ Tăng band 5.5 ➔ 7.0+</span>
+            <span style="font-size: 11px; color: #475569; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 2.5px 8px; border-radius: 6px; font-weight: 500">✓ Sửa lỗi ngữ pháp</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- CARD 3: PHÁT TRIỂN Ý SPEAKING / WRITING (HÌNH card_home_m3.jpg NHÀ KÍNH CÔNG VIÊN Ý TƯỞNG) -->
+      <a href="M3Mindmap.html" class="fresh-card" style="background-image: linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.90) 52%, rgba(255,255,255,0.25) 78%, rgba(255,255,255,0) 100%), url('card_home_m3.jpg'); border: 1.5px solid #E2E8F0; box-shadow: 0 2px 10px rgba(0,0,0,0.04)">
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <span style="background: #F0FDF4; color: #047857; border: 1px solid #A7F3D0; font-size: 11px; font-weight: 700; border-radius: 999px; padding: 3px 9px; display: inline-flex; align-items: center; gap: 4px">
+            <span>🧠</span> NT 3 · TƯ DUY LOGIC
+          </span>
+          <span style="font-size: 11.5px; font-weight: 700; color: #047857; background: #FFFFFF; border: 1px solid #A7F3D0; padding: 2.5px 8px; border-radius: 999px">
+            ⏱ 3 phút
+          </span>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 14px">
+          <div style="display: flex; align-items: center; justify-content: space-between">
+            <span style="font-size: 17px; font-weight: 800; color: #0F172A">
+              Phát triển ý Speaking / Writing
+            </span>
+            <div style="width: 28px; height: 28px; border-radius: 999px; background: #F1F5F9; display: flex; align-items: center; justify-content: center">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
+            </div>
+          </div>
+
+          <div style="font-size: 12.5px; line-height: 1.45; color: #475569; max-width: 250px">
+            Trả lời câu hỏi theo sơ đồ ý, AI đào sâu hỏi tiếp mở rộng luận điểm tự nhiên.
+          </div>
+
+          <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px">
+            <span style="font-size: 11px; color: #047857; background: #F0FDF4; border: 1px solid #A7F3D0; padding: 2.5px 8px; border-radius: 6px; font-weight: 600">✓ Sơ đồ ý Mindmap</span>
+            <span style="font-size: 11px; color: #475569; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 2.5px 8px; border-radius: 6px; font-weight: 500">✓ Luyện phản xạ</span>
+          </div>
+        </div>
+      </a>
+
     </div>
+
+    <!-- QUY TRÌNH TRẢI NGHIỆM 3 BƯỚC -->
+    <!-- <div style="background: #FFFFFF; border: 1.5px solid #E2E8F0; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.03)">
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <span style="font-size: 14px; font-weight: 800; color: #0F172A">Quy trình trải nghiệm 3 bước:</span>
+        <span style="font-size: 11px; color: #166534; font-weight: 700; background: #DCFCE7; padding: 2px 8px; border-radius: 999px">Dễ dàng & Nhanh</span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; gap: 12px; align-items: flex-start">
+          <div style="width: 28px; height: 28px; flex-shrink: 0; border-radius: 8px; background: #DCFCE7; color: #15803D; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center">1</div>
+          <div style="flex: 1">
+            <div style="font-size: 13px; font-weight: 700; color: #111827">Chọn phương pháp & làm theo hướng dẫn</div>
+            <div style="font-size: 12px; line-height: 1.45; color: #64748B">Chỉ mất 3 phút, có hướng dẫn spotlight từng bước rõ ràng.</div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; align-items: flex-start">
+          <div style="width: 28px; height: 28px; flex-shrink: 0; border-radius: 8px; background: #E0F2FE; color: #0284C7; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center">2</div>
+          <div style="flex: 1">
+            <div style="font-size: 13px; font-weight: 700; color: #111827">Xem kết quả AI phân tích tức thì</div>
+            <div style="font-size: 12px; line-height: 1.45; color: #64748B">AI chấm ngữ pháp, phát âm và chữa bài ngay trên điện thoại.</div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; align-items: flex-start">
+          <div style="width: 28px; height: 28px; flex-shrink: 0; border-radius: 8px; background: #EEF2FF; color: #4338CA; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center">3</div>
+          <div style="flex: 1">
+            <div style="font-size: 13px; font-weight: 700; color: #111827">Mở khóa full tài liệu nâng band độc quyền</div>
+            <div style="font-size: 12px; line-height: 1.45; color: #64748B">Nhận miễn phí bộ tài liệu độc quyền từ Thầy Phúc qua Zalo/Email.</div>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
   </main>
 
-  <footer style="flex-shrink: 0; background: #FFFFFF; border-top: 1px solid #DDE1E8; padding: 12px 16px 20px">
-    <a href="M1Setup.html" style="height: 52px; border-radius: 12px; background: #C2410C; color: #FFFFFF; font-size: 16px; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center">Bắt đầu với Phương pháp 1</a>
+  <!-- FOOTER CTA: MINT / EMERALD GREEN TƯƠI MÁT, ĐỒNG BỘ VỚI BƯỚC TIẾP THEO -->
+  <footer style="position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-top: 1px solid #E2E8F0; padding: 10px 16px 18px; display: flex; flex-direction: column; gap: 4px; box-shadow: 0 -4px 16px rgba(0,0,0,0.05); z-index: 50">
+    <!-- <a href="M1Setup.html" style="height: 48px; border-radius: 12px; background: #059669; color: #FFFFFF; font-size: 15.5px; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 14px rgba(5, 150, 105, 0.28)">
+      <span>Bắt đầu với Phương pháp 1</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+    </a> -->
+    <div style="font-size: 11px; color: #64748B; text-align: center; font-weight: 500">Hoàn toàn miễn phí · Không cần tài khoản</div>
   </footer>
-  <div id="mascot" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 310px; z-index: 5"></div>
+
+  <div id="mascot" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 310px; z-index: 5; pointer-events: none"></div>
 </div>
+
 <script src="mascot.js"></script>
 <script>
 renderMascot(document.getElementById('mascot'), {

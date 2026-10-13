@@ -26,7 +26,7 @@
     </div>
   </div>
 
-  <main style="flex: 1; overflow-y: auto; padding: 18px 16px 16px; display: flex; flex-direction: column; gap: 14px; padding-bottom: 60px">
+  <main style="flex: 1; overflow-y: auto; padding: 14px 16px 14px; display: flex; flex-direction: column; gap: 10px">
     <div style="display: flex; flex-direction: column; gap: 2px">
       <div style="font-size: 15px; font-weight: 700">Chạm từ tiếng Anh rồi chạm đúng nghĩa tiếng Việt</div>
       <div style="font-size: 12.5px; color: #4B5563">Chạm 1 thẻ bên trái, sau đó chạm thẻ nghĩa đúng bên phải để nối.</div>
@@ -37,8 +37,8 @@
       <span id="pct" style="font-size: 12px; font-weight: 600; color: #0E6B42; flex-shrink: 0">Đã nối 2/6</span>
     </div>
 
-    <div id="matchingBoard" style="position: relative; height: 396px">
-      <svg id="lines" width="358" height="396" style="position: absolute; left: 0; top: 0; pointer-events: none"></svg>
+    <div id="matchingBoard" style="position: relative; height: 472px">
+      <svg id="lines" width="358" height="472" style="position: absolute; left: 0; top: 0; pointer-events: none"></svg>
       <div id="leftCards" style="position: absolute; left: 0; top: 0; width: 150px"></div>
       <div id="rightCards" style="position: absolute; right: 0; top: 0; width: 150px"></div>
     </div>
@@ -95,7 +95,7 @@ var PAIRS = [
   { id: 'ecosystem', en: 'ecosystem', vi: 'hệ sinh thái' }
 ];
 var RIGHT_ORDER = ['pollution', 'habitat', 'conservation', 'deforestation', 'ecosystem', 'extinction'];
-var STEP = 68;
+var STEP = 82;
 var byId = {}; PAIRS.forEach(function (p) { byId[p.id] = p; });
 var leftIndex = {}; PAIRS.forEach(function (p, i) { leftIndex[p.id] = i; });
 var rightIndex = {}; RIGHT_ORDER.forEach(function (id, i) { rightIndex[id] = i; });
@@ -103,8 +103,8 @@ var rightIndex = {}; RIGHT_ORDER.forEach(function (id, i) { rightIndex[id] = i; 
 var connections = { habitat: 'habitat', deforestation: 'deforestation' };
 var selected = null;
 
-var baseLeft = 'position: absolute; left: 0; width: 150px; height: 52px; border-radius: 12px; font-family: inherit; font-size: 13.5px; font-weight: 600; display: flex; align-items: center; gap: 6px; padding: 0 10px; text-align: left; border: 0; cursor: pointer;';
-var baseRight = 'position: absolute; right: 0; width: 150px; height: 52px; border-radius: 12px; font-family: inherit; font-size: 13.5px; font-weight: 600; display: flex; align-items: center; padding: 0 12px; text-align: left; border: 0; cursor: pointer;';
+var baseLeft = 'position: absolute; left: 0; width: 150px; height: 58px; border-radius: 14px; font-family: inherit; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 6px; padding: 0 12px; text-align: left; border: 0; cursor: pointer; transition: all 0.15s ease; box-sizing: border-box;';
+var baseRight = 'position: absolute; right: 0; width: 150px; height: 58px; border-radius: 14px; font-family: inherit; font-size: 14px; font-weight: 600; display: flex; align-items: center; padding: 0 12px; text-align: left; border: 0; cursor: pointer; transition: all 0.15s ease; box-sizing: border-box;';
 var neutralStyle = 'border: 1.5px solid #BFD8F2; background: #EDF4FC; color: #1D4E89;';
 var correctStyle = 'border: 1.5px solid #B9E2C8; background: #E6F4EC; color: #0E6B42;';
 var wrongStyle = 'border: 1.5px solid #F3B4BD; background: #FDECEE; color: #A30D25;';
@@ -205,8 +205,8 @@ function render() {
     var rightId = connections[leftId];
     var isCorrect = leftId === rightId;
     var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.setAttribute('x1', 150); line.setAttribute('y1', leftIndex[leftId] * STEP + 26);
-    line.setAttribute('x2', 208); line.setAttribute('y2', rightIndex[rightId] * STEP + 26);
+    line.setAttribute('x1', 150); line.setAttribute('y1', leftIndex[leftId] * STEP + 29);
+    line.setAttribute('x2', 208); line.setAttribute('y2', rightIndex[rightId] * STEP + 29);
     line.setAttribute('stroke', allDone ? (isCorrect ? '#0E6B42' : '#C8102E') : '#9CA3AF');
     line.setAttribute('stroke-width', '2.5'); line.setAttribute('stroke-linecap', 'round');
     linesSvg.appendChild(line);

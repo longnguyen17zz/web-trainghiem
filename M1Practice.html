@@ -26,7 +26,7 @@
     </div>
   </div>
 
-  <main style="flex: 1; overflow-y: auto; padding: 18px 16px 16px; display: flex; flex-direction: column; gap: 14px; padding-bottom: 60px">
+  <main style="flex: 1; overflow-y: auto; padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px">
     <div style="display: flex; flex-direction: column; gap: 2px">
       <div style="font-size: 15px; font-weight: 700">Chạm từ tiếng Anh rồi chạm đúng nghĩa tiếng Việt</div>
       <div style="font-size: 12.5px; color: #4B5563">Chạm 1 thẻ bên trái, sau đó chạm thẻ nghĩa đúng bên phải để nối.</div>
@@ -44,15 +44,15 @@
     </div>
 
     <div id="feedback"></div>
-  </main>
 
-  <!-- Footer cố định ở đáy trang chứa nút Bước 10/10 (kể cả khi bấm X đóng popup vẫn không bị mất) -->
-  <footer id="bottomFooter" style="flex-shrink: 0; background: #FFFFFF; border-top: 1px solid #DDE1E8; padding: 10px 16px 20px; z-index: 10; box-shadow: 0 -2px 10px rgba(0,0,0,0.04)">
-    <a href="LeadSheet.html" style="height: 48px; border-radius: 12px; background: #C2410C; color: #FFFFFF; font-size: 15px; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 14px rgba(194,65,12,0.25)">
-      <span>Bước 10/10: Mở khóa nhận tài liệu & báo cáo</span>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
-    </a>
-  </footer>
+    <!-- Nút Bước 10/10 nằm sát ngay bên dưới bảng nối từ, không để khoảng trống thừa -->
+    <div style="margin-top: 6px; padding-bottom: 24px">
+      <a href="LeadSheet.html" style="height: 48px; border-radius: 12px; background: #C2410C; color: #FFFFFF; font-size: 15px; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 14px rgba(194,65,12,0.25)">
+        <span>Bước 10/10: Mở khóa nhận tài liệu & báo cáo</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+      </a>
+    </div>
+  </main>
 
   <div id="mascot" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 310px; z-index: 5"></div>
 

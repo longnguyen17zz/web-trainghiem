@@ -37,7 +37,7 @@
       <span id="pct" style="font-size: 12px; font-weight: 600; color: #0E6B42; flex-shrink: 0">Đã nối 2/6</span>
     </div>
 
-    <div style="position: relative; height: 396px">
+    <div id="matchingBoard" style="position: relative; height: 396px">
       <svg id="lines" width="358" height="396" style="position: absolute; left: 0; top: 0; pointer-events: none"></svg>
       <div id="leftCards" style="position: absolute; left: 0; top: 0; width: 150px"></div>
       <div id="rightCards" style="position: absolute; right: 0; top: 0; width: 150px"></div>
@@ -254,8 +254,8 @@ render();
 function startPracticeTour() {
   AppTour.start([
     {
-      target: '#leftCards',
-      padding: 10,
+      target: '#matchingBoard',
+      padding: 6,
       badge: 'Bước 9/10',
       title: 'Chạm từ nối nghĩa',
       desc: 'Chạm 1 thẻ tiếng Anh ở cột trái, rồi chạm thẻ nghĩa tiếng Việt tương ứng ở cột phải để kiểm tra trí nhớ từ vựng.',

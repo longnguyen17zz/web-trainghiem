@@ -114,7 +114,7 @@
   <main style="flex: 1; overflow-y: auto; padding: 18px 16px 16px; display: flex; flex-direction: column; gap: 18px; padding-bottom: 110px">
     
     <!-- ==================== PHẦN 4: NỐI 8 TỪ THÀNH CÂU ==================== -->
-    <div style="display: flex; flex-direction: column; gap: 12px">
+    <div id="sectionStep5" style="display: flex; flex-direction: column; gap: 12px">
       <!-- Tiêu đề mục 4 -->
       <div style="display: flex; flex-direction: column; gap: 4px">
         <h1 style="margin: 0; font-size: 18.5px; font-weight: 700; display: flex; align-items: center; gap: 8px">
@@ -866,9 +866,12 @@ renderWordChips([]);
 
 // ==================== TOUR ONBOARDING (BƯỚC 5 -> BƯỚC 7) ====================
 function startSentenceTour() {
+  var isGraded = document.getElementById('gradeResultBox') && document.getElementById('gradeResultBox').style.display !== 'none';
+  var step6Target = isGraded ? '#gradeResultBox' : '#btnGradeSentence';
+
   AppTour.start([
     {
-      target: '#selfModePanel',
+      target: '#sectionStep5',
       padding: 8,
       badge: 'Bước 5/10',
       title: 'Nối 8 từ thành câu (AI chấm)',
@@ -876,7 +879,7 @@ function startSentenceTour() {
       btnLabel: 'Tiếp theo ➔'
     },
     {
-      target: '#btnGradeSentence',
+      target: step6Target,
       padding: 8,
       badge: 'Bước 6/10',
       title: 'Check kết quả & AI hoàn thiện',

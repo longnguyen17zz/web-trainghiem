@@ -24,12 +24,15 @@
       <div style="font-size: 16px; line-height: 1.55">Deforestation destroys the natural <span style="color: #C8102E; font-weight: 700">habitat</span> of many animals, so we must <span style="color: #C8102E; font-weight: 700">conserve</span> forests.</div>
     </div>
 
-    <div style="display: flex; flex-direction: column; gap: 2px">
-      <div style="font-size: 15px; font-weight: 700">Xếp lại bản dịch tiếng Việt cho đúng</div>
+    <div style="display: flex; flex-direction: column; gap: 4px">
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <div style="font-size: 15px; font-weight: 700">Xếp lại bản dịch tiếng Việt cho đúng</div>
+        <span id="arrangeCounter" style="font-size: 12px; font-weight: 700; color: #C2410C; background: #FFEDD5; border-radius: 999px; padding: 2px 8px">2/10 từ</span>
+      </div>
       <div style="font-size: 12.5px; color: #4B5563">Đọc kỹ câu gốc bên trên, chạm từng từ bên dưới theo đúng thứ tự.</div>
     </div>
 
-    <div id="slots" style="background: #FFFFFF; border: 1.5px solid #DDE1E8; border-radius: 14px; padding: 12px; margin-right: 50px; display: flex; flex-wrap: wrap; gap: 8px; min-height: 92px; align-content: flex-start"></div>
+    <div id="slots" style="background: #FFFFFF; border: 1.5px solid #DDE1E8; border-radius: 14px; padding: 12px; margin-right: 50px; display: flex; flex-wrap: wrap; gap: 8px; min-height: 84px; align-content: flex-start; box-sizing: border-box"></div>
 
     <div id="feedback"></div>
 
@@ -72,37 +75,49 @@ var ORDER = ['c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10'];
 var POOL_ORDER = ['c7', 'c3', 'c9', 'c5', 'c8', 'c4', 'c10', 'c6'];
 var placed = ['c1', 'c2'];
 
-var slotBase = 'min-height: 38px; border-radius: 10px; font-family: inherit; font-size: 14px; font-weight: 600; padding: 7px 12px; display: flex; align-items: center; border: 0; cursor: pointer; transition: all 0.15s ease;';
-var poolBase = 'min-height: 40px; border-radius: 12px; font-family: inherit; font-size: 14px; font-weight: 600; padding: 8px 14px; border: 1.5px solid #DDE1E8; background: #FFFFFF; color: #111827; cursor: pointer; transition: all 0.15s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.04);';
+var slotBase = 'min-height: 38px; border-radius: 10px; font-family: inherit; font-size: 14px; font-weight: 600; padding: 7px 14px; display: inline-flex; align-items: center; border: 0; cursor: pointer; transition: all 0.15s ease; box-sizing: border-box;';
+var poolBase = 'min-height: 40px; border-radius: 12px; font-family: inherit; font-size: 14px; font-weight: 600; padding: 8px 14px; border: 1.5px solid #DDE1E8; background: #FFFFFF; color: #111827; cursor: pointer; transition: all 0.15s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.04); box-sizing: border-box;';
 
 function render() {
   var slotsEl = document.getElementById('slots');
   var poolEl = document.getElementById('pool');
   var feedbackEl = document.getElementById('feedback');
+  var counterEl = document.getElementById('arrangeCounter');
   var placedSet = {};
   placed.forEach(function (id) { placedSet[id] = true; });
 
+  if (counterEl) {
+    counterEl.textContent = placed.length + '/' + ORDER.length + ' từ';
+    if (placed.length === ORDER.length) {
+      counterEl.style.background = '#DCFCE7';
+      counterEl.style.color = '#15803D';
+    } else {
+      counterEl.style.background = '#FFEDD5';
+      counterEl.style.color = '#C2410C';
+    }
+  }
+
   slotsEl.innerHTML = '';
-  placed.forEach(function (id, i) {
-    var correct = ORDER[i] === id;
-    var btn = document.createElement('button');
-    btn.type = 'button';
-    btn.style.cssText = slotBase + (correct
-      ? 'border: 1.5px solid #B9E2C8; background: #E6F4EC; color: #0E6B42;'
-      : 'border: 1.5px solid #F3B9BE; background: #FDECEE; color: #A30D25;');
-    btn.textContent = CHUNKS[id];
-    btn.onclick = function () {
-      placed.splice(i, 1);
-      render();
-    };
-    slotsEl.appendChild(btn);
-  });
-  var remaining = ORDER.length - placed.length;
-  for (var i = 0; i < remaining; i++) {
-    var span = document.createElement('span');
-    span.style.cssText = slotBase + 'border: 1.5px dashed #DDE1E8; background: #F8F9FB; color: #B8BFCC;';
-    span.textContent = '···';
-    slotsEl.appendChild(span);
+  if (placed.length === 0) {
+    var emptyHint = document.createElement('div');
+    emptyHint.style.cssText = 'color: #94A3B8; font-size: 13.5px; font-style: italic; padding: 12px 6px; width: 100%;';
+    emptyHint.textContent = 'Chạm các từ bên dưới theo đúng thứ tự để ghép câu...';
+    slotsEl.appendChild(emptyHint);
+  } else {
+    placed.forEach(function (id, i) {
+      var correct = ORDER[i] === id;
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.style.cssText = slotBase + (correct
+        ? 'border: 1.5px solid #B9E2C8; background: #E6F4EC; color: #0E6B42;'
+        : 'border: 1.5px solid #F3B9BE; background: #FDECEE; color: #A30D25;');
+      btn.textContent = CHUNKS[id];
+      btn.onclick = function () {
+        placed.splice(i, 1);
+        render();
+      };
+      slotsEl.appendChild(btn);
+    });
   }
 
   poolEl.innerHTML = '';
@@ -130,14 +145,14 @@ function render() {
       : 'background: #FDECEE; color: #A30D25; border-radius: 12px; padding: 10px 14px; font-size: 13.5px; font-weight: 600;';
     feedbackEl.innerHTML = '<div style="' + style + '">' + (allCorrect
       ? 'Chính xác! Đúng thứ tự câu dịch rồi.'
-      : 'Có cụm xếp sai thứ tự — chạm vào cụm màu đỏ để bỏ ra rồi xếp lại.') + '</div>';
+      : 'Có từ xếp sai thứ tự — chạm vào từ màu đỏ để bỏ ra rồi xếp lại.') + '</div>';
   } else {
     feedbackEl.innerHTML = '';
   }
 
   renderMascot(document.getElementById('mascot'), {
     mood: allCorrect ? 'cheer' : (hasMistake ? 'sad' : 'idle'),
-    message: allCorrect ? 'Chuẩn luôn! Bạn ghép đúng cả câu dịch.' : (hasMistake ? 'Có cụm chưa đúng chỗ, xem lại câu gốc nhé.' : 'Chạm từ tiếp theo bạn nghĩ là đúng thứ tự.')
+    message: allCorrect ? 'Chuẩn luôn! Bạn ghép đúng cả câu dịch.' : (hasMistake ? 'Có từ chưa đúng chỗ, xem lại câu gốc nhé.' : 'Chạm từ tiếp theo bạn nghĩ là đúng thứ tự.')
   });
 }
 render();

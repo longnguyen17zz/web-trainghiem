@@ -283,13 +283,14 @@
           <span style="white-space: nowrap">Luyện nghe song song câu Anh - Việt</span>
         </h2>
 
-        <!-- Tùy chỉnh tốc độ đọc: Mặc định 0.75x (Chậm rõ) -->
-        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748B">
+        <!-- Tùy chỉnh tốc độ đọc: Mặc định 0.6x (Chậm & rõ ràng) -->
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748B; flex-wrap: wrap; gap: 6px">
           <span>Giọng đọc bản xứ chuẩn IPA:</span>
-          <div style="display: flex; align-items: center; gap: 3px; background: #F1F5F9; border: 1px solid #E2E8F0; border-radius: 999px; padding: 2px 4px">
-            <span style="font-size: 11px; color: #64748B; font-weight: 500; margin-left: 4px">Tốc độ:</span>
-            <button id="btnSpeed075" type="button" onclick="setVoiceSpeed(0.75)" style="border: 0; border-radius: 999px; padding: 2.5px 8px; font-size: 11.5px; font-weight: 700; background: #0E6B42; color: #FFFFFF; cursor: pointer; transition: all 0.2s">0.75x (Chậm rõ)</button>
-            <button id="btnSpeed100" type="button" onclick="setVoiceSpeed(1.0)" style="border: 0; border-radius: 999px; padding: 2.5px 8px; font-size: 11.5px; font-weight: 600; background: transparent; color: #64748B; cursor: pointer; transition: all 0.2s">1.0x (Tự nhiên)</button>
+          <div style="display: flex; align-items: center; gap: 2px; background: #F1F5F9; border: 1px solid #E2E8F0; border-radius: 999px; padding: 2px 3px">
+            <span style="font-size: 11px; color: #64748B; font-weight: 500; margin-left: 3px; margin-right: 2px">Tốc độ:</span>
+            <button id="btnSpeed060" type="button" onclick="setVoiceSpeed(0.60)" style="border: 0; border-radius: 999px; padding: 2.5px 7px; font-size: 11px; font-weight: 700; background: #0E6B42; color: #FFFFFF; cursor: pointer; transition: all 0.2s">0.6x (Chậm rõ)</button>
+            <button id="btnSpeed075" type="button" onclick="setVoiceSpeed(0.75)" style="border: 0; border-radius: 999px; padding: 2.5px 6px; font-size: 11px; font-weight: 600; background: transparent; color: #64748B; cursor: pointer; transition: all 0.2s">0.75x (Vừa)</button>
+            <button id="btnSpeed100" type="button" onclick="setVoiceSpeed(1.00)" style="border: 0; border-radius: 999px; padding: 2.5px 6px; font-size: 11px; font-weight: 600; background: transparent; color: #64748B; cursor: pointer; transition: all 0.2s">1.0x</button>
           </div>
         </div>
       </div>
@@ -441,29 +442,29 @@ var isLoopMode = false;
 var activePlayingSentenceId = null;
 var activeChunkTimer = null;
 var currentAiCredits = 2;
-var currentVoiceSpeed = 0.75; // Mặc định 0.75x để nghe chậm rãi, rõ từng từ cho người học
+var currentVoiceSpeed = 0.60; // Mặc định 0.60x để nghe chậm rãi, rõ từng từ cho người học
 
 function setVoiceSpeed(speed) {
   currentVoiceSpeed = speed;
-  var b075 = document.getElementById('btnSpeed075');
-  var b100 = document.getElementById('btnSpeed100');
-  if (b075 && b100) {
-    if (speed === 0.75) {
-      b075.style.background = '#0E6B42';
-      b075.style.color = '#FFFFFF';
-      b075.style.fontWeight = '700';
-      b100.style.background = 'transparent';
-      b100.style.color = '#64748B';
-      b100.style.fontWeight = '600';
+  var btns = {
+    '0.6': document.getElementById('btnSpeed060'),
+    '0.75': document.getElementById('btnSpeed075'),
+    '1': document.getElementById('btnSpeed100')
+  };
+  Object.keys(btns).forEach(function (k) {
+    var b = btns[k];
+    if (!b) return;
+    if (Math.abs(parseFloat(k) - speed) < 0.05) {
+      b.style.background = '#0E6B42';
+      b.style.color = '#FFFFFF';
+      b.style.fontWeight = '700';
     } else {
-      b100.style.background = '#0E6B42';
-      b100.style.color = '#FFFFFF';
-      b100.style.fontWeight = '700';
-      b075.style.background = 'transparent';
-      b075.style.color = '#64748B';
-      b075.style.fontWeight = '600';
+      b.style.background = 'transparent';
+      b.style.color = '#64748B';
+      b.style.fontWeight = '600';
     }
-  }
+  });
+
   // Nếu đang đọc thì dừng và phát lại với tốc độ mới
   if (activePlayingSentenceId) {
     var sid = activePlayingSentenceId;
@@ -800,9 +801,10 @@ function playKaraokeSentence(sentenceId) {
     }
   }
 
-  // Bắt đầu đọc audio câu tiếng Anh
-  speakFullText(sentence.fullTextEn);
-  streamNextChunk();
+  // Bắt đầu đọc audio câu tiếng Anh, khi voice thực sự cất tiếng thì bắt đầu stream chữ
+  speakFullText(sentence.fullTextEn, function onStart() {
+    streamNextChunk();
+  });
 }
 
 // 8. Đọc riêng 1 từ / cụm khi người dùng click vào từ đó sau khi đã hiển thị
@@ -824,7 +826,7 @@ function playSingleChunk(sentenceId, chunkId) {
   if (viEl) viEl.classList.add('chunk-speaking');
 
   var wordToSpeak = chunk.en.replace(/[.,!?;:]/g, '').trim();
-  speakFullText(wordToSpeak, function () {
+  speakFullText(wordToSpeak, null, function () {
     if (enEl) enEl.classList.remove('chunk-speaking');
     if (viEl) viEl.classList.remove('chunk-speaking');
   });
@@ -856,13 +858,16 @@ function stopCurrentPlayback() {
   }
 }
 
-function speakFullText(text, onEndCallback) {
-  if (!('speechSynthesis' in window)) return;
+function speakFullText(text, onStartCallback, onEndCallback) {
+  if (!('speechSynthesis' in window)) {
+    if (onStartCallback) onStartCallback();
+    return;
+  }
   window.speechSynthesis.cancel();
 
   var utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'en-US';
-  utterance.rate = currentVoiceSpeed; // Mặc định 0.75x, nghe chậm rãi, rõ từng âm tiết cho người học
+  utterance.rate = currentVoiceSpeed; // Mặc định 0.60x, nghe chậm rãi, rõ từng từ
 
   var voices = window.speechSynthesis.getVoices();
   var enVoice = null;
@@ -873,6 +878,19 @@ function speakFullText(text, onEndCallback) {
     }
   }
   if (enVoice) utterance.voice = enVoice;
+
+  var started = false;
+  function triggerStart() {
+    if (!started) {
+      started = true;
+      if (onStartCallback) onStartCallback();
+    }
+  }
+
+  utterance.onstart = triggerStart;
+
+  // Fallback nếu browser không fire onstart sau 150ms
+  setTimeout(triggerStart, 150);
 
   if (onEndCallback) {
     utterance.onend = onEndCallback;

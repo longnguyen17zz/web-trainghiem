@@ -86,6 +86,12 @@ function speakMascotText(text, avatarEl) {
 }
 
 function renderMascot(container, opts) {
+  // Tạm thời ẩn hình ảnh bot Pi
+  if (container) {
+    container.style.display = 'none';
+    container.innerHTML = '';
+  }
+  return;
   if (!container) return;
   container.style.pointerEvents = 'none';
 

@@ -196,10 +196,10 @@
   <!-- MAIN SCROLLABLE CONTENT -->
   <main style="flex: 1; overflow-y: auto; padding: 16px 16px 90px; display: flex; flex-direction: column; gap: 14px">
     
-    <!-- TIÊU ĐỀ BƯỚC VỚI BADGE CHUẨN HOÁ NHƯ NT1 -->
+    <!-- TIÊU ĐỀ BƯỚC VỚI BADGE CHUẨN HOÁ 5 BƯỚC -->
     <div style="display: flex; flex-direction: column; gap: 4px">
       <h1 style="margin: 0; font-size: 19px; line-height: 1.34; font-weight: 800; color: #0F172A; display: flex; align-items: center; gap: 8px">
-        <span style="background: #C2410C; color: #FFFFFF; font-size: 12.5px; font-weight: 700; border-radius: 999px; padding: 2.5px 8.5px; display: inline-flex; align-items: center; white-space: nowrap; flex-shrink: 0">Bước 1/2</span>
+        <span style="background: #C2410C; color: #FFFFFF; font-size: 12.5px; font-weight: 700; border-radius: 999px; padding: 2.5px 8.5px; display: inline-flex; align-items: center; white-space: nowrap; flex-shrink: 0">Bước 1/5</span>
         <span>Viết 1–2 câu quan điểm</span>
       </h1>
     </div>
@@ -423,31 +423,23 @@ function runHandDrumLoader(onComplete) {
   }, 3350);
 }
 
-// ==================== TOUR ONBOARDING ĐỒNG HÀNH CHO NT2 ====================
+// ==================== TOUR ONBOARDING ĐỒNG HÀNH CHO NT2 (QUY TRÌNH 5 BƯỚC) ====================
 function startWritingTour() {
   AppTour.start([
     {
-      target: '#topicCard',
-      padding: 8,
-      badge: 'Bước 1/2',
-      title: 'Đề bài IELTS thực chiến',
-      desc: 'Đọc đề bài ngắn gọn. Bạn có thể bấm nút "Đổi đề" để chọn chủ đề quen thuộc với bạn nhất.',
-      btnLabel: 'Tiếp theo ➔'
-    },
-    {
       target: '#essayInputCard',
       padding: 8,
-      badge: 'Viết câu',
-      title: 'Chỉ cần viết 1–2 câu',
-      desc: 'Bạn chỉ cần viết 1 đến 2 câu ngắn nêu quan điểm, hoặc dùng ngay câu mẫu có sẵn để trải nghiệm AI chấm.',
+      badge: 'Bước 1/5',
+      title: 'Viết 1–2 câu quan điểm',
+      desc: 'Bạn chỉ cần viết 1 đến 2 câu ngắn nêu quan điểm, hoặc bấm "Điền lại câu mẫu" để thử nhanh.',
       btnLabel: 'Tiếp theo ➔'
     },
     {
       target: '#submitBtn',
       padding: 6,
-      badge: 'Chấm AI',
-      title: 'Gửi AI phân tích tức thì',
-      desc: 'Bấm nút này để AI phát hiện lỗi ngữ pháp, chỉ ra điểm tốt và định hướng thêm các yếu tố ngữ pháp chuẩn giúp tăng điểm.',
+      badge: 'Bước 2/5',
+      title: 'Nhấn Chấm bài ngay',
+      desc: 'Bấm nút "Chấm bài ngay" để AI phân tích lỗi ngữ pháp và định hướng nâng cấp câu tức thì.',
       btnLabel: 'Bắt đầu ngay ➔'
     }
   ], '#appShell');

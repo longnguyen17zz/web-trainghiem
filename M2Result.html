@@ -391,13 +391,14 @@
   <!-- MAIN SCROLLABLE CONTENT -->
   <main style="flex: 1; overflow-y: auto; padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 12px">
     
-    <!-- CARD 1: ĐIỂM TỐT TRONG BÀI -->
+    <!-- CARD 1: REVIEW LẠI LỖI NHẬN XÉT (BƯỚC 3/5) -->
     <div id="goodPointsCard" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.02)">
       <div style="display: flex; align-items: center; gap: 6px">
+        <span style="background: #C2410C; color: #FFFFFF; font-size: 12.5px; font-weight: 700; border-radius: 999px; padding: 2px 7.5px; flex-shrink: 0">Bước 3/5</span>
         <div style="width: 22px; height: 22px; border-radius: 999px; background: #DCFCE7; display: flex; align-items: center; justify-content: center">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
         </div>
-        <span style="font-size: 14.5px; font-weight: 700; color: #0F172A">Điểm tốt trong bài</span>
+        <span style="font-size: 14.5px; font-weight: 700; color: #0F172A">Review lại lỗi - nhận xét</span>
       </div>
       <div style="font-size: 13.5px; line-height: 1.55; color: #334155">
         Câu đầu nêu quan điểm rõ ràng, người đọc dễ theo dõi. Cụm từ <b>"talk with family who live far away"</b> ở câu sau dùng khá tự nhiên, đúng ngữ cảnh IELTS.
@@ -423,16 +424,18 @@
       </div>
     </div>
 
-    <!-- CARD 3: YẾU TỐ NÊN CẢI THIỆN ĐỂ NÂNG BAND (TỰ ĐỘNG CUỘN VÀO KHUNG NHÌN) -->
-    <div id="factorsCard" style="background: #FFFFFF; border: 1.5px solid #FED7AA; border-radius: 16px; padding: 15px 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 2px 10px rgba(194,65,12,0.06)">
-      <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px">
-        <div style="display: flex; align-items: center; gap: 6px">
-          <span style="background: #C2410C; color: #FFFFFF; font-size: 11px; font-weight: 700; border-radius: 999px; padding: 2px 7.5px; flex-shrink: 0">Trọng tâm</span>
-          <span style="font-size: 15px; font-weight: 800; color: #0F172A">Định hướng nâng cấp câu</span>
-        </div>
-        <span id="usesBadge" style="flex-shrink: 0; font-size: 11.5px; font-weight: 700; border-radius: 999px; padding: 3.5px 9px; white-space: nowrap"></span>
+    <!-- CARD 3: ĐỊNH HƯỚNG NÂNG CẤP (CHỌN 1 YẾU TỐ) (BƯỚC 4/5) -->
+    <div id="factorsCard" style="background: #FFFFFF; border: 1.5px solid #FED7AA; border-radius: 16px; padding: 15px 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 2px 10px rgba(194,65,12,0.06)">
+      <!-- Hàng 1: Badge Bước 4/5 & Số lượt AI -->
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <span style="background: #C2410C; color: #FFFFFF; font-size: 12.5px; font-weight: 700; border-radius: 999px; padding: 2px 8px; flex-shrink: 0">Bước 4/5</span>
+        <span id="usesBadge" style="flex-shrink: 0; font-size: 11.5px; font-weight: 700; border-radius: 999px; padding: 3px 9px; white-space: nowrap"></span>
       </div>
-      <div style="font-size: 13px; color: #64748B; line-height: 1.5; width: 100%; margin-top: -4px">
+      <!-- Hàng 2: Tiêu đề nằm trọn vẹn trên dòng riêng -->
+      <div style="font-size: 16px; font-weight: 800; color: #0F172A; line-height: 1.3">
+        Định hướng nâng cấp (chọn 1 yếu tố)
+      </div>
+      <div style="font-size: 13px; color: #64748B; line-height: 1.5; width: 100%; margin-top: -2px">
         Bấm vào từng yếu tố bên dưới để xem cách AI bổ sung ngữ pháp chuẩn giúp tăng band điểm:
       </div>
 
@@ -445,17 +448,21 @@
 
   </main>
 
-  <!-- FOOTER CTA CÓ THẦY PHÚC ĐỒNG HÀNH (CHỈ HIỆN KHI BẤM 'ĐÃ HIỂU' TỪ PHÙ THỦY) -->
+  <!-- FOOTER CTA CÓ THẦY PHÚC ĐỒNG HÀNH (BƯỚC 5/5: NHẬN BỘ QUY TẮC) -->
   <footer id="leadCtaSection" style="display: none; flex-shrink: 0; background: #FFFFFF; border-top: 1px solid #E2E8F0; padding: 12px 16px 18px; flex-direction: column; gap: 12px; box-shadow: 0 -4px 16px rgba(0,0,0,0.04); z-index: 20">
     <div style="display: flex; gap: 10px; align-items: center">
       <img src="teacher.png" alt="Thầy Phúc" style="width: 44px; height: 44px; border-radius: 999px; object-fit: cover; border: 2px solid #C2410C; box-shadow: 0 2px 8px rgba(194,65,12,0.18); flex-shrink: 0">
       <div style="flex: 1; background: #FFF7ED; border: 1px solid #F3D3BF; border-radius: 4px 14px 14px 14px; padding: 8px 12px; font-size: 13px; line-height: 1.45; color: #7C2D12">
-        <b>Thầy Phúc khuyên bạn:</b> Muốn luyện thêm không? Để lại thông tin, mình gửi bộ quy tắc ngữ pháp hay gặp trong writing và đặt lịch tư vấn lộ trình miễn phí cho bạn.
+        <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px">
+          <span style="background: #C2410C; color: #FFFFFF; font-size: 10.5px; font-weight: 700; border-radius: 999px; padding: 1.5px 7px; flex-shrink: 0">Bước 5/5</span>
+          <b>Thầy Phúc khuyên bạn:</b>
+        </div>
+        Muốn luyện thêm không? Để lại thông tin, mình gửi bộ quy tắc ngữ pháp hay gặp trong writing và đặt lịch tư vấn lộ trình miễn phí cho bạn.
       </div>
     </div>
     <a href="LeadSheet.html" style="height: 50px; border-radius: 12px; background: #C2410C; color: #FFFFFF; font-size: 15.5px; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(194,65,12,0.28)">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"></path></svg>
-      <span>Nhận thêm bộ quy tắc & tư vấn miễn phí</span>
+      <span>Nhận bộ quy tắc & tư vấn miễn phí</span>
     </a>
   </footer>
 </div>
@@ -774,7 +781,7 @@ if (sessionStorage.getItem('m2_zoom_out_reveal') === '1' || window.location.sear
   }
 }
 
-// ==================== TOUR ONBOARDING ĐỒNG HÀNH CHO KẾT QUẢ NT2 ====================
+// ==================== TOUR ONBOARDING ĐỒNG HÀNH CHO KẾT QUẢ NT2 (QUY TRÌNH 5 BƯỚC) ====================
 function startResultTour() {
   var cta = document.getElementById('leadCtaSection');
   var isCtaVisible = cta && cta.style.display !== 'none';
@@ -783,17 +790,17 @@ function startResultTour() {
     {
       target: '#goodPointsCard',
       padding: 8,
-      badge: 'Bước 2/2',
-      title: 'Nhận xét & Lỗi cần sửa',
-      desc: 'AI chỉ ra điểm sáng trong câu và các lỗi ngữ pháp cụ thể cần chỉnh sửa để câu viết chuẩn xác hơn.',
+      badge: 'Bước 3/5',
+      title: 'Review lại lỗi - nhận xét',
+      desc: 'AI chỉ ra điểm sáng trong câu và 3 lỗi ngữ pháp cụ thể cần chỉnh sửa để câu viết chuẩn xác hơn.',
       btnLabel: 'Tiếp theo ➔'
     },
     {
       target: '#factorsCard',
       padding: 8,
-      badge: 'Trọng tâm',
-      title: 'Định hướng thêm ngữ pháp tăng điểm',
-      desc: 'Chạm vào từng yếu tố (Hoà hợp chủ–vị, Mạo từ, Câu bị động, Từ nối) để xem cách bổ sung ngữ pháp chuẩn giúp câu chắc chắn hơn.',
+      badge: 'Bước 4/5',
+      title: 'Định hướng nâng cấp (chọn 1 yếu tố)',
+      desc: 'Bấm vào từng yếu tố bên dưới để xem cách AI bổ sung ngữ pháp chuẩn giúp tăng band điểm.',
       btnLabel: isCtaVisible ? 'Tiếp theo ➔' : 'Đã hiểu ➔'
     }
   ];
@@ -802,9 +809,9 @@ function startResultTour() {
     steps.push({
       target: '#leadCtaSection',
       padding: 8,
-      badge: 'Tài liệu',
-      title: 'Bộ quy tắc ngữ pháp độc quyền',
-      desc: 'Để lại thông tin để nhận trọn bộ quy tắc ngữ pháp hay gặp và đặt lịch tư vấn miễn phí từ Thầy Phúc.',
+      badge: 'Bước 5/5',
+      title: 'Nhận bộ quy tắc',
+      desc: 'Để lại thông tin để nhận trọn bộ quy tắc ngữ pháp hay gặp và đặt lịch tư vấn lộ trình miễn phí cùng Thầy Phúc.',
       btnLabel: 'Đã hiểu ➔'
     });
   }

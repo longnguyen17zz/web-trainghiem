@@ -33,19 +33,68 @@
     text-decoration: none;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    border-radius: 22px;
-    min-height: 175px;
-    padding: 16px 18px;
+    border-radius: 20px;
+    padding: 14px 16px;
     position: relative;
     overflow: hidden;
     background-size: cover;
     background-position: center right;
     background-repeat: no-repeat;
-    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s ease;
+    cursor: pointer;
   }
   .fresh-card:active {
     transform: scale(0.985);
+  }
+  .fresh-card:hover,
+  .fresh-card.is-active {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.10) !important;
+  }
+  .fresh-card:hover .card-arrow-btn,
+  .fresh-card.is-active .card-arrow-btn {
+    transform: translateX(4px);
+  }
+
+  /* Hover show full details qua max-height transition mượt mà, không bị cắt xén */
+  .card-expand-wrapper {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(4px);
+    transition: max-height 0.32s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease 0.04s, transform 0.25s ease 0.04s, visibility 0.25s ease;
+  }
+  .fresh-card:hover .card-expand-wrapper,
+  .fresh-card.is-active .card-expand-wrapper {
+    max-height: 130px;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .card-expand-content {
+    padding-bottom: 2px;
+  }
+
+  /* Đổi màu nổi bật nhẹ trên hover */
+  .fresh-card-m2:hover, .fresh-card-m2.is-active {
+    border-color: #A5B4FC !important;
+  }
+  .fresh-card-m2:hover .card-arrow-btn, .fresh-card-m2.is-active .card-arrow-btn {
+    background: #4338CA !important;
+  }
+  .fresh-card-m2:hover .card-arrow-btn svg, .fresh-card-m2.is-active .card-arrow-btn svg {
+    stroke: #FFFFFF !important;
+  }
+
+  .fresh-card-m3:hover, .fresh-card-m3.is-active {
+    border-color: #86EFAC !important;
+  }
+  .fresh-card-m3:hover .card-arrow-btn, .fresh-card-m3.is-active .card-arrow-btn {
+    background: #047857 !important;
+  }
+  .fresh-card-m3:hover .card-arrow-btn svg, .fresh-card-m3.is-active .card-arrow-btn svg {
+    stroke: #FFFFFF !important;
   }
 </style>
 </head>
@@ -60,9 +109,6 @@
         <span style="color: #D92D20">PPS</span> <span style="color: #E8890C">VIETNAM</span>
       </span>
     </div>
-    <span style="font-size: 12px; font-weight: 700; color: #15803D; background: #DCFCE7; border: 1px solid #BBF7D0; border-radius: 999px; padding: 4px 10px">
-      Học thử miễn phí
-    </span>
   </header>
 
   <!-- NỘI DUNG CHÍNH TRÊN NỀN F8FAFC TƯƠI MÁT -->
@@ -96,103 +142,107 @@
     </div>
 
     <!-- DANH SÁCH 3 CARD THEO PHONG CÁCH TƯƠI MÁT CỦA M1SETUP -->
-    <div style="display: flex; flex-direction: column; gap: 14px">
+    <div style="display: flex; flex-direction: column; gap: 12px">
 
-      <!-- CARD 1: GHÉP CÂU TỪ VỰNG (CARD NỔI BẬT NHẤT - HÌNH card_home_m1.jpg ĐỒI HOA NẮNG VÀNG TƯƠI MÁT) -->
-      <a href="M1Setup.html" class="fresh-card" style="background-image: linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.90) 52%, rgba(255,255,255,0.25) 78%, rgba(255,255,255,0) 100%), url('card_home_m1.jpg'); border: 2px solid #059669; box-shadow: 0 4px 18px rgba(5, 150, 105, 0.12)">
-        <!-- Top Badges Row -->
-        <div style="display: flex; justify-content: space-between; align-items: center">
-          <span style="background: #DCFCE7; color: #15803D; border: 1px solid #86EFAC; font-size: 11px; font-weight: 700; border-radius: 999px; padding: 3px 10px; display: inline-flex; align-items: center; gap: 4px">
-            <span>🔥</span> NT 1 · ĐƯỢC CHỌN NHIỀU NHẤT
-          </span>
-          <span style="font-size: 11.5px; font-weight: 700; color: #059669; background: #FFFFFF; border: 1px solid #BBF7D0; padding: 2.5px 8px; border-radius: 999px">
-            ⏱ 3 phút
-          </span>
-        </div>
-
-        <!-- Content Area -->
-        <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 14px">
-          <div style="display: flex; align-items: center; justify-content: space-between">
-            <span style="font-size: 17px; font-weight: 800; color: #0F172A; letter-spacing: -0.01em">
-              Ghép câu từ vựng ngữ cảnh
-            </span>
-            <div style="width: 28px; height: 28px; border-radius: 999px; background: #059669; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3)">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
+      <!-- CARD 1: GHÉP CÂU TỪ VỰNG -->
+      <a href="M1Setup.html" class="fresh-card fresh-card-m1" style="background-image: linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.90) 52%, rgba(255,255,255,0.25) 78%, rgba(255,255,255,0) 100%), url('card_home_m1.jpg'); border: 2px solid #059669; box-shadow: 0 4px 18px rgba(5, 150, 105, 0.12); min-height: 84px; display: flex; flex-direction: column; justify-content: center; padding: 13px 18px">
+        <!-- Main Collapsed Row: Nằm chính giữa thẻ theo chiều dọc -->
+        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%">
+          <div style="display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 0; padding-right: 10px">
+            <div>
+              <span style="font-size: 11px; font-weight: 700; color: #059669; background: rgba(255, 255, 255, 0.95); border: 1px solid #BBF7D0; padding: 2px 8.5px; border-radius: 999px; display: inline-flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.03)">
+                ⏱ 3 phút
+              </span>
+            </div>
+            <div style="font-size: 16px; font-weight: 800; color: #0F172A; line-height: 1.3">
+              <span style="color: #059669; margin-right: 4px">NT1:</span>Ghép câu từ vựng ngữ cảnh
             </div>
           </div>
-
-          <div style="font-size: 12.5px; line-height: 1.45; color: #475569; max-width: 250px">
-            Nhớ 8–10 từ qua câu có nghĩa. AI sửa ngữ pháp, luyện phát âm voice song ngữ & nối nghĩa.
+          <div class="card-arrow-btn" style="width: 30px; height: 30px; border-radius: 999px; background: #059669; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3); flex-shrink: 0; transition: transform 0.22s ease">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
           </div>
+        </div>
 
-          <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px">
-            <span style="font-size: 11px; color: #166534; background: #F0FDF4; border: 1px solid #BBF7D0; padding: 2.5px 8px; border-radius: 6px; font-weight: 600">✓ Chọn 8 từ</span>
-            <span style="font-size: 11px; color: #166534; background: #F0FDF4; border: 1px solid #BBF7D0; padding: 2.5px 8px; border-radius: 6px; font-weight: 600">✓ AI chấm câu</span>
-            <span style="font-size: 11px; color: #166534; background: #F0FDF4; border: 1px solid #BBF7D0; padding: 2.5px 8px; border-radius: 6px; font-weight: 600">✓ Luyện nghe voice</span>
+        <!-- Expandable Details on Hover -->
+        <div class="card-expand-wrapper">
+          <div class="card-expand-content">
+            <div style="font-size: 12.5px; line-height: 1.45; color: #475569; max-width: 260px; margin-top: 8px">
+              Nhớ 8–10 từ qua câu có nghĩa. AI sửa ngữ pháp, luyện phát âm voice song ngữ & nối nghĩa.
+            </div>
+
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px">
+              <span style="font-size: 11px; color: #166534; background: #F0FDF4; border: 1px solid #BBF7D0; padding: 2.5px 8px; border-radius: 6px; font-weight: 600">✓ Chọn 8 từ</span>
+              <span style="font-size: 11px; color: #166534; background: #F0FDF4; border: 1px solid #BBF7D0; padding: 2.5px 8px; border-radius: 6px; font-weight: 600">✓ AI chấm câu</span>
+              <span style="font-size: 11px; color: #166534; background: #F0FDF4; border: 1px solid #BBF7D0; padding: 2.5px 8px; border-radius: 6px; font-weight: 600">✓ Luyện nghe voice</span>
+            </div>
           </div>
         </div>
       </a>
 
-      <!-- CARD 2: CHẤM WRITING & NÂNG BAND (HÌNH card_home_m2.jpg BAN CÔNG NẮNG ẤM & GÓC HỌC) -->
-      <a href="M2Writing.html" class="fresh-card" style="background-image: linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.90) 52%, rgba(255,255,255,0.25) 78%, rgba(255,255,255,0) 100%), url('card_home_m2.jpg'); border: 1.5px solid #E2E8F0; box-shadow: 0 2px 10px rgba(0,0,0,0.04)">
-        <div style="display: flex; justify-content: space-between; align-items: center">
-          <span style="background: #EEF2FF; color: #4338CA; border: 1px solid #C7D2FE; font-size: 11px; font-weight: 700; border-radius: 999px; padding: 3px 9px; display: inline-flex; align-items: center; gap: 4px">
-            <span>✍️</span> NT 2 · IELTS & GIAO TIẾP
-          </span>
-          <span style="font-size: 11.5px; font-weight: 700; color: #4338CA; background: #FFFFFF; border: 1px solid #C7D2FE; padding: 2.5px 8px; border-radius: 999px">
-            ⏱ 4 phút
-          </span>
-        </div>
-
-        <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 14px">
-          <div style="display: flex; align-items: center; justify-content: space-between">
-            <span style="font-size: 17px; font-weight: 800; color: #0F172A">
-              Chấm Writing & nâng band
-            </span>
-            <div style="width: 28px; height: 28px; border-radius: 999px; background: #F1F5F9; display: flex; align-items: center; justify-content: center">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
+      <!-- CARD 2: CHẤM WRITING & TỐI ƯU NGỮ PHÁP -->
+      <a href="M2Writing.html" class="fresh-card fresh-card-m2" style="background-image: linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.90) 52%, rgba(255,255,255,0.25) 78%, rgba(255,255,255,0) 100%), url('card_home_m2.jpg'); border: 1.5px solid #E2E8F0; box-shadow: 0 2px 10px rgba(0,0,0,0.04); min-height: 84px; display: flex; flex-direction: column; justify-content: center; padding: 13px 18px">
+        <!-- Main Collapsed Row: Nằm chính giữa thẻ theo chiều dọc -->
+        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%">
+          <div style="display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 0; padding-right: 10px">
+            <div>
+              <span style="font-size: 11px; font-weight: 700; color: #4338CA; background: rgba(255, 255, 255, 0.95); border: 1px solid #C7D2FE; padding: 2px 8.5px; border-radius: 999px; display: inline-flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.03)">
+                ⏱ 4 phút
+              </span>
+            </div>
+            <div style="font-size: 16px; font-weight: 800; color: #0F172A; line-height: 1.3">
+              <span style="color: #4338CA; margin-right: 4px">NT2:</span>Chấm Writing & tối ưu ngữ pháp
             </div>
           </div>
-
-          <div style="font-size: 12.5px; line-height: 1.45; color: #475569; max-width: 250px">
-            Viết 1 đoạn ngắn, AI phân tích lỗi ngữ pháp và viết lại câu chuẩn band cao hơn.
+          <div class="card-arrow-btn" style="width: 30px; height: 30px; border-radius: 999px; background: #F1F5F9; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.22s ease, background 0.22s ease">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
           </div>
+        </div>
 
-          <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px">
-            <span style="font-size: 11px; color: #4338CA; background: #EEF2FF; border: 1px solid #C7D2FE; padding: 2.5px 8px; border-radius: 6px; font-weight: 600">✓ Tăng band 5.5 ➔ 7.0+</span>
-            <span style="font-size: 11px; color: #475569; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 2.5px 8px; border-radius: 6px; font-weight: 500">✓ Sửa lỗi ngữ pháp</span>
+        <!-- Expandable Details on Hover -->
+        <div class="card-expand-wrapper">
+          <div class="card-expand-content">
+            <div style="font-size: 12.5px; line-height: 1.45; color: #475569; max-width: 260px; margin-top: 8px">
+              Viết 1 đoạn ngắn, AI phân tích lỗi ngữ pháp và định hướng bổ sung yếu tố giúp tăng điểm.
+            </div>
+
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px">
+              <span style="font-size: 11px; color: #4338CA; background: #EEF2FF; border: 1px solid #C7D2FE; padding: 2.5px 8px; border-radius: 6px; font-weight: 600">✓ Thêm yếu tố tăng điểm</span>
+              <span style="font-size: 11px; color: #475569; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 2.5px 8px; border-radius: 6px; font-weight: 500">✓ Sửa lỗi ngữ pháp</span>
+            </div>
           </div>
         </div>
       </a>
 
-      <!-- CARD 3: PHÁT TRIỂN Ý SPEAKING / WRITING (HÌNH card_home_m3.jpg NHÀ KÍNH CÔNG VIÊN Ý TƯỞNG) -->
-      <a href="M3Mindmap.html" class="fresh-card" style="background-image: linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.90) 52%, rgba(255,255,255,0.25) 78%, rgba(255,255,255,0) 100%), url('card_home_m3.jpg'); border: 1.5px solid #E2E8F0; box-shadow: 0 2px 10px rgba(0,0,0,0.04)">
-        <div style="display: flex; justify-content: space-between; align-items: center">
-          <span style="background: #F0FDF4; color: #047857; border: 1px solid #A7F3D0; font-size: 11px; font-weight: 700; border-radius: 999px; padding: 3px 9px; display: inline-flex; align-items: center; gap: 4px">
-            <span>🧠</span> NT 3 · TƯ DUY LOGIC
-          </span>
-          <span style="font-size: 11.5px; font-weight: 700; color: #047857; background: #FFFFFF; border: 1px solid #A7F3D0; padding: 2.5px 8px; border-radius: 999px">
-            ⏱ 3 phút
-          </span>
-        </div>
-
-        <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 14px">
-          <div style="display: flex; align-items: center; justify-content: space-between">
-            <span style="font-size: 17px; font-weight: 800; color: #0F172A">
-              Phát triển ý Speaking / Writing
-            </span>
-            <div style="width: 28px; height: 28px; border-radius: 999px; background: #F1F5F9; display: flex; align-items: center; justify-content: center">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
+      <!-- CARD 3: PHÁT TRIỂN Ý SPEAKING / WRITING -->
+      <a href="M3Mindmap.html" class="fresh-card fresh-card-m3" style="background-image: linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.90) 52%, rgba(255,255,255,0.25) 78%, rgba(255,255,255,0) 100%), url('card_home_m3.jpg'); border: 1.5px solid #E2E8F0; box-shadow: 0 2px 10px rgba(0,0,0,0.04); min-height: 84px; display: flex; flex-direction: column; justify-content: center; padding: 13px 18px">
+        <!-- Main Collapsed Row: Nằm chính giữa thẻ theo chiều dọc -->
+        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%">
+          <div style="display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 0; padding-right: 10px">
+            <div>
+              <span style="font-size: 11px; font-weight: 700; color: #047857; background: rgba(255, 255, 255, 0.95); border: 1px solid #A7F3D0; padding: 2px 8.5px; border-radius: 999px; display: inline-flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.03)">
+                ⏱ 3 phút
+              </span>
+            </div>
+            <div style="font-size: 16px; font-weight: 800; color: #0F172A; line-height: 1.3">
+              <span style="color: #047857; margin-right: 4px">NT3:</span>Phát triển ý Speaking / Writing
             </div>
           </div>
-
-          <div style="font-size: 12.5px; line-height: 1.45; color: #475569; max-width: 250px">
-            Trả lời câu hỏi theo sơ đồ ý, AI đào sâu hỏi tiếp mở rộng luận điểm tự nhiên.
+          <div class="card-arrow-btn" style="width: 30px; height: 30px; border-radius: 999px; background: #F1F5F9; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.22s ease, background 0.22s ease">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
           </div>
+        </div>
 
-          <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px">
-            <span style="font-size: 11px; color: #047857; background: #F0FDF4; border: 1px solid #A7F3D0; padding: 2.5px 8px; border-radius: 6px; font-weight: 600">✓ Sơ đồ ý Mindmap</span>
-            <span style="font-size: 11px; color: #475569; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 2.5px 8px; border-radius: 6px; font-weight: 500">✓ Luyện phản xạ</span>
+        <!-- Expandable Details on Hover -->
+        <div class="card-expand-wrapper">
+          <div class="card-expand-content">
+            <div style="font-size: 12.5px; line-height: 1.45; color: #475569; max-width: 260px; margin-top: 8px">
+              Trả lời câu hỏi theo sơ đồ ý, AI đào sâu hỏi tiếp mở rộng luận điểm tự nhiên.
+            </div>
+
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px">
+              <span style="font-size: 11px; color: #047857; background: #F0FDF4; border: 1px solid #A7F3D0; padding: 2.5px 8px; border-radius: 6px; font-weight: 600">✓ Sơ đồ ý Mindmap</span>
+              <span style="font-size: 11px; color: #475569; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 2.5px 8px; border-radius: 6px; font-weight: 500">✓ Luyện phản xạ</span>
+            </div>
           </div>
         </div>
       </a>
@@ -226,7 +276,7 @@
         <div style="display: flex; gap: 12px; align-items: flex-start">
           <div style="width: 28px; height: 28px; flex-shrink: 0; border-radius: 8px; background: #EEF2FF; color: #4338CA; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center">3</div>
           <div style="flex: 1">
-            <div style="font-size: 13px; font-weight: 700; color: #111827">Mở khóa full tài liệu nâng band độc quyền</div>
+            <div style="font-size: 13px; font-weight: 700; color: #111827">Mở khóa full tài liệu ngữ pháp tăng điểm độc quyền</div>
             <div style="font-size: 12px; line-height: 1.45; color: #64748B">Nhận miễn phí bộ tài liệu độc quyền từ Thầy Phúc qua Zalo/Email.</div>
           </div>
         </div>
@@ -252,6 +302,22 @@
 renderMascot(document.getElementById('mascot'), {
   mood: 'idle',
   message: 'Chào bạn, mình là Bé Pi! Chọn 1 phương pháp, mình đi cùng bạn nhé.'
+});
+
+// Chạm lần 1 mở full thẻ trên màn hình cảm ứng, lần 2 điều hướng
+document.querySelectorAll('.fresh-card').forEach(function(card) {
+  card.addEventListener('click', function(e) {
+    if (window.matchMedia('(hover: hover)').matches) {
+      return; // Desktop có hover chuột: click bình thường chuyển trang
+    }
+    if (!this.classList.contains('is-active')) {
+      e.preventDefault();
+      document.querySelectorAll('.fresh-card').forEach(function(c) {
+        c.classList.remove('is-active');
+      });
+      this.classList.add('is-active');
+    }
+  });
 });
 </script>
 </body>

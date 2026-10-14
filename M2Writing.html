@@ -3,73 +3,463 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Phương pháp 2 — viết bài</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<title>Phương pháp 2 — Viết bài chấm IELTS</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="style.css">
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0;
+    padding: 0;
+    background: #E2E8F0;
+    font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #0F172A;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+  }
+  .app-shell {
+    width: 390px;
+    max-width: 100%;
+    height: 844px;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: #F8FAFC;
+    overflow: hidden;
+    box-shadow: 0 0 25px rgba(15, 23, 42, 0.08);
+  }
+  .topic-rotate-anim {
+    animation: topicFade 0.25s ease-out;
+  }
+  @keyframes topicFade {
+    0% { opacity: 0; transform: translateY(-3px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Hiệu ứng quét laser phân tích */
+  .laser-scan-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 3px;
+    background: linear-gradient(90deg, rgba(234,88,12,0) 0%, #EA580C 50%, rgba(234,88,12,0) 100%);
+    box-shadow: 0 0 14px #EA580C, 0 0 28px rgba(234,88,12,0.6);
+    pointer-events: none;
+    z-index: 25;
+    animation: scanSweepDown 0.5s ease-in-out infinite alternate;
+  }
+  @keyframes scanSweepDown {
+    0% { top: 4%; opacity: 0.7; }
+    100% { top: 88%; opacity: 1; }
+  }
+
+  /* Hiệu ứng cuộn bay (Paper takeoff & flight) */
+  .paper-flight {
+    animation: paperFlightTakeoff 0.85s cubic-bezier(0.2, 0.85, 0.4, 1) forwards !important;
+    pointer-events: none;
+    transform-origin: center bottom;
+  }
+  @keyframes paperFlightTakeoff {
+    0% {
+      transform: perspective(700px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1);
+      box-shadow: 0 0 0 4px #FFEDD5, 0 4px 12px rgba(0,0,0,0.06);
+      opacity: 1;
+    }
+    25% {
+      transform: perspective(700px) rotateX(12deg) rotateY(-2deg) translateY(-12px) scale(0.97);
+      box-shadow: 0 0 0 4px #FED7AA, 0 16px 28px rgba(194,65,12,0.22);
+    }
+    55% {
+      transform: perspective(700px) rotateX(24deg) rotateZ(-4deg) translateY(-60px) scale(0.86);
+      opacity: 0.95;
+    }
+    100% {
+      transform: perspective(700px) rotateX(48deg) rotateZ(16deg) translateY(-320px) translateX(90px) scale(0.28);
+      opacity: 0;
+    }
+  }
+
+  /* Hạt lấp lánh khi cuộn bay */
+  .flight-sparkle {
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: #F97316;
+    pointer-events: none;
+    z-index: 30;
+    animation: flightSparklePop 0.8s ease-out forwards;
+  }
+  @keyframes flightSparklePop {
+    0% { opacity: 1; transform: translate(0, 0) scale(1.2); }
+    100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.2); }
+  }
+
+  /* Hiệu ứng chuyển cảnh full màn hình với nền Mint chuẩn GIF Loading của Claudio Scotto */
+  .page-curtain {
+    position: absolute;
+    inset: 0;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: transform 0.48s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #AEECDB; /* Chuẩn 100% mã màu nền GIF gốc: RGB(174, 236, 219) */
+    box-shadow: -20px 0 40px rgba(15, 23, 42, 0.2);
+    overflow: hidden;
+  }
+  .page-curtain.active {
+    pointer-events: all;
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* ==================== HAND DRUMMING GIF LOADER FULL SCREEN ==================== */
+  .drum-loader-container {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #AEECDB;
+    user-select: none;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .drum-hand-gif {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: 62vh;
+    object-fit: contain;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    filter: none;
+    display: block;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Dòng trạng thái bên dưới */
+  .drum-status-text {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #114B3F;
+    text-align: center;
+    min-height: 24px;
+    margin-top: 10px;
+    padding: 0 20px;
+    line-height: 1.45;
+    letter-spacing: -0.2px;
+  }
+</style>
 </head>
 <body>
-<div style="width: 390px; max-width: 100%; height: 844px; margin: 0 auto; position: relative; display: flex; flex-direction: column; background: #F3F4F7; font-family: 'Be Vietnam Pro', sans-serif; color: #111827; overflow: hidden">
-  <header style="height: 56px; flex-shrink: 0; display: flex; align-items: center; gap: 4px; padding: 0 12px 0 4px; background: #FFFFFF">
-    <a href="index.html" aria-label="Quay lại" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg></a>
-    <div style="flex: 1; font-size: 16px; font-weight: 600">Chấm writing</div>
-    <span style="font-size: 12px; font-weight: 600; color: #C2410C; background: #FFEDD5; border-radius: 999px; padding: 6px 10px">Còn 1 lượt chấm</span>
-  </header>
-  <div style="flex-shrink: 0; background: #FFFFFF; border-bottom: 1px solid #DDE1E8; padding: 4px 16px 12px; display: flex; flex-direction: column; gap: 6px">
-    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px">
-      <div style="height: 4px; border-radius: 4px; background: #C2410C"></div>
-      <div style="height: 4px; border-radius: 4px; background: #DDE1E8"></div>
-    </div>
-    <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 500; color: #4B5563"><span>Bước 1/2</span><span>Viết bài</span></div>
-  </div>
-
-  <main style="flex: 1; overflow-y: auto; padding: 20px 16px 104px; display: flex; flex-direction: column; gap: 16px">
-    <div style="display: flex; flex-direction: column; gap: 4px">
-      <h1 style="margin: 0; font-size: 22px; line-height: 1.3; font-weight: 700">Viết 1–2 câu</h1>
-      <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #4B5563">AI đọc câu bạn viết, chấm theo chuẩn IELTS Writing, khen chỗ viết tốt và chỉ ra lỗi dùng từ, cụm từ.</p>
-    </div>
-
-    <div style="background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 16px; padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 8px">
-      <div style="display: flex; justify-content: space-between; align-items: center">
-        <span style="font-size: 12px; font-weight: 600; color: #C2410C; background: #FFEDD5; border-radius: 999px; padding: 4px 10px">Đề bài</span>
-        <button style="height: 32px; border: 0; background: transparent; padding: 0; color: #C2410C; font-family: inherit; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C2410C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v6h6"></path><path d="M20 20v-6h-6"></path><path d="M20 10a8 8 0 00-14-4L4 10M4 14a8 8 0 0014 4l2-4"></path></svg>Đổi đề</button>
+<div id="appShell" class="app-shell">
+  <!-- HEADER 2 DÒNG: DÒNG 1 LÀ TIÊU ĐỀ, DÒNG 2 LÀ HƯỚNG DẪN + LƯỢT CHẤM -->
+  <header style="flex-shrink: 0; display: flex; flex-direction: column; gap: 6px; padding: 8px 14px 9px 6px; background: #FFFFFF; border-bottom: 1px solid #E2E8F0">
+    <!-- DÒNG 1: Nút back + Tiêu đề trọn vẹn trên 1 dòng -->
+    <div style="display: flex; align-items: center; gap: 4px">
+      <a href="index.html" aria-label="Quay lại trang chủ" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border-radius: 8px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg>
+      </a>
+      <div style="font-size: 16.5px; font-weight: 800; color: #0F172A; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
+        Chấm writing & tối ưu câu
       </div>
-      <div style="font-size: 16px; line-height: 1.55; font-weight: 500">Some people believe that technology has made our lives easier. To what extent do you agree?</div>
-      <div style="font-size: 13px; font-weight: 600; color: #C2410C">Chỉ cần viết 1–2 câu nêu quan điểm của bạn — không cần viết cả bài.</div>
+    </div>
+    <!-- DÒNG 2: Hướng dẫn + Lượt chấm là 1 dòng -->
+    <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px; padding-left: 40px">
+      <button type="button" class="tour-help-trigger" onclick="startWritingTour()" title="Xem hướng dẫn các bước" style="flex-shrink: 0">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        <span>Hướng dẫn</span>
+      </button>
+      <span style="font-size: 11.5px; font-weight: 700; color: #C2410C; background: #FFEDD5; border: 1px solid #FED7AA; border-radius: 999px; padding: 3px 9px; flex-shrink: 0; white-space: nowrap">Còn 1 lượt chấm</span>
+    </div>
+  </header>
+
+
+
+  <!-- MAIN SCROLLABLE CONTENT -->
+  <main style="flex: 1; overflow-y: auto; padding: 16px 16px 90px; display: flex; flex-direction: column; gap: 14px">
+    
+    <!-- TIÊU ĐỀ BƯỚC VỚI BADGE CHUẨN HOÁ NHƯ NT1 -->
+    <div style="display: flex; flex-direction: column; gap: 4px">
+      <h1 style="margin: 0; font-size: 19px; line-height: 1.34; font-weight: 800; color: #0F172A; display: flex; align-items: center; gap: 8px">
+        <span style="background: #C2410C; color: #FFFFFF; font-size: 12.5px; font-weight: 700; border-radius: 999px; padding: 2.5px 8.5px; display: inline-flex; align-items: center; white-space: nowrap; flex-shrink: 0">Bước 1/2</span>
+        <span>Viết 1–2 câu quan điểm</span>
+      </h1>
     </div>
 
-    <div style="display: flex; flex-direction: column; gap: 8px">
-      <label for="essay" style="font-size: 15px; font-weight: 700">Câu của bạn</label>
-      <div style="background: #FFFFFF; border: 1.5px solid #C2410C; border-radius: 16px; box-shadow: 0 0 0 4px #FFEDD5; display: flex; flex-direction: column">
-        <textarea id="essay" style="height: 196px; border: 0; outline: none; border-radius: 16px; padding: 14px 14px 4px; font-family: inherit; font-size: 16px; line-height: 1.55; resize: none; box-sizing: border-box; background: transparent; color: #111827">Nowadays, many people thinks that technology make our life easier. For example, we can talk with family who live far away by using smartphone.</textarea>
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 8px 14px 12px">
-          <div style="flex: 1; height: 4px; border-radius: 4px; background: #EEF0F4; overflow: hidden"><div style="width: 100%; height: 4px; background: #0E6B42"></div></div>
-          <span style="font-size: 13px; font-weight: 600; color: #0E6B42">Đã viết 2/2 câu · đủ để chấm</span>
+    <!-- KHỐI ĐỒNG HÀNH THẦY PHÚC THÂN THIỆN -->
+    <div id="companionCard" style="display: flex; gap: 10px; align-items: center; background: #FFF7ED; border: 1.5px solid #FDBA74; border-radius: 14px; padding: 10px 12px; box-shadow: 0 2px 8px rgba(194,65,12,0.06)">
+      <img src="teacher.png" alt="Thầy Phúc" style="width: 40px; height: 40px; border-radius: 999px; object-fit: cover; border: 2px solid #EA580C; flex-shrink: 0">
+      <div style="font-size: 12.5px; line-height: 1.45; color: #7C2D12">
+        <b>Thầy Phúc khuyên bạn:</b> Chỉ cần viết 1–2 câu nêu quan điểm thôi nhé. Cứ tự nhiên viết hoặc thử ngay câu mẫu, AI sẽ chỉ lỗi và hướng dẫn thêm yếu tố ngữ pháp giúp tăng điểm!
+      </div>
+    </div>
+
+    <!-- CARD 1: ĐỀ BÀI (HỖ TRỢ ĐỔI ĐỀ MƯỢT MÀ) -->
+    <div id="topicCard" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.02)">
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <span style="font-size: 11.5px; font-weight: 700; color: #C2410C; background: #FFEDD5; border: 1px solid #FED7AA; border-radius: 999px; padding: 2.5px 9px">
+          Đề bài IELTS Writing
+        </span>
+        <button type="button" onclick="changeTopic()" style="height: 30px; border: 0; background: transparent; padding: 0 6px; color: #C2410C; font-family: inherit; font-size: 12.5px; font-weight: 700; display: flex; align-items: center; gap: 4px; cursor: pointer; border-radius: 6px; transition: background 0.15s">
+          <svg id="rotateIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C2410C" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="transition: transform 0.3s ease"><path d="M4 4v6h6"></path><path d="M20 20v-6h-6"></path><path d="M20 10a8 8 0 00-14-4L4 10M4 14a8 8 0 0014 4l2-4"></path></svg>
+          <span>Đổi đề</span>
+        </button>
+      </div>
+
+      <div id="topicText" class="topic-rotate-anim" style="font-size: 15.5px; line-height: 1.52; font-weight: 600; color: #0F172A">
+        Some people believe that technology has made our lives easier. To what extent do you agree?
+      </div>
+      
+    </div>
+
+    <!-- CARD 2: KHUNG VIẾT CÂU CỦA BẠN -->
+    <div id="essayInputCard" style="display: flex; flex-direction: column; gap: 8px">
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <label for="essay" style="font-size: 14.5px; font-weight: 700; color: #0F172A">Câu của bạn</label>
+        <button type="button" onclick="insertSampleText()" style="border: 0; background: transparent; color: #059669; font-size: 12px; font-weight: 600; cursor: pointer; padding: 2px 4px; display: flex; align-items: center; gap: 3px">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M1 4v6h6M23 20v-6h-6"></path><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg>
+          <span>Điền lại câu mẫu</span>
+        </button>
+      </div>
+
+      <div id="essayBox" style="position: relative; background: #FFFFFF; border: 1.5px solid #C2410C; border-radius: 16px; box-shadow: 0 0 0 4px #FFEDD5; display: flex; flex-direction: column; transition: all 0.2s">
+        <div id="laserScanLine" style="display: none" class="laser-scan-line"></div>
+        <textarea id="essay" oninput="onEssayInput()" style="height: 175px; border: 0; outline: none; border-radius: 16px; padding: 14px 14px 6px; font-family: inherit; font-size: 15px; line-height: 1.55; resize: none; box-sizing: border-box; background: transparent; color: #0F172A">Nowadays, many people thinks that technology make our life easier. For example, we can talk with family who live far away by using smartphone.</textarea>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 8px 14px 12px">
+          <div style="flex: 1; height: 5px; border-radius: 5px; background: #EEF2F6; overflow: hidden">
+            <div id="essayBar" style="width: 100%; height: 5px; background: #0E6B42; transition: width 0.2s ease, background 0.2s ease"></div>
+          </div>
+          <span id="essayStatusText" style="font-size: 12px; font-weight: 700; color: #0E6B42; white-space: nowrap">Đã viết 2/2 câu · đủ để chấm</span>
         </div>
       </div>
     </div>
+
   </main>
 
-  <footer style="flex-shrink: 0; background: #FFFFFF; border-top: 1px solid #DDE1E8; padding: 12px 16px 20px">
-    <button id="submitBtn" onclick="submitEssay()" style="width: 100%; height: 52px; border: 0; border-radius: 12px; background: #C2410C; color: #FFFFFF; font-family: inherit; font-size: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"></path></svg>
-      <span id="submitLabel">Chấm bài</span>
+  <!-- FOOTER CTA CỐ ĐỊNH -->
+  <footer style="position: absolute; bottom: 0; left: 0; right: 0; background: #FFFFFF; border-top: 1px solid #E2E8F0; padding: 12px 16px 16px; box-shadow: 0 -4px 16px rgba(0,0,0,0.04); z-index: 20">
+    <button id="submitBtn" onclick="submitEssay()" style="width: 100%; height: 50px; border: 0; border-radius: 12px; background: #C2410C; color: #FFFFFF; font-family: inherit; font-size: 15.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 14px rgba(194,65,12,0.28); transition: all 0.2s">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"></path></svg>
+      <span id="submitLabel">Chấm bài ngay</span>
     </button>
   </footer>
-  <div id="mascot" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 310px; z-index: 5"></div>
+
+  <!-- MÀN HÌNH CHUYỂN CẢNH HAND DRUMMING TỪ FILE GIF CỦA CLAUDIO SCOTTO -->
+  <div id="pageTransitionCurtain" class="page-curtain">
+    <div class="drum-loader-container">
+      <img src="loading_hand.gif" alt="Loading Animation Bored Hand by Claudio Scotto" class="drum-hand-gif">
+      <div id="curtainStepText" class="drum-status-text">AI đang phân tích câu của bạn…</div>
+    </div>
+  </div>
 </div>
-<script src="mascot.js"></script>
+
+<script src="tour.js"></script>
 <script>
-renderMascot(document.getElementById('mascot'), {
-  mood: 'idle',
-  message: 'Chỉ cần viết 1–2 câu thôi nhé. Mình sẽ chấm theo chuẩn IELTS, khen chỗ hay và chỉ lỗi dùng từ trong câu.'
-});
+// ==================== DANH SÁCH ĐỀ BÀI IELTS TASK 2 THỰC CHIẾN ====================
+var TOPICS = [
+  {
+    topic: 'Some people believe that technology has made our lives easier. To what extent do you agree?',
+    sample: 'Nowadays, many people thinks that technology make our life easier. For example, we can talk with family who live far away by using smartphone.'
+  },
+  {
+    topic: 'Some people think that university education should be free for everyone. What is your opinion?',
+    sample: 'In modern society, free education for all students play an important role. It helps poor people gets more opportunity to find good job.'
+  },
+  {
+    topic: 'Environmental problems such as air pollution are worsening. What solutions can you suggest?',
+    sample: 'Air pollution is become a serious challenge in many big cities. Government should makes stricter regulations to protect public health.'
+  }
+];
+
+var currentTopicIndex = 0;
+
+function changeTopic() {
+  currentTopicIndex = (currentTopicIndex + 1) % TOPICS.length;
+  var t = TOPICS[currentTopicIndex];
+  
+  // Xoay icon nhẹ nhàng
+  var icon = document.getElementById('rotateIcon');
+  if (icon) {
+    icon.style.transform = 'rotate(180deg)';
+    setTimeout(function() { icon.style.transform = 'rotate(0deg)'; }, 300);
+  }
+
+  var topicEl = document.getElementById('topicText');
+  topicEl.classList.remove('topic-rotate-anim');
+  void topicEl.offsetWidth; // trigger reflow
+  topicEl.classList.add('topic-rotate-anim');
+  topicEl.textContent = t.topic;
+
+  // Điền câu mẫu tương ứng với đề
+  document.getElementById('essay').value = t.sample;
+  onEssayInput();
+}
+
+function insertSampleText() {
+  var t = TOPICS[currentTopicIndex];
+  document.getElementById('essay').value = t.sample;
+  onEssayInput();
+}
+
+// ==================== CẬP NHẬT TRẠNG THÁI SỐ CÂU THỜI GIAN THỰC ====================
+function countSentences(text) {
+  if (!text || !text.trim()) return 0;
+  // Tách câu theo dấu chấm, chấm hỏi, chấm than
+  var sentences = text.trim().split(/[.!?]+/).filter(function(s) {
+    return s.trim().length > 2;
+  });
+  return sentences.length;
+}
+
+function onEssayInput() {
+  var essay = document.getElementById('essay').value;
+  var count = countSentences(essay);
+  var bar = document.getElementById('essayBar');
+  var statusText = document.getElementById('essayStatusText');
+  var btn = document.getElementById('submitBtn');
+
+  if (count === 0) {
+    bar.style.width = '10%';
+    bar.style.background = '#EF4444';
+    statusText.textContent = 'Chưa có câu nào (Cần viết 1–2 câu)';
+    statusText.style.color = '#EF4444';
+    btn.disabled = false; // Vẫn cho bấm để khuyến khích
+  } else if (count === 1) {
+    bar.style.width = '50%';
+    bar.style.background = '#F59E0B';
+    statusText.textContent = 'Đã viết 1 câu · Đủ điều kiện chấm';
+    statusText.style.color = '#D97706';
+    btn.disabled = false;
+  } else {
+    bar.style.width = '100%';
+    bar.style.background = '#0E6B42';
+    statusText.textContent = 'Đã viết ' + count + ' câu · Đủ để chấm';
+    statusText.style.color = '#0E6B42';
+    btn.disabled = false;
+  }
+}
+
+
 function submitEssay() {
   var btn = document.getElementById('submitBtn');
+  var essayBox = document.getElementById('essayBox');
+  var laserLine = document.getElementById('laserScanLine');
+  var curtain = document.getElementById('pageTransitionCurtain');
+
   btn.disabled = true;
-  btn.style.background = '#D96B3E';
-  btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" style="animation: spin .8s linear infinite"><circle cx="12" cy="12" r="9" stroke-opacity="0.3"></circle><path d="M21 12a9 9 0 00-9-9"></path></svg><span>Đang chấm bài…</span>';
-  setTimeout(function () { window.location.href = 'M2Result.html'; }, 1100);
+  btn.style.background = '#9A3412';
+  btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" style="animation: spin .8s linear infinite"><circle cx="12" cy="12" r="9" stroke-opacity="0.3"></circle><path d="M21 12a9 9 0 0 0-9-9"></path></svg><span>Đang nộp câu cho AI…</span>';
+
+  // 1. Quét tia laser rà soát ngữ pháp rõ ràng (500ms)
+  if (laserLine) laserLine.style.display = 'block';
+
+  // 2. Kích hoạt hiệu ứng cuộn bay (paper flight) và bắn hạt lấp lánh
+  setTimeout(function () {
+    if (essayBox) {
+      for (var i = 0; i < 16; i++) {
+        var sp = document.createElement('div');
+        sp.className = 'flight-sparkle';
+        var angle = (Math.PI * 2 * i) / 16;
+        var dist = 35 + Math.random() * 55;
+        sp.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+        sp.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
+        sp.style.left = (120 + (Math.random() - 0.5) * 80) + 'px';
+        sp.style.top = (70 + (Math.random() - 0.5) * 50) + 'px';
+        essayBox.appendChild(sp);
+      }
+      essayBox.classList.add('paper-flight');
+    }
+  }, 450);
+
+  // 3. Màn hình kéo sang với Hoạt họa Hand Drumming ngón tay gõ nhịp theo ảnh mẫu
+  setTimeout(function () {
+    if (curtain) curtain.classList.add('active');
+
+    // Chạy hoạt họa Hand Drumming kèm cập nhật trạng thái phân tích
+    runHandDrumLoader(function () {
+      // 4. Khi phân tích hoàn tất, chuyển thẳng sang trang 2 để zoom out nội dung
+      sessionStorage.setItem('m2_zoom_out_reveal', '1');
+      window.location.href = 'M2Result.html?from=writing';
+    });
+  }, 750);
 }
+
+function runHandDrumLoader(onComplete) {
+  var stepText = document.getElementById('curtainStepText');
+  var steps = [
+    { time: 0, text: 'AI đang đọc câu quan điểm của bạn…' },
+    { time: 950, text: 'Đang rà soát hoà hợp chủ–vị & mạo từ…' },
+    { time: 1900, text: 'Đã phát hiện lỗi ngữ pháp & điểm tốt!' },
+    { time: 2750, text: '✓ Phân tích hoàn tất! Đang mở kết quả…' }
+  ];
+
+  steps.forEach(function (s) {
+    setTimeout(function () {
+      if (stepText) stepText.textContent = s.text;
+    }, s.time);
+  });
+
+  setTimeout(function () {
+    if (onComplete) onComplete();
+  }, 3350);
+}
+
+// ==================== TOUR ONBOARDING ĐỒNG HÀNH CHO NT2 ====================
+function startWritingTour() {
+  AppTour.start([
+    {
+      target: '#topicCard',
+      padding: 8,
+      badge: 'Bước 1/2',
+      title: 'Đề bài IELTS thực chiến',
+      desc: 'Đọc đề bài ngắn gọn. Bạn có thể bấm nút "Đổi đề" để chọn chủ đề quen thuộc với bạn nhất.',
+      btnLabel: 'Tiếp theo ➔'
+    },
+    {
+      target: '#essayInputCard',
+      padding: 8,
+      badge: 'Viết câu',
+      title: 'Chỉ cần viết 1–2 câu',
+      desc: 'Bạn chỉ cần viết 1 đến 2 câu ngắn nêu quan điểm, hoặc dùng ngay câu mẫu có sẵn để trải nghiệm AI chấm.',
+      btnLabel: 'Tiếp theo ➔'
+    },
+    {
+      target: '#submitBtn',
+      padding: 6,
+      badge: 'Chấm AI',
+      title: 'Gửi AI phân tích tức thì',
+      desc: 'Bấm nút này để AI phát hiện lỗi ngữ pháp, chỉ ra điểm tốt và định hướng thêm các yếu tố ngữ pháp chuẩn giúp tăng điểm.',
+      btnLabel: 'Bắt đầu ngay ➔'
+    }
+  ], '#appShell');
+}
+
+// Tự động mở tour lần đầu nếu chưa xem
+setTimeout(function () {
+  if (!sessionStorage.getItem('tour_writing_viewed')) {
+    sessionStorage.setItem('tour_writing_viewed', '1');
+    startWritingTour();
+  }
+}, 450);
 </script>
 </body>
 </html>

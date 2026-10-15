@@ -314,9 +314,12 @@
 </div>
 
 <script src="mascot.js"></script>
-<script>
-// ==================== LẤY 8 TỪ VỰNG TỪ BƯỚC 3 (SESSIONSTORAGE) ====================
-var storedWordsJson = sessionStorage.getItem('m1_selected_words');
+// ==================== LẤY 8 TỪ VỰNG TỪ BƯỚC 3 (LOCALSTORAGE / SESSIONSTORAGE) ====================
+var storedWordsJson = null;
+try {
+  storedWordsJson = localStorage.getItem('m1_selected_words') || sessionStorage.getItem('m1_selected_words');
+} catch (e) {}
+
 var TARGET_WORDS = [];
 if (storedWordsJson) {
   try {
@@ -718,8 +721,10 @@ function gradeUserSentence() {
       }
     ];
 
-    // Lưu lại 2 câu vào sessionStorage để Bước 8 sắp xếp câu và các bước tiếp theo dùng đồng bộ
-    sessionStorage.setItem('m1_generated_sentences', JSON.stringify(CURRENT_DISPLAY_SENTENCES));
+    // Lưu lại 2 câu vào localStorage & sessionStorage để Bước 8 sắp xếp câu và các bước tiếp theo dùng đồng bộ
+    var sJson1 = JSON.stringify(CURRENT_DISPLAY_SENTENCES);
+    try { localStorage.setItem('m1_generated_sentences', sJson1); } catch (e) {}
+    try { sessionStorage.setItem('m1_generated_sentences', sJson1); } catch (e) {}
 
     // Cập nhật thanh tiến độ: Đủ 8/8 từ (100%)
     var allKeys = TARGET_WORDS.map(function (w) { return w.key; });
@@ -752,8 +757,10 @@ function triggerAiGeneration(forceNew) {
     ALL_AI_SENTENCES = generateSentencesFor8Words(TARGET_WORDS);
     CURRENT_DISPLAY_SENTENCES = ALL_AI_SENTENCES;
 
-    // Lưu lại 2 câu vào sessionStorage để Bước 8 sắp xếp câu dùng đồng bộ
-    sessionStorage.setItem('m1_generated_sentences', JSON.stringify(CURRENT_DISPLAY_SENTENCES));
+    // Lưu lại 2 câu vào localStorage & sessionStorage để Bước 8 sắp xếp câu dùng đồng bộ
+    var sJson2 = JSON.stringify(CURRENT_DISPLAY_SENTENCES);
+    try { localStorage.setItem('m1_generated_sentences', sJson2); } catch (e) {}
+    try { sessionStorage.setItem('m1_generated_sentences', sJson2); } catch (e) {}
 
     // Cập nhật thanh tiến độ: Đủ 8/8 từ
     var allKeys = TARGET_WORDS.map(function (w) { return w.key; });
@@ -799,7 +806,9 @@ function saveSentenceStateBeforeNav() {
   if (!CURRENT_DISPLAY_SENTENCES || CURRENT_DISPLAY_SENTENCES.length === 0) {
     CURRENT_DISPLAY_SENTENCES = ALL_AI_SENTENCES;
   }
-  sessionStorage.setItem('m1_generated_sentences', JSON.stringify(CURRENT_DISPLAY_SENTENCES));
+  var sJson = JSON.stringify(CURRENT_DISPLAY_SENTENCES);
+  try { localStorage.setItem('m1_generated_sentences', sJson); } catch (e) {}
+  try { sessionStorage.setItem('m1_generated_sentences', sJson); } catch (e) {}
 }
 
 function showAiLoading(msg) {

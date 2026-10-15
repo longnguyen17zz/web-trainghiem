@@ -86,8 +86,12 @@
 </div>
 <script src="mascot.js"></script>
 <script>
-// Lấy đúng danh sách 8 từ đã chọn từ Bước 3 (sessionStorage)
-var storedWordsJson = sessionStorage.getItem('m1_selected_words');
+// Lấy đúng danh sách 8 từ đã chọn từ Bước 3 (localStorage / sessionStorage)
+var storedWordsJson = null;
+try {
+  storedWordsJson = localStorage.getItem('m1_selected_words') || sessionStorage.getItem('m1_selected_words');
+} catch (e) {}
+
 var userWords = [];
 if (storedWordsJson) {
   try {

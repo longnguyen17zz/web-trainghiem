@@ -761,7 +761,7 @@ function updateSelectionSummary() {
   saveSelectedWordsState();
 }
 
-// Lưu thông tin 8 từ vựng và chủ đề vào sessionStorage để các bước sau dùng đồng bộ
+// Lưu thông tin 8 từ vựng và chủ đề vào localStorage & sessionStorage để các bước sau dùng đồng bộ
 function saveSelectedWordsState() {
   if (!selectedTopicId) return;
   var topic = TOPICS_DATA.find(function (t) { return t.id === selectedTopicId; });
@@ -772,10 +772,20 @@ function saveSelectedWordsState() {
     return w ? { id: w.id, en: w.en, vi: w.vi, key: w.en.toLowerCase() } : null;
   }).filter(Boolean);
 
-  sessionStorage.setItem('m1_topic_id', selectedTopicId);
-  sessionStorage.setItem('m1_topic_title', topic.lessonTitle);
-  sessionStorage.setItem('m1_topic_color', topic.themeColor);
-  sessionStorage.setItem('m1_selected_words', JSON.stringify(wordsList));
+  var jsonStr = JSON.stringify(wordsList);
+  try {
+    localStorage.setItem('m1_topic_id', selectedTopicId);
+    localStorage.setItem('m1_topic_title', topic.lessonTitle);
+    localStorage.setItem('m1_topic_color', topic.themeColor);
+    localStorage.setItem('m1_selected_words', jsonStr);
+  } catch (e) {}
+
+  try {
+    sessionStorage.setItem('m1_topic_id', selectedTopicId);
+    sessionStorage.setItem('m1_topic_title', topic.lessonTitle);
+    sessionStorage.setItem('m1_topic_color', topic.themeColor);
+    sessionStorage.setItem('m1_selected_words', jsonStr);
+  } catch (e) {}
 }
 
 // Xử lý khi bấm nút Bước 4/10 Tiếp tục với 8 từ

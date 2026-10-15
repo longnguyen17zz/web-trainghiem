@@ -52,7 +52,7 @@
     <!-- THẺ TỪ TIẾNG ANH ĐANG ĐỌC (THAY THẾ CHO VIỆC HIỆN FULL CÂU CŨ) -->
     <div id="promptCard" style="background: #FFFFFF; border: 1.5px solid #FED7AA; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 2px 8px rgba(194,65,12,0.06); transition: all 0.25s ease">
       <div style="display: flex; justify-content: space-between; align-items: center">
-        <span id="promptStepBadge" style="font-size: 11.5px; font-weight: 700; color: #C2410C; background: #FFEDD5; border-radius: 999px; padding: 3px 10px">🔊 Từ 1/10</span>
+        <span id="promptStepBadge" style="font-size: 11.5px; font-weight: 700; color: #C2410C; background: #FFEDD5; border-radius: 999px; padding: 3px 10px">🔊 Từ 1/8</span>
         <button id="btnReplayWord" type="button" onclick="speakCurrentWord()" style="height: 30px; border: 0; border-radius: 999px; background: #FFEDD5; color: #C2410C; font-family: inherit; font-size: 12.5px; font-weight: 700; padding: 0 12px; display: flex; align-items: center; gap: 5px; cursor: pointer; transition: all 0.15s ease">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="#C2410C"><path d="M7 5v14l11-7z"></path></svg>
           <span id="replayBtnText">Nghe lại từ</span>
@@ -68,8 +68,8 @@
     <!-- KHỐI BƯỚC 8: CÂU DỊCH TIẾNG VIỆT ĐANG GHÉP -->
     <div id="sectionStep8" style="display: flex; flex-direction: column; gap: 10px">
       <div style="display: flex; justify-content: space-between; align-items: center">
-        <div style="font-size: 14px; font-weight: 700; color: #111827">Câu dịch tiếng Việt đã ghép:</div>
-        <span id="arrangeCounter" style="font-size: 11.5px; font-weight: 700; color: #C2410C; background: #FFEDD5; border-radius: 999px; padding: 2px 9px">Đã ghép 0/10</span>
+        <div style="font-size: 14px; font-weight: 700; color: #111827">Các từ tiếng Việt đã ghép theo câu:</div>
+        <span id="arrangeCounter" style="font-size: 11.5px; font-weight: 700; color: #C2410C; background: #FFEDD5; border-radius: 999px; padding: 2px 9px">Đã ghép 0/8</span>
       </div>
 
       <!-- Khay chứa các từ đã ghép -->
@@ -97,49 +97,71 @@
 
 <script src="mascot.js"></script>
 <script>
-// Lấy câu đã ghép từ Bước 5-7 để luyện sắp xếp (hoặc dùng câu mặc định)
-var storedSentencesJson = sessionStorage.getItem('m1_generated_sentences');
-var arrangeSentence = null;
-if (storedSentencesJson) {
+// ==================== LẤY ĐÚNG 8 TỪ VỰNG TỪ BƯỚC 3 (LOCALSTORAGE / SESSIONSTORAGE) ====================
+var storedWordsJson = null;
+try {
+  storedWordsJson = localStorage.getItem('m1_selected_words') || sessionStorage.getItem('m1_selected_words');
+} catch (e) {}
+
+var userWords = [];
+if (storedWordsJson) {
   try {
-    var sentences = JSON.parse(storedSentencesJson);
-    if (sentences && sentences.length > 0 && sentences[0].chunks && sentences[0].chunks.length > 0) {
-      arrangeSentence = sentences[0];
-    }
-  } catch (e) {}
+    userWords = JSON.parse(storedWordsJson);
+  } catch (e) {
+    userWords = [];
+  }
 }
 
-var FULL_SENTENCE_EN = "Deforestation destroys the natural habitat of many animals, so we must conserve forests.";
-var FULL_SENTENCE_VI = "Nạn phá rừng huỷ hoại môi trường sống tự nhiên của nhiều loài, vì vậy chúng ta phải bảo tồn rừng.";
-
-var STEPS = [
-  { id: 'c1', en: 'Deforestation', vi: 'Nạn phá rừng' },
-  { id: 'c2', en: 'destroys', vi: 'huỷ hoại' },
-  { id: 'c3', en: 'habitat', vi: 'môi trường sống' },
-  { id: 'c4', en: 'natural', vi: 'tự nhiên' },
-  { id: 'c5', en: 'of many animals,', vi: 'của nhiều loài,' },
-  { id: 'c6', en: 'so', vi: 'vì vậy' },
-  { id: 'c7', en: 'we', vi: 'chúng ta' },
-  { id: 'c8', en: 'must', vi: 'phải' },
-  { id: 'c9', en: 'conserve', vi: 'bảo tồn' },
-  { id: 'c10', en: 'forests.', vi: 'rừng.' }
-];
-
-if (arrangeSentence) {
-  STEPS = arrangeSentence.chunks.map(function (c, idx) {
-    return {
-      id: 'c' + (idx + 1),
-      en: c.en,
-      vi: c.vi
-    };
-  });
-  FULL_SENTENCE_EN = arrangeSentence.fullTextEn;
-  FULL_SENTENCE_VI = arrangeSentence.chunks.map(function(c){ return c.vi; }).join(' ');
+// Fallback chuẩn đúng 8 từ nếu chưa có trong storage
+if (!userWords || userWords.length === 0) {
+  userWords = [
+    { id: 'w1', en: 'deforestation', vi: 'phá rừng' },
+    { id: 'w2', en: 'habitat', vi: 'môi trường sống' },
+    { id: 'w3', en: 'conserve', vi: 'bảo tồn' },
+    { id: 'w4', en: 'renewable', vi: 'tái tạo' },
+    { id: 'w5', en: 'pollution', vi: 'ô nhiễm' },
+    { id: 'w6', en: 'ecosystem', vi: 'hệ sinh thái' },
+    { id: 'w7', en: 'sustainable', vi: 'bền vững' },
+    { id: 'w8', en: 'recycle', vi: 'tái chế' }
+  ];
 }
 
-// Thứ tự xáo trộn ban đầu của các thẻ tiếng Việt trong pool
+// Đảm bảo STEPS có đúng 8 từ vựng đã chọn từ Bước 3
+var STEPS = userWords.map(function (w, idx) {
+  return {
+    id: 'c' + (idx + 1),
+    en: w.en,
+    vi: w.vi
+  };
+});
+
+// Câu tiếng Anh ngữ cảnh kết nối trọn vẹn cả 8 từ vựng
+var FULL_SENTENCE_EN = "To conserve our ecosystem from pollution, we must stop deforestation, protect habitats, use renewable energy, and build sustainable habits to recycle waste.";
+var FULL_SENTENCE_VI = "Để bảo tồn hệ sinh thái khỏi ô nhiễm, chúng ta phải ngăn phá rừng, bảo vệ môi trường sống, dùng năng lượng tái tạo và xây dựng lối sống bền vững để tái chế rác thải.";
+
+var topicId = null;
+try {
+  topicId = localStorage.getItem('m1_topic_id') || sessionStorage.getItem('m1_topic_id');
+} catch (e) {}
+
+if (topicId === 'technology') {
+  FULL_SENTENCE_EN = "Modern innovation in software and automation relies on a secure database across the network, protected by algorithms and cybersecurity on every device.";
+  FULL_SENTENCE_VI = "Đổi mới hiện đại trong phần mềm và tự động hóa dựa trên cơ sở dữ liệu an toàn trên mạng lưới, được bảo vệ bởi các thuật toán và an ninh mạng trên mọi thiết bị.";
+} else if (topicId === 'education') {
+  FULL_SENTENCE_EN = "A strong academic curriculum and discipline help students evaluate knowledge, complete every assignment, and earn scholarships toward graduation.";
+  FULL_SENTENCE_VI = "Chương trình học thuật vững vàng và tính kỷ luật giúp học viên đánh giá tri thức, hoàn thành bài tập và giành học bổng hướng tới tốt nghiệp.";
+} else if (topicId === 'health') {
+  FULL_SENTENCE_EN = "Proper daily nutrition and exercise boost immunity and mental strength, helping treat symptoms and ensuring overall dietary wellness for fast recovery.";
+  FULL_SENTENCE_VI = "Dinh dưỡng hàng ngày hợp lý và tập luyện giúp tăng miễn dịch và tinh thần, hỗ trợ điều trị triệu chứng và đảm bảo sức khỏe ăn uống để hồi phục nhanh.";
+}
+
+// Thứ tự xáo trộn ban đầu của các thẻ tiếng Việt trong pool (không trùng hàng ngang ban đầu)
 var INITIAL_POOL_ORDER = STEPS.map(function (s) { return s.id; });
-INITIAL_POOL_ORDER.sort(function () { return 0.5 - Math.random(); });
+if (INITIAL_POOL_ORDER.length >= 8) {
+  INITIAL_POOL_ORDER = ['c5', 'c2', 'c8', 'c1', 'c6', 'c3', 'c7', 'c4'];
+} else {
+  INITIAL_POOL_ORDER.sort(function () { return 0.5 - Math.random(); });
+}
 
 var currentStepIndex = 0; // Bắt đầu từ từ đầu tiên
 var placedItems = []; // Danh sách các từ tiếng Việt đã chọn đúng

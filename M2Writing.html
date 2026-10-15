@@ -196,12 +196,26 @@
   <!-- MAIN SCROLLABLE CONTENT -->
   <main style="flex: 1; overflow-y: auto; padding: 16px 16px 90px; display: flex; flex-direction: column; gap: 14px">
     
-    <!-- TIÊU ĐỀ BƯỚC VỚI BADGE CHUẨN HOÁ 5 BƯỚC -->
-    <div style="display: flex; flex-direction: column; gap: 4px">
-      <h1 style="margin: 0; font-size: 19px; line-height: 1.34; font-weight: 800; color: #0F172A; display: flex; align-items: center; gap: 8px">
-        <span style="background: #C2410C; color: #FFFFFF; font-size: 12.5px; font-weight: 700; border-radius: 999px; padding: 2.5px 8.5px; display: inline-flex; align-items: center; white-space: nowrap; flex-shrink: 0">Bước 1/5</span>
+    <!-- ==================== BƯỚC 1/6: CHỌN CHỦ ĐỀ WRITING ==================== -->
+    <div id="sectionTopicM2" style="display: flex; flex-direction: column; gap: 8px">
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <h1 style="margin: 0; font-size: 15.5px; line-height: 1.34; font-weight: 800; color: #0F172A; display: flex; align-items: center; gap: 8px">
+          <span style="background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 2.5px 8px; display: inline-flex; align-items: center; white-space: nowrap; flex-shrink: 0">Bước 1/6</span>
+          <span>Chọn chủ đề bài viết</span>
+        </h1>
+        <span id="topicM2SelectedBadge" style="font-size: 11px; color: #15803D; font-weight: 700; background: #DCFCE7; border: 1px solid #86EFAC; padding: 2px 8px; border-radius: 999px">✓ Công nghệ</span>
+      </div>
+
+      <!-- Danh sách 4 thẻ chủ đề IELTS Task 2 lưới 2 cột -->
+      <div id="writingTopicsList" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"></div>
+    </div>
+
+    <!-- ==================== BƯỚC 2/6: VIẾT 1-2 CÂU QUAN ĐIỂM ==================== -->
+    <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 2px">
+      <div style="font-size: 15px; font-weight: 800; color: #0F172A; display: flex; align-items: center; gap: 8px">
+        <span style="background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 2.5px 8px; display: inline-flex; align-items: center; white-space: nowrap; flex-shrink: 0">Bước 2/6</span>
         <span>Viết 1–2 câu quan điểm</span>
-      </h1>
+      </div>
     </div>
 
     <!-- KHỐI ĐỒNG HÀNH THẦY PHÚC THÂN THIỆN -->
@@ -212,22 +226,18 @@
       </div>
     </div>
 
-    <!-- CARD 1: ĐỀ BÀI (HỖ TRỢ ĐỔI ĐỀ MƯỢT MÀ) -->
+    <!-- CARD 1: ĐỀ BÀI IELTS TASK 2 THEO CHỦ ĐỀ -->
     <div id="topicCard" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.02)">
       <div style="display: flex; justify-content: space-between; align-items: center">
         <span style="font-size: 11.5px; font-weight: 700; color: #C2410C; background: #FFEDD5; border: 1px solid #FED7AA; border-radius: 999px; padding: 2.5px 9px">
           Đề bài IELTS Writing
         </span>
-        <button type="button" onclick="changeTopic()" style="height: 30px; border: 0; background: transparent; padding: 0 6px; color: #C2410C; font-family: inherit; font-size: 12.5px; font-weight: 700; display: flex; align-items: center; gap: 4px; cursor: pointer; border-radius: 6px; transition: background 0.15s">
-          <svg id="rotateIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C2410C" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="transition: transform 0.3s ease"><path d="M4 4v6h6"></path><path d="M20 20v-6h-6"></path><path d="M20 10a8 8 0 00-14-4L4 10M4 14a8 8 0 0014 4l2-4"></path></svg>
-          <span>Đổi đề</span>
-        </button>
+        <span id="topicCategoryTag" style="font-size: 11.5px; font-weight: 600; color: #64748B">Chủ đề: Công nghệ</span>
       </div>
 
-      <div id="topicText" class="topic-rotate-anim" style="font-size: 15.5px; line-height: 1.52; font-weight: 600; color: #0F172A">
+      <div id="topicText" class="topic-rotate-anim" style="font-size: 15px; line-height: 1.52; font-weight: 600; color: #0F172A">
         Some people believe that technology has made our lives easier. To what extent do you agree?
       </div>
-      
     </div>
 
     <!-- CARD 2: KHUNG VIẾT CÂU CỦA BẠN -->
@@ -242,7 +252,7 @@
 
       <div id="essayBox" style="position: relative; background: #FFFFFF; border: 1.5px solid #C2410C; border-radius: 16px; box-shadow: 0 0 0 4px #FFEDD5; display: flex; flex-direction: column; transition: all 0.2s">
         <div id="laserScanLine" style="display: none" class="laser-scan-line"></div>
-        <textarea id="essay" oninput="onEssayInput()" style="height: 175px; border: 0; outline: none; border-radius: 16px; padding: 14px 14px 6px; font-family: inherit; font-size: 15px; line-height: 1.55; resize: none; box-sizing: border-box; background: transparent; color: #0F172A">Nowadays, many people thinks that technology make our life easier. For example, we can talk with family who live far away by using smartphone.</textarea>
+        <textarea id="essay" oninput="onEssayInput()" style="height: 160px; border: 0; outline: none; border-radius: 16px; padding: 14px 14px 6px; font-family: inherit; font-size: 14.5px; line-height: 1.55; resize: none; box-sizing: border-box; background: transparent; color: #0F172A">Nowadays, many people thinks that technology make our life easier. For example, we can talk with family who live far away by using smartphone.</textarea>
         
         <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 8px 14px 12px">
           <div style="flex: 1; height: 5px; border-radius: 5px; background: #EEF2F6; overflow: hidden">
@@ -255,7 +265,7 @@
 
   </main>
 
-  <!-- FOOTER CTA CỐ ĐỊNH -->
+  <!-- FOOTER CTA CỐ ĐỊNH (BƯỚC 3/6) -->
   <footer style="position: absolute; bottom: 0; left: 0; right: 0; background: #FFFFFF; border-top: 1px solid #E2E8F0; padding: 12px 16px 16px; box-shadow: 0 -4px 16px rgba(0,0,0,0.04); z-index: 20">
     <button id="submitBtn" onclick="submitEssay()" style="width: 100%; height: 50px; border: 0; border-radius: 12px; background: #C2410C; color: #FFFFFF; font-family: inherit; font-size: 15.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 14px rgba(194,65,12,0.28); transition: all 0.2s">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"></path></svg>
@@ -274,56 +284,176 @@
 
 <script src="tour.js"></script>
 <script>
-// ==================== DANH SÁCH ĐỀ BÀI IELTS TASK 2 THỰC CHIẾN ====================
-var TOPICS = [
+// ==================== DANH SÁCH 4 CHỦ ĐỀ WRITING IELTS TASK 2 ====================
+var WRITING_TOPICS = [
   {
-    topic: 'Some people believe that technology has made our lives easier. To what extent do you agree?',
-    sample: 'Nowadays, many people thinks that technology make our life easier. For example, we can talk with family who live far away by using smartphone.'
+    id: 'technology',
+    title: 'Công nghệ',
+    titleEn: 'Technology',
+    themeColor: '#EA580C',
+    themeBg: '#FFF7ED',
+    themeBorder: '#FDBA74',
+    iconSvg: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>',
+    prompt: 'Some people believe that technology has made our lives easier. To what extent do you agree?',
+    sample: 'Nowadays, many people thinks that technology make our life easier. For example, we can talk with family who live far away by using smartphone.',
+    goodPoint: 'Câu đầu nêu quan điểm rõ ràng, người đọc dễ theo dõi. Cụm từ "talk with family who live far away" ở câu sau dùng khá tự nhiên, đúng ngữ cảnh IELTS.',
+    errors: [
+      { wrong: 'thinks', correct: 'think', rule: 'people (danh từ số nhiều) đi với động từ số nhiều' },
+      { wrong: 'make', correct: 'makes', rule: 'technology (danh từ không đếm được) chia động từ số ít' },
+      { wrong: 'smartphone', correct: 'a smartphone', rule: 'danh từ đếm được số ít cần mạo từ a/the' }
+    ]
   },
   {
-    topic: 'Some people think that university education should be free for everyone. What is your opinion?',
-    sample: 'In modern society, free education for all students play an important role. It helps poor people gets more opportunity to find good job.'
+    id: 'environment',
+    title: 'Môi trường',
+    titleEn: 'Environment',
+    themeColor: '#16A34A',
+    themeBg: '#F0FDF4',
+    themeBorder: '#86EFAC',
+    iconSvg: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 1 10 10c0 5.5-4.5 10-10 10S2 17.5 2 12A10 10 0 0 1 12 2z"></path><path d="M12 6v6l4 2"></path></svg>',
+    prompt: 'Environmental problems such as air pollution are worsening in big cities. What solutions can you suggest?',
+    sample: 'Air pollution is become a serious challenge in many big cities. Government should makes stricter regulations to protect public health.',
+    goodPoint: 'Đặt vấn đề trực diện và giải pháp sát thực tế. Cụm từ "protect public health" dùng rất chuẩn ngữ cảnh IELTS Writing.',
+    errors: [
+      { wrong: 'is become', correct: 'has become', rule: 'Dùng hiện tại hoàn thành để diễn tả xu hướng đang gia tăng' },
+      { wrong: 'Government', correct: 'The government', rule: 'Chính phủ là danh từ xác định, cần mạo từ "The"' },
+      { wrong: 'makes', correct: 'make', rule: 'Sau modal verb "should" dùng động từ nguyên mẫu không chia' }
+    ]
   },
   {
-    topic: 'Environmental problems such as air pollution are worsening. What solutions can you suggest?',
-    sample: 'Air pollution is become a serious challenge in many big cities. Government should makes stricter regulations to protect public health.'
+    id: 'education',
+    title: 'Giáo dục',
+    titleEn: 'Education',
+    themeColor: '#2563EB',
+    themeBg: '#EFF6FF',
+    themeBorder: '#93C5FD',
+    iconSvg: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>',
+    prompt: 'Some people think that university education should be free for everyone. What is your opinion?',
+    sample: 'In modern society, free education for all students play an important role. It helps poor people gets more opportunity to find good job.',
+    goodPoint: 'Lập luận nhân văn, rõ ràng và có dẫn chứng bổ trợ. Cụm "play an important role" rất chuẩn academic.',
+    errors: [
+      { wrong: 'play', correct: 'plays', rule: 'Chủ ngữ "free education" số ít, động từ cần thêm s' },
+      { wrong: 'gets', correct: 'get', rule: 'Cấu trúc help someone do something (động từ nguyên mẫu)' },
+      { wrong: 'good job', correct: 'a good job', rule: 'job là danh từ đếm được, cần có mạo từ "a"' }
+    ]
+  },
+  {
+    id: 'health',
+    title: 'Sức khỏe',
+    titleEn: 'Health',
+    themeColor: '#9333EA',
+    themeBg: '#FAF5FF',
+    themeBorder: '#D8B4FE',
+    iconSvg: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>',
+    prompt: 'Fast food consumption has increased dramatically worldwide. What are the negative effects on society?',
+    sample: 'Fast food has became very popular among young people today. However, eating too much junk food leads to severe health issue.',
+    goodPoint: 'Sử dụng liên từ đối lập "However" rất khéo léo. Cụm từ "severe health issues" thể hiện vốn từ vựng học thuật tốt.',
+    errors: [
+      { wrong: 'has became', correct: 'has become', rule: 'Quá khứ phân từ của become là become (has become)' },
+      { wrong: 'leads', correct: 'leads', rule: 'Đúng ngữ pháp: V-ing làm chủ ngữ chia động từ số ít' },
+      { wrong: 'health issue', correct: 'health issues', rule: 'Cần dùng số nhiều để chỉ các vấn đề sức khỏe nói chung' }
+    ]
   }
 ];
 
-var currentTopicIndex = 0;
+var selectedTopicId = 'technology';
 
-function changeTopic() {
-  currentTopicIndex = (currentTopicIndex + 1) % TOPICS.length;
-  var t = TOPICS[currentTopicIndex];
-  
-  // Xoay icon nhẹ nhàng
-  var icon = document.getElementById('rotateIcon');
-  if (icon) {
-    icon.style.transform = 'rotate(180deg)';
-    setTimeout(function() { icon.style.transform = 'rotate(0deg)'; }, 300);
+function renderWritingTopicsList() {
+  var container = document.getElementById('writingTopicsList');
+  if (!container) return;
+  var html = '';
+
+  WRITING_TOPICS.forEach(function (t) {
+    var isActive = t.id === selectedTopicId;
+    var border = isActive ? ('2px solid ' + t.themeColor) : '1.5px solid #E2E8F0';
+    var bg = isActive ? t.themeBg : '#FFFFFF';
+    var shadow = isActive ? ('0 3px 12px rgba(0,0,0,0.06)') : '0 1px 3px rgba(0,0,0,0.02)';
+    var textColor = isActive ? '#0F172A' : '#334155';
+
+    html += '<div id="writing_topic_card_' + t.id + '" onclick="selectWritingTopic(\'' + t.id + '\')" style="background: ' + bg + '; border: ' + border + '; border-radius: 12px; padding: 10px 11px; cursor: pointer; transition: all 0.2s ease; display: flex; flex-direction: column; justify-content: space-between; min-height: 64px; box-shadow: ' + shadow + '">';
+    html += '<div style="display: flex; justify-content: space-between; align-items: center">';
+    html += '<div style="display: flex; align-items: center; gap: 6px; color: ' + t.themeColor + '">';
+    html += t.iconSvg;
+    html += '<span style="font-size: 13.5px; font-weight: 700; color: ' + textColor + '">' + t.title + '</span>';
+    html += '</div>';
+    if (isActive) {
+      html += '<span style="width: 17px; height: 17px; border-radius: 999px; background: ' + t.themeColor + '; color: #FFF; display: inline-flex; align-items: center; justify-content: center; font-size: 10px">✓</span>';
+    }
+    html += '</div>';
+    html += '<div style="font-size: 11px; color: #64748B; font-weight: 500; margin-top: 4px">' + t.titleEn + '</div>';
+    html += '</div>';
+  });
+
+  container.innerHTML = html;
+}
+
+function selectWritingTopic(topicId) {
+  selectedTopicId = topicId;
+  var t = WRITING_TOPICS.find(function (x) { return x.id === topicId; }) || WRITING_TOPICS[0];
+
+  try {
+    sessionStorage.setItem('m2_selected_topic', JSON.stringify(t));
+    localStorage.setItem('m2_selected_topic', JSON.stringify(t));
+  } catch (e) {}
+
+  renderWritingTopicsList();
+
+  var badgeEl = document.getElementById('topicM2SelectedBadge');
+  if (badgeEl) {
+    badgeEl.textContent = '✓ ' + t.title;
+    badgeEl.style.color = t.themeColor;
+    badgeEl.style.borderColor = t.themeBorder;
   }
 
-  var topicEl = document.getElementById('topicText');
-  topicEl.classList.remove('topic-rotate-anim');
-  void topicEl.offsetWidth; // trigger reflow
-  topicEl.classList.add('topic-rotate-anim');
-  topicEl.textContent = t.topic;
+  var catTag = document.getElementById('topicCategoryTag');
+  if (catTag) {
+    catTag.textContent = 'Chủ đề: ' + t.title;
+  }
 
-  // Điền câu mẫu tương ứng với đề
-  document.getElementById('essay').value = t.sample;
+  // Cập nhật card đề bài
+  var topicEl = document.getElementById('topicText');
+  if (topicEl) {
+    topicEl.classList.remove('topic-rotate-anim');
+    void topicEl.offsetWidth; // reflow
+    topicEl.classList.add('topic-rotate-anim');
+    topicEl.textContent = t.prompt;
+  }
+
+  // Điền câu mẫu tương ứng
+  var essayEl = document.getElementById('essay');
+  if (essayEl) {
+    essayEl.value = t.sample;
+  }
   onEssayInput();
+
+  // NẾU TOUR ĐANG MỞ Ở BƯỚC 1/6 (index 0) -> TỰ ĐỘNG CHUYỂN NGAY SANG BƯỚC 2/6
+  if (window.AppTour && window.AppTour.isActive() && window.AppTour.getCurrentIndex() === 0) {
+    setTimeout(function () {
+      window.AppTour.next();
+    }, 220);
+  }
 }
 
 function insertSampleText() {
-  var t = TOPICS[currentTopicIndex];
+  var t = WRITING_TOPICS.find(function (x) { return x.id === selectedTopicId; }) || WRITING_TOPICS[0];
   document.getElementById('essay').value = t.sample;
   onEssayInput();
+
+  // Nếu tour đang mở ở Bước 2/6 (index 1) -> Tự động chuyển ngay sang Bước 3/6
+  if (window.AppTour && window.AppTour.isActive() && window.AppTour.getCurrentIndex() === 1) {
+    setTimeout(function () {
+      window.AppTour.next();
+    }, 280);
+  }
 }
+
+// Khởi tạo ban đầu
+renderWritingTopicsList();
+selectWritingTopic('technology');
 
 // ==================== CẬP NHẬT TRẠNG THÁI SỐ CÂU THỜI GIAN THỰC ====================
 function countSentences(text) {
   if (!text || !text.trim()) return 0;
-  // Tách câu theo dấu chấm, chấm hỏi, chấm than
   var sentences = text.trim().split(/[.!?]+/).filter(function(s) {
     return s.trim().length > 2;
   });
@@ -342,7 +472,7 @@ function onEssayInput() {
     bar.style.background = '#EF4444';
     statusText.textContent = 'Chưa có câu nào (Cần viết 1–2 câu)';
     statusText.style.color = '#EF4444';
-    btn.disabled = false; // Vẫn cho bấm để khuyến khích
+    btn.disabled = false;
   } else if (count === 1) {
     bar.style.width = '50%';
     bar.style.background = '#F59E0B';
@@ -358,7 +488,6 @@ function onEssayInput() {
   }
 }
 
-
 function submitEssay() {
   var btn = document.getElementById('submitBtn');
   var essayBox = document.getElementById('essayBox');
@@ -368,6 +497,11 @@ function submitEssay() {
   btn.disabled = true;
   btn.style.background = '#9A3412';
   btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" style="animation: spin .8s linear infinite"><circle cx="12" cy="12" r="9" stroke-opacity="0.3"></circle><path d="M21 12a9 9 0 0 0-9-9"></path></svg><span>Đang nộp câu cho AI…</span>';
+
+  // Lưu câu viết hiện tại vào sessionStorage để M2Result.html sử dụng
+  try {
+    sessionStorage.setItem('m2_user_essay', document.getElementById('essay').value);
+  } catch (e) {}
 
   // 1. Quét tia laser rà soát ngữ pháp rõ ràng (500ms)
   if (laserLine) laserLine.style.display = 'block';
@@ -390,13 +524,11 @@ function submitEssay() {
     }
   }, 450);
 
-  // 3. Màn hình kéo sang với Hoạt họa Hand Drumming ngón tay gõ nhịp theo ảnh mẫu
+  // 3. Màn hình kéo sang với Hoạt họa Hand Drumming ngón tay gõ nhịp từ GIF gốc của Claudio Scotto
   setTimeout(function () {
     if (curtain) curtain.classList.add('active');
 
-    // Chạy hoạt họa Hand Drumming kèm cập nhật trạng thái phân tích
     runHandDrumLoader(function () {
-      // 4. Khi phân tích hoàn tất, chuyển thẳng sang trang 2 để zoom out nội dung
       sessionStorage.setItem('m2_zoom_out_reveal', '1');
       window.location.href = 'M2Result.html?from=writing';
     });
@@ -423,35 +555,40 @@ function runHandDrumLoader(onComplete) {
   }, 3350);
 }
 
-// ==================== TOUR ONBOARDING ĐỒNG HÀNH CHO NT2 (QUY TRÌNH 5 BƯỚC) ====================
+// ==================== TOUR ONBOARDING ĐỒNG HÀNH CHO NT2 (QUY TRÌNH 6 BƯỚC) ====================
 function startWritingTour() {
   AppTour.start([
     {
+      target: '#sectionTopicM2',
+      padding: 8,
+      badge: 'Bước 1/6',
+      title: 'Chọn chủ đề Writing',
+      desc: '👉 Hãy chạm chọn 1 chủ đề bạn muốn luyện hôm nay (Công nghệ, Môi trường, Giáo dục, Sức khỏe).',
+      hintLabel: 'Chạm chọn 1 chủ đề'
+    },
+    {
       target: '#essayInputCard',
       padding: 8,
-      badge: 'Bước 1/5',
+      badge: 'Bước 2/6',
       title: 'Viết 1–2 câu quan điểm',
-      desc: 'Bạn chỉ cần viết 1 đến 2 câu ngắn nêu quan điểm, hoặc bấm "Điền lại câu mẫu" để thử nhanh.',
-      btnLabel: 'Tiếp theo ➔'
+      desc: '👉 Tự nhập 1–2 câu quan điểm của bạn, hoặc bấm "Điền lại câu mẫu" để thử nhanh nhé!',
+      hintLabel: 'Nhập câu hoặc bấm câu mẫu'
     },
     {
       target: '#submitBtn',
       padding: 6,
-      badge: 'Bước 2/5',
-      title: 'Nhấn Chấm bài ngay',
-      desc: 'Bấm nút "Chấm bài ngay" để AI phân tích lỗi ngữ pháp và định hướng nâng cấp câu tức thì.',
-      btnLabel: 'Bắt đầu ngay ➔'
+      badge: 'Bước 3/6',
+      title: 'Chấm bài ngay với AI',
+      desc: '👉 Bấm "Chấm bài ngay" để AI chấm bài, chỉ ra lỗi sai và định hướng nâng cấp câu đạt band cao!',
+      hintLabel: 'Bấm Chấm bài ngay'
     }
   ], '#appShell');
 }
 
-// Tự động mở tour lần đầu nếu chưa xem
+// Tự động mở tour hướng dẫn trực quan từng bước
 setTimeout(function () {
-  if (!sessionStorage.getItem('tour_writing_viewed')) {
-    sessionStorage.setItem('tour_writing_viewed', '1');
-    startWritingTour();
-  }
-}, 450);
+  startWritingTour();
+}, 400);
 </script>
 </body>
 </html>

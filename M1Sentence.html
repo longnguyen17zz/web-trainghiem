@@ -153,7 +153,7 @@
       </div>
 
       <!-- Tab chọn: ĐẨY "Tôi tự đặt câu" LÊN TRƯỚC VÀ LÀM MẶC ĐỊNH -->
-      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); background: #E7E9EE; border-radius: 12px; padding: 4px; gap: 4px">
+      <div id="modeTabsGroup" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); background: #E7E9EE; border-radius: 12px; padding: 4px; gap: 4px">
         <button id="tabSelf" type="button" onclick="selectMode('self')" style="height: 40px; border: 0; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 700; color: #111827; box-shadow: 0 1px 3px rgba(17,24,39,0.12); cursor: pointer; transition: all 0.2s">Tôi tự đặt câu</button>
         <button id="tabAi" type="button" onclick="selectMode('ai')" style="height: 40px; border: 0; border-radius: 8px; background: transparent; font-family: inherit; font-size: 14px; font-weight: 600; color: #4B5563; cursor: pointer; transition: all 0.2s">AI đặt cho tôi</button>
       </div>
@@ -1095,6 +1095,8 @@ function startSentenceTour() {
       badge: 'Bước 5/10',
       title: 'Nối 8 từ thành câu (AI chấm)',
       desc: 'Tự nhập câu tiếng Anh chứa các từ đã chọn ở Bước 3, hoặc chuyển sang tab "AI đặt cho tôi" để AI tự động tạo câu mẫu giúp bạn.',
+      hintLabel: 'Chọn tự đặt câu hoặc để AI đặt',
+      focusTarget: '#modeTabsGroup',
       btnLabel: 'Tiếp theo ➔'
     },
     {

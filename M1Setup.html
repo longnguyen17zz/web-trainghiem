@@ -337,6 +337,7 @@ main {
 </div>
 
 <script src="mascot.js"></script>
+<script src="tour.js"></script>
 <script>
 // ==================== DỮ LIỆU CÁC CHỦ ĐỀ (THEO REFERENCE DESIGN) ====================
 var TOPICS_DATA = [
@@ -519,6 +520,13 @@ function selectLevel(lvl) {
   setTimeout(function () {
     secTopic.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }, 100);
+
+  // Nếu Tour hướng dẫn đang mở ở Bước 1/10 (index 0) -> Tự động chuyển ngay sang Bước 2/10
+  if (window.AppTour && window.AppTour.isActive() && window.AppTour.getCurrentIndex() === 0) {
+    setTimeout(function () {
+      window.AppTour.next();
+    }, 220);
+  }
 }
 
 // ==================== 2. CHỌN CHỦ ĐỀ (DÙNG BACKGROUND-IMAGE CHUẨN XÁC) ====================
@@ -622,6 +630,13 @@ function selectTopic(topicId) {
     message: 'Chủ đề "' + topic.lessonTitle + '" có ' + topic.words.length + ' từ. Hãy chọn ít nhất 8 từ bạn thích nhé!',
     bubble: false
   });
+
+  // Nếu Tour hướng dẫn đang mở ở Bước 2/10 (index 1) -> Tự động chuyển ngay sang Bước 3/10
+  if (window.AppTour && window.AppTour.isActive() && window.AppTour.getCurrentIndex() === 1) {
+    setTimeout(function () {
+      window.AppTour.next();
+    }, 220);
+  }
 }
 
 // ==================== 3. CHỌN TỪ TRONG CHỦ ĐỀ (LƯỚI GRID 3 CỘT - BỎ CHECKBOX) ====================
@@ -759,6 +774,13 @@ function updateSelectionSummary() {
 
   // Đồng bộ lưu trạng thái từ vựng vào sessionStorage
   saveSelectedWordsState();
+
+  // Nếu Tour hướng dẫn đang mở ở Bước 3/10 (index 2) và người dùng vừa chọn đủ 8 từ -> chuyển ngay sang Bước 4/10
+  if (count >= 8 && window.AppTour && window.AppTour.isActive() && window.AppTour.getCurrentIndex() === 2) {
+    setTimeout(function () {
+      window.AppTour.next();
+    }, 280);
+  }
 }
 
 // Lưu thông tin 8 từ vựng và chủ đề vào localStorage & sessionStorage để các bước sau dùng đồng bộ
@@ -832,44 +854,40 @@ function startSetupTour() {
       padding: 8,
       badge: 'Bước 1/10',
       title: 'Chọn trình độ tiếng Anh',
-      desc: 'Chọn trình độ (Cơ bản, Trung cấp, Nâng cao) để hệ thống lọc kho từ vựng và câu ghép phù hợp nhất với năng lực của bạn.',
-      btnLabel: 'Tiếp theo ➔'
+      desc: '👉 Hãy chạm chọn trình độ của bạn (Cơ bản, Trung cấp, Nâng cao). Hệ thống sẽ tự động lọc kho từ vựng và câu ghép phù hợp.',
+      hintLabel: 'Chạm chọn 1 trình độ'
     },
     {
       target: '#sectionTopic',
       padding: 8,
       badge: 'Bước 2/10',
       title: 'Chọn chủ đề yêu thích',
-      desc: 'Vuốt ngang để khám phá các chủ đề (Môi trường, Công nghệ, Giáo dục...) và bấm chọn 1 chủ đề bạn muốn luyện hôm nay.',
-      btnLabel: 'Tiếp theo ➔'
+      desc: '👉 Chạm chọn 1 chủ đề bạn muốn luyện hôm nay (Môi trường, Công nghệ, Giáo dục...) để mở kho từ vựng.',
+      hintLabel: 'Chạm chọn 1 chủ đề'
     },
     {
       target: '#sectionWords',
       padding: 8,
       badge: 'Bước 3/10',
-      title: 'Chọn từ trong chủ đề',
-      desc: 'Bấm "Chọn nhanh 8 từ" hoặc chạm từng từ trong lưới để chọn đủ 8 từ vựng cần thiết để chuẩn bị ghép câu.',
-      btnLabel: 'Tiếp theo ➔'
+      title: 'Chọn đủ 8 từ trong chủ đề',
+      desc: '👉 Chạm các từ trong lưới hoặc bấm "Chọn nhanh 8 từ" để chọn đủ 8 từ cần thiết để ghép câu.',
+      hintLabel: 'Chọn đủ 8 từ vựng'
     },
     {
       target: '#btnContinue',
       padding: 6,
       badge: 'Bước 4/10',
-      title: 'Tiếp tục với 8 từ',
-      desc: 'Sau khi đã chọn đủ 8 từ vựng, bấm nút này để chuyển sang bước ghép câu AI thông minh!',
-      btnLabel: 'Bắt đầu ngay ➔'
+      title: 'Tiếp tục tạo câu AI',
+      desc: '👉 Đã chọn đủ 8 từ! Bấm nút "Tiếp tục với 8 từ" bên dưới để chuyển sang bước ghép câu AI thông minh.',
+      hintLabel: 'Bấm nút tiếp tục'
     }
   ], '#appShell');
 }
 
-// Tự động gợi ý mở tour lần đầu
+// Tự động mở tour hướng dẫn trực quan từng bước
 setTimeout(function () {
-  if (!sessionStorage.getItem('tour_setup_viewed')) {
-    sessionStorage.setItem('tour_setup_viewed', '1');
-    startSetupTour();
-  }
-}, 450);
+  startSetupTour();
+}, 400);
 </script>
-<script src="tour.js"></script>
 </body>
 </html>

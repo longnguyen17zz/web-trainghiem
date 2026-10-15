@@ -305,7 +305,7 @@
 
   <!-- Footer -->
   <footer style="flex-shrink: 0; background: #FFFFFF; border-top: 1px solid #DDE1E8; padding: 8px 16px 20px; display: flex; flex-direction: column; gap: 4px">
-    <a href="M1Arrange.html" style="height: 52px; border-radius: 12px; background: #C2410C; color: #FFFFFF; font-size: 16px; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center">Tiếp tục: Luyện ghép từ</a>
+    <a href="M1Arrange.html" onclick="saveSentenceStateBeforeNav()" style="height: 52px; border-radius: 12px; background: #C2410C; color: #FFFFFF; font-size: 16px; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center">Tiếp tục: Luyện ghép từ</a>
     <button type="button" onclick="selectMode('ai'); triggerAiGeneration(true)" style="height: 40px; border: 0; background: transparent; color: #C2410C; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Đặt lại câu khác (tốn 1 lượt AI)</button>
   </footer>
 
@@ -315,22 +315,48 @@
 
 <script src="mascot.js"></script>
 <script>
-// Dữ liệu 8 từ vựng đã chọn từ Bước 3
-var TARGET_WORDS = [
-  { key: 'deforestation', en: 'deforestation', vi: 'phá rừng' },
-  { key: 'habitat', en: 'habitat', vi: 'môi trường sống' },
-  { key: 'conserve', en: 'conserve', vi: 'bảo tồn' },
-  { key: 'renewable', en: 'renewable', vi: 'tái tạo' },
-  { key: 'pollution', en: 'pollution', vi: 'ô nhiễm' },
-  { key: 'ecosystem', en: 'ecosystem', vi: 'hệ sinh thái' },
-  { key: 'sustainable', en: 'sustainable', vi: 'bền vững' },
-  { key: 'recycle', en: 'recycle', vi: 'tái chế' }
-];
+// ==================== LẤY 8 TỪ VỰNG TỪ BƯỚC 3 (SESSIONSTORAGE) ====================
+var storedWordsJson = sessionStorage.getItem('m1_selected_words');
+var TARGET_WORDS = [];
+if (storedWordsJson) {
+  try {
+    TARGET_WORDS = JSON.parse(storedWordsJson);
+  } catch (e) {
+    TARGET_WORDS = [];
+  }
+}
 
-// Highlight các từ vựng mục tiêu trong câu
+// Fallback chuẩn 8 từ nếu người dùng mở trực tiếp trang mà chưa qua Bước 3
+if (!TARGET_WORDS || TARGET_WORDS.length === 0) {
+  TARGET_WORDS = [
+    { key: 'deforestation', en: 'deforestation', vi: 'phá rừng' },
+    { key: 'habitat', en: 'habitat', vi: 'môi trường sống' },
+    { key: 'conserve', en: 'conserve', vi: 'bảo tồn' },
+    { key: 'renewable', en: 'renewable', vi: 'tái tạo' },
+    { key: 'pollution', en: 'pollution', vi: 'ô nhiễm' },
+    { key: 'ecosystem', en: 'ecosystem', vi: 'hệ sinh thái' },
+    { key: 'sustainable', en: 'sustainable', vi: 'bền vững' },
+    { key: 'recycle', en: 'recycle', vi: 'tái chế' }
+  ];
+}
+
+// Đảm bảo mỗi từ đều có thuộc tính key chuẩn
+TARGET_WORDS = TARGET_WORDS.map(function (w) {
+  return {
+    id: w.id || w.key,
+    key: (w.key || w.en).toLowerCase(),
+    en: w.en,
+    vi: w.vi
+  };
+});
+
+// Highlight các từ vựng mục tiêu trong câu một cách linh hoạt theo đúng 8 từ đã chọn
 function highlightVocab(text) {
-  if (!text) return '';
-  var pattern = /\b(deforestation|habitats?|conserve[a-z]*|renewable|pollution[a-z]*|ecosystems?|sustainable|recycl[a-z]*)\b/gi;
+  if (!text || !TARGET_WORDS.length) return text || '';
+  var keys = TARGET_WORDS.map(function (w) {
+    return w.en.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  });
+  var pattern = new RegExp('\\b(' + keys.join('|') + ')(s|es|d|ed|ing|tion|ive|al)?\\b', 'gi');
   return text.replace(pattern, function (m) {
     return '<span class="vocab-hl">' + m + '</span>';
   });
@@ -352,20 +378,21 @@ function renderWordChips(usedKeys) {
   });
   container.innerHTML = html;
 
+  var totalCount = TARGET_WORDS.length;
   var statusBadge = document.getElementById('wordTrackerStatus');
   if (statusBadge) {
-    if (count === 8) {
-      statusBadge.textContent = '✓ Đã ghép đủ 8/8 từ';
+    if (count >= totalCount) {
+      statusBadge.textContent = '✓ Đã ghép đủ ' + totalCount + '/' + totalCount + ' từ';
       statusBadge.style.background = '#DCFCE7';
       statusBadge.style.color = '#15803D';
       statusBadge.style.border = '1px solid #86EFAC';
     } else if (count > 0) {
-      statusBadge.textContent = 'Đã ghép ' + count + '/8 từ';
+      statusBadge.textContent = 'Đã ghép ' + count + '/' + totalCount + ' từ';
       statusBadge.style.background = '#FEF3C7';
       statusBadge.style.color = '#92400E';
       statusBadge.style.border = '1px solid #FCD34D';
     } else {
-      statusBadge.textContent = 'Chưa ghép (0/8)';
+      statusBadge.textContent = 'Chưa ghép (0/' + totalCount + ')';
       statusBadge.style.background = '#F3F4F6';
       statusBadge.style.color = '#6B7280';
       statusBadge.style.border = '1px solid #E5E7EB';
@@ -395,46 +422,145 @@ function toggleWordsDropdown() {
   }
 }
 
-// Dữ liệu 2 câu mẫu của AI (Câu 1 gồm 6 từ vựng, Câu 2 bổ sung 2 từ còn lại để đủ 8/8 từ)
-var ALL_AI_SENTENCES = [
-  {
-    id: 1,
-    tag: 'Câu 1 · Ghép 6 từ vựng chính',
-    vocabBadge: 'conserve, ecosystem, pollution, deforestation, habitat, sustainable (6 từ)',
-    fullTextEn: 'To conserve our natural ecosystem from severe pollution, we must stop deforestation, protect wildlife habitats, and adopt sustainable habits.',
-    chunks: [
-      { id: 0, en: 'To conserve', vi: 'Để bảo tồn', duration: 650 },
-      { id: 1, en: 'our natural', vi: 'tự nhiên', duration: 550 },
-      { id: 2, en: 'ecosystem', vi: 'hệ sinh thái', duration: 650 },
-      { id: 3, en: 'from severe', vi: 'khỏi nguy cơ', duration: 500 },
-      { id: 4, en: 'pollution,', vi: 'ô nhiễm nghiêm trọng,', duration: 750 },
-      { id: 5, en: 'we must stop', vi: 'chúng ta phải ngăn chặn', duration: 650 },
-      { id: 6, en: 'deforestation,', vi: 'nạn phá rừng,', duration: 750 },
-      { id: 7, en: 'protect wildlife', vi: 'bảo vệ các loài', duration: 600 },
-      { id: 8, en: 'habitats,', vi: 'môi trường sống,', duration: 650 },
-      { id: 9, en: 'and adopt', vi: 'và thực hành', duration: 500 },
-      { id: 10, en: 'sustainable', vi: 'bền vững', duration: 650 },
-      { id: 11, en: 'habits.', vi: 'các thói quen.', duration: 550 }
-    ]
-  },
-  {
-    id: 2,
-    tag: 'Câu 2 · Bổ sung 2 từ còn lại',
-    vocabBadge: 'renewable, recycle (2 từ)',
-    fullTextEn: 'Furthermore, switching to renewable energy and learning to recycle waste are essential for our planet.',
-    chunks: [
-      { id: 0, en: 'Furthermore,', vi: 'Hơn nữa,', duration: 600 },
-      { id: 1, en: 'switching to', vi: 'chuyển đổi sang', duration: 600 },
-      { id: 2, en: 'renewable', vi: 'tái tạo', duration: 650 },
-      { id: 3, en: 'energy', vi: 'năng lượng', duration: 500 },
-      { id: 4, en: 'and learning', vi: 'và học cách', duration: 550 },
-      { id: 5, en: 'to recycle', vi: 'tái chế', duration: 650 },
-      { id: 6, en: 'waste', vi: 'rác thải', duration: 500 },
-      { id: 7, en: 'are essential', vi: 'là thiết yếu', duration: 600 },
-      { id: 8, en: 'for our planet.', vi: 'cho hành tinh của chúng ta.', duration: 750 }
-    ]
+// Sinh 2 câu ngữ cảnh ăn khớp trọn vẹn đúng 8 từ vựng đã chọn
+function generateSentencesFor8Words(words) {
+  var topicId = sessionStorage.getItem('m1_topic_id') || 'environment';
+
+  // Kiểm tra nếu là đúng 8 từ cơ bản của Environment
+  var envStandardKeys = ['deforestation', 'habitat', 'conserve', 'renewable', 'pollution', 'ecosystem', 'sustainable', 'recycle'];
+  var isDefaultEnv = words.length === 8 && envStandardKeys.every(function (k) {
+    return words.some(function (w) { return w.key === k; });
+  });
+
+  if (isDefaultEnv) {
+    return [
+      {
+        id: 1,
+        tag: 'Câu 1 · Ghép 6 từ vựng chính',
+        vocabBadge: 'conserve, ecosystem, pollution, deforestation, habitat, sustainable (6 từ)',
+        fullTextEn: 'To conserve our natural ecosystem from severe pollution, we must stop deforestation, protect wildlife habitats, and adopt sustainable habits.',
+        chunks: [
+          { id: 0, en: 'To conserve', vi: 'Để bảo tồn', duration: 650 },
+          { id: 1, en: 'our natural', vi: 'tự nhiên', duration: 550 },
+          { id: 2, en: 'ecosystem', vi: 'hệ sinh thái', duration: 650 },
+          { id: 3, en: 'from severe', vi: 'khỏi nguy cơ', duration: 500 },
+          { id: 4, en: 'pollution,', vi: 'ô nhiễm nghiêm trọng,', duration: 750 },
+          { id: 5, en: 'we must stop', vi: 'chúng ta phải ngăn chặn', duration: 650 },
+          { id: 6, en: 'deforestation,', vi: 'nạn phá rừng,', duration: 750 },
+          { id: 7, en: 'protect wildlife', vi: 'bảo vệ các loài', duration: 600 },
+          { id: 8, en: 'habitats,', vi: 'môi trường sống,', duration: 650 },
+          { id: 9, en: 'and adopt', vi: 'và thực hành', duration: 500 },
+          { id: 10, en: 'sustainable', vi: 'bền vững', duration: 650 },
+          { id: 11, en: 'habits.', vi: 'các thói quen.', duration: 550 }
+        ]
+      },
+      {
+        id: 2,
+        tag: 'Câu 2 · Bổ sung 2 từ còn lại',
+        vocabBadge: 'renewable, recycle (2 từ)',
+        fullTextEn: 'Furthermore, switching to renewable energy and learning to recycle waste are essential for our planet.',
+        chunks: [
+          { id: 0, en: 'Furthermore,', vi: 'Hơn nữa,', duration: 600 },
+          { id: 1, en: 'switching to', vi: 'chuyển đổi sang', duration: 600 },
+          { id: 2, en: 'renewable', vi: 'tái tạo', duration: 650 },
+          { id: 3, en: 'energy', vi: 'năng lượng', duration: 500 },
+          { id: 4, en: 'and learning', vi: 'và học cách', duration: 550 },
+          { id: 5, en: 'to recycle', vi: 'tái chế', duration: 650 },
+          { id: 6, en: 'waste', vi: 'rác thải', duration: 500 },
+          { id: 7, en: 'are essential', vi: 'là thiết yếu', duration: 600 },
+          { id: 8, en: 'for our planet.', vi: 'cho hành tinh của chúng ta.', duration: 750 }
+        ]
+      }
+    ];
   }
-];
+
+  // Nếu là chủ đề Công nghệ (Technology)
+  if (topicId === 'technology') {
+    var wList = words.map(function(w){ return w.en; });
+    return [
+      {
+        id: 1,
+        tag: 'Câu 1 · Ghép ' + Math.min(4, words.length) + ' từ công nghệ',
+        vocabBadge: words.slice(0, 4).map(function(w){ return w.en; }).join(', ') + ' (4 từ)',
+        fullTextEn: 'Modern innovation in software and automation relies heavily on a secure database infrastructure.',
+        chunks: [
+          { id: 0, en: 'Modern', vi: 'Hiện đại', duration: 500 },
+          { id: 1, en: words[0] ? words[0].en : 'innovation', vi: words[0] ? words[0].vi : 'đổi mới', duration: 650 },
+          { id: 2, en: 'in', vi: 'trong', duration: 400 },
+          { id: 3, en: words[1] ? words[1].en : 'software', vi: words[1] ? words[1].vi : 'phần mềm', duration: 650 },
+          { id: 4, en: 'and', vi: 'và', duration: 400 },
+          { id: 5, en: words[2] ? words[2].en : 'automation', vi: words[2] ? words[2].vi : 'tự động hóa', duration: 750 },
+          { id: 6, en: 'relies heavily on a', vi: 'phụ thuộc vào', duration: 600 },
+          { id: 7, en: words[3] ? words[3].en : 'database', vi: words[3] ? words[3].vi : 'cơ sở dữ liệu', duration: 700 },
+          { id: 8, en: 'infrastructure.', vi: 'hạ tầng.', duration: 550 }
+        ]
+      },
+      {
+        id: 2,
+        tag: 'Câu 2 · Ghép 4 từ còn lại',
+        vocabBadge: words.slice(4).map(function(w){ return w.en; }).join(', ') + ' (' + words.slice(4).length + ' từ)',
+        fullTextEn: 'Therefore, protecting every device across the network requires advanced algorithms and cybersecurity.',
+        chunks: [
+          { id: 0, en: 'Therefore,', vi: 'Do đó,', duration: 550 },
+          { id: 1, en: 'protecting every', vi: 'bảo vệ mọi', duration: 550 },
+          { id: 2, en: words[4] ? words[4].en : 'device', vi: words[4] ? words[4].vi : 'thiết bị', duration: 650 },
+          { id: 3, en: 'across the', vi: 'trên toàn', duration: 500 },
+          { id: 4, en: words[5] ? words[5].en : 'network', vi: words[5] ? words[5].vi : 'mạng lưới', duration: 650 },
+          { id: 5, en: 'requires', vi: 'đòi hỏi', duration: 500 },
+          { id: 6, en: words[6] ? words[6].en : 'algorithm', vi: words[6] ? words[6].vi : 'thuật toán', duration: 700 },
+          { id: 7, en: 'and strong', vi: 'và vững chắc', duration: 450 },
+          { id: 8, en: words[7] ? words[7].en : 'cybersecurity.', vi: words[7] ? words[7].vi : 'an ninh mạng.', duration: 750 }
+        ]
+      }
+    ];
+  }
+
+  // Tự động phân chia 8 từ bất kỳ thành 2 câu tự nhiên cân đối (4 từ câu 1 + 4 từ câu 2)
+  var g1 = words.slice(0, 4);
+  var g2 = words.slice(4);
+
+  var s1En = 'In practice, understanding ' + (g1[0] ? g1[0].en : 'this') + ' and ' + (g1[1] ? g1[1].en : 'that') + ' helps us conserve ' + (g1[2] ? g1[2].en : 'nature') + ' against ' + (g1[3] ? g1[3].en : 'impact') + '.';
+  var s2En = 'Furthermore, developing ' + (g2[0] ? g2[0].en : 'solutions') + ' and ' + (g2[1] ? g2[1].en : 'actions') + ' ensures ' + (g2[2] ? g2[2].en : 'balance') + ' for ' + (g2[3] ? g2[3].en : 'the future') + '.';
+
+  return [
+    {
+      id: 1,
+      tag: 'Câu 1 · Ghép ' + g1.length + ' từ vựng đầu',
+      vocabBadge: g1.map(function (w) { return w.en; }).join(', ') + ' (' + g1.length + ' từ)',
+      fullTextEn: s1En,
+      chunks: [
+        { id: 0, en: 'In practice,', vi: 'Trong thực tế,', duration: 600 },
+        { id: 1, en: 'understanding', vi: 'hiểu rõ', duration: 550 },
+        { id: 2, en: g1[0] ? g1[0].en : '', vi: g1[0] ? g1[0].vi : '', duration: 700 },
+        { id: 3, en: 'and', vi: 'và', duration: 400 },
+        { id: 4, en: g1[1] ? g1[1].en : '', vi: g1[1] ? g1[1].vi : '', duration: 700 },
+        { id: 5, en: 'helps us support', vi: 'giúp hỗ trợ', duration: 600 },
+        { id: 6, en: g1[2] ? g1[2].en : '', vi: g1[2] ? g1[2].vi : '', duration: 700 },
+        { id: 7, en: 'against', vi: 'trước', duration: 450 },
+        { id: 8, en: (g1[3] ? g1[3].en : '') + '.', vi: (g1[3] ? g1[3].vi : '') + '.', duration: 750 }
+      ]
+    },
+    {
+      id: 2,
+      tag: 'Câu 2 · Bổ sung ' + g2.length + ' từ còn lại',
+      vocabBadge: g2.map(function (w) { return w.en; }).join(', ') + ' (' + g2.length + ' từ)',
+      fullTextEn: s2En,
+      chunks: [
+        { id: 0, en: 'Furthermore,', vi: 'Hơn nữa,', duration: 600 },
+        { id: 1, en: 'developing', vi: 'phát triển', duration: 550 },
+        { id: 2, en: g2[0] ? g2[0].en : '', vi: g2[0] ? g2[0].vi : '', duration: 700 },
+        { id: 3, en: 'and', vi: 'và', duration: 400 },
+        { id: 4, en: g2[1] ? g2[1].en : '', vi: g2[1] ? g2[1].vi : '', duration: 700 },
+        { id: 5, en: 'ensures', vi: 'đảm bảo', duration: 500 },
+        { id: 6, en: g2[2] ? g2[2].en : '', vi: g2[2] ? g2[2].vi : '', duration: 700 },
+        { id: 7, en: 'for', vi: 'cho', duration: 400 },
+        { id: 8, en: (g2[3] ? g2[3].en : '') + '.', vi: (g2[3] ? g2[3].vi : '') + '.', duration: 750 }
+      ]
+    }
+  ];
+}
+
+var ALL_AI_SENTENCES = generateSentencesFor8Words(TARGET_WORDS);
 
 var CURRENT_DISPLAY_SENTENCES = [];
 var currentMode = 'self'; // Mặc định là 'self' (Tôi tự đặt câu)
@@ -542,15 +668,24 @@ function gradeUserSentence() {
     gradeBox.style.display = 'flex';
 
     // CẢ 2 CÂU BAO QUÁT TRỌN VẸN ĐỦ 8/8 TỪ VỰNG:
-    // Câu 1: deforestation, habitat, pollution, recycle (4 từ)
-    // Câu 2: conserve, ecosystem, sustainable, renewable (4 từ)
+    // Tự động phân bổ các từ vựng của TARGET_WORDS vào 2 câu
+    var half = Math.ceil(TARGET_WORDS.length / 2);
+    var firstHalf = TARGET_WORDS.slice(0, half);
+    var secondHalf = TARGET_WORDS.slice(half);
+
+    var firstBadge = firstHalf.map(function(w){ return w.en; }).join(', ') + ' (' + firstHalf.length + ' từ)';
+    var secondBadge = secondHalf.map(function(w){ return w.en; }).join(', ') + ' (' + secondHalf.length + ' từ)';
+
+    var s1 = ALL_AI_SENTENCES[0];
+    var s2 = ALL_AI_SENTENCES[1];
+
     CURRENT_DISPLAY_SENTENCES = [
       {
         id: 1,
         tag: 'Câu 1 · Bạn tự đặt (AI sửa chuẩn)',
-        vocabBadge: 'deforestation, habitat, pollution, recycle (4 từ)',
-        fullTextEn: corrected,
-        chunks: [
+        vocabBadge: firstBadge,
+        fullTextEn: s1 ? s1.fullTextEn : corrected,
+        chunks: s1 ? s1.chunks : [
           { id: 0, en: 'Deforestation', vi: 'Nạn phá rừng', duration: 750 },
           { id: 1, en: 'destroys', vi: 'huỷ hoại', duration: 550 },
           { id: 2, en: 'the natural', vi: 'tự nhiên', duration: 500 },
@@ -566,9 +701,9 @@ function gradeUserSentence() {
       {
         id: 2,
         tag: 'Câu 2 · AI bổ sung để đủ 8 từ',
-        vocabBadge: 'conserve, ecosystem, sustainable, renewable (4 từ)',
-        fullTextEn: 'To conserve our ecosystem, we should adopt sustainable habits and use renewable energy.',
-        chunks: [
+        vocabBadge: secondBadge,
+        fullTextEn: s2 ? s2.fullTextEn : 'To conserve our ecosystem, we should adopt sustainable habits and use renewable energy.',
+        chunks: s2 ? s2.chunks : [
           { id: 0, en: 'To conserve', vi: 'Để bảo tồn', duration: 650 },
           { id: 1, en: 'our', vi: 'của chúng ta', duration: 450 },
           { id: 2, en: 'ecosystem,', vi: 'hệ sinh thái,', duration: 750 },
@@ -583,6 +718,9 @@ function gradeUserSentence() {
       }
     ];
 
+    // Lưu lại 2 câu vào sessionStorage để Bước 8 sắp xếp câu và các bước tiếp theo dùng đồng bộ
+    sessionStorage.setItem('m1_generated_sentences', JSON.stringify(CURRENT_DISPLAY_SENTENCES));
+
     // Cập nhật thanh tiến độ: Đủ 8/8 từ (100%)
     var allKeys = TARGET_WORDS.map(function (w) { return w.key; });
     renderWordChips(allKeys);
@@ -593,14 +731,14 @@ function gradeUserSentence() {
     // Thầy Phúc nhắc xem nhận xét và bấm Tiếp tục
     renderMascot(document.getElementById('mascot'), {
       mood: 'happy',
-      message: 'AI đã chấm câu của bạn và bổ sung thêm Câu 2 để ghép trọn vẹn đủ cả 8/8 từ vựng rồi nhé!'
+      message: 'AI đã chấm câu của bạn và bổ sung thêm Câu 2 để ghép trọn vẹn đủ cả ' + TARGET_WORDS.length + '/' + TARGET_WORDS.length + ' từ vựng rồi nhé!'
     });
   }, 1100);
 }
 
 // 4. AI tạo thẳng các câu (Bao quát trọn vẹn cả 8 từ vựng)
 function triggerAiGeneration(forceNew) {
-  showAiLoading('AI đang kết nối 8 từ thành các câu ngữ cảnh IELTS...');
+  showAiLoading('AI đang kết nối ' + TARGET_WORDS.length + ' từ thành các câu ngữ cảnh IELTS...');
   var aiBox = document.getElementById('aiResultBox');
   if (aiBox) aiBox.style.display = 'none';
 
@@ -611,9 +749,13 @@ function triggerAiGeneration(forceNew) {
 
   setTimeout(function () {
     hideAiLoading();
+    ALL_AI_SENTENCES = generateSentencesFor8Words(TARGET_WORDS);
     CURRENT_DISPLAY_SENTENCES = ALL_AI_SENTENCES;
 
-    // Cập nhật thanh tiến độ: Đủ Durd
+    // Lưu lại 2 câu vào sessionStorage để Bước 8 sắp xếp câu dùng đồng bộ
+    sessionStorage.setItem('m1_generated_sentences', JSON.stringify(CURRENT_DISPLAY_SENTENCES));
+
+    // Cập nhật thanh tiến độ: Đủ 8/8 từ
     var allKeys = TARGET_WORDS.map(function (w) { return w.key; });
     renderWordChips(allKeys);
 
@@ -624,7 +766,7 @@ function triggerAiGeneration(forceNew) {
 
     renderMascot(document.getElementById('mascot'), {
       mood: 'happy',
-      message: 'AI đã ghép đủ 8/8 từ vào 2 câu (Câu 1 gồm 6 từ)! Hãy bấm Tiếp tục để bắt đầu luyện nghe.'
+      message: 'AI đã ghép đủ ' + TARGET_WORDS.length + '/' + TARGET_WORDS.length + ' từ vào 2 câu! Hãy bấm Tiếp tục để bắt đầu luyện nghe.'
     });
   }, 950);
 }
@@ -651,6 +793,13 @@ function continueToSection5(fromSource) {
     message: msg
   });
   speakMascotText(msg, document.querySelector('[data-mascot-avatar]'));
+}
+
+function saveSentenceStateBeforeNav() {
+  if (!CURRENT_DISPLAY_SENTENCES || CURRENT_DISPLAY_SENTENCES.length === 0) {
+    CURRENT_DISPLAY_SENTENCES = ALL_AI_SENTENCES;
+  }
+  sessionStorage.setItem('m1_generated_sentences', JSON.stringify(CURRENT_DISPLAY_SENTENCES));
 }
 
 function showAiLoading(msg) {

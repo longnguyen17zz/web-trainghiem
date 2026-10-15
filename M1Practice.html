@@ -33,14 +33,14 @@
     </div>
 
     <div style="display: flex; align-items: center; gap: 8px">
-      <div style="flex: 1; height: 6px; border-radius: 6px; background: #EEF0F4; overflow: hidden"><div id="bar" style="height: 6px; background: #0E6B42; width: 33%"></div></div>
-      <span id="pct" style="font-size: 12px; font-weight: 600; color: #0E6B42; flex-shrink: 0">Đã nối 2/6</span>
+      <div style="flex: 1; height: 6px; border-radius: 6px; background: #EEF0F4; overflow: hidden"><div id="bar" style="height: 6px; background: #0E6B42; width: 0%"></div></div>
+      <span id="pct" style="font-size: 12px; font-weight: 600; color: #0E6B42; flex-shrink: 0">Đã nối 0/8</span>
     </div>
 
-    <div id="matchingBoard" style="position: relative; height: 472px">
-      <svg id="lines" width="358" height="472" style="position: absolute; left: 0; top: 0; pointer-events: none"></svg>
-      <div id="leftCards" style="position: absolute; left: 0; top: 0; width: 150px"></div>
-      <div id="rightCards" style="position: absolute; right: 0; top: 0; width: 150px"></div>
+    <div id="matchingBoard" style="position: relative; height: 440px">
+      <svg id="lines" width="358" height="440" style="position: absolute; left: 0; top: 0; pointer-events: none"></svg>
+      <div id="leftCards" style="position: absolute; left: 0; top: 0; width: 152px"></div>
+      <div id="rightCards" style="position: absolute; right: 0; top: 0; width: 152px"></div>
     </div>
 
     <div id="feedback"></div>
@@ -86,25 +86,57 @@
 </div>
 <script src="mascot.js"></script>
 <script>
-var PAIRS = [
-  { id: 'habitat', en: 'habitat', vi: 'môi trường sống' },
-  { id: 'deforestation', en: 'deforestation', vi: 'nạn phá rừng' },
-  { id: 'extinction', en: 'extinction', vi: 'sự tuyệt chủng' },
-  { id: 'conservation', en: 'conservation', vi: 'bảo tồn' },
-  { id: 'pollution', en: 'pollution', vi: 'ô nhiễm' },
-  { id: 'ecosystem', en: 'ecosystem', vi: 'hệ sinh thái' }
-];
-var RIGHT_ORDER = ['pollution', 'habitat', 'conservation', 'deforestation', 'ecosystem', 'extinction'];
-var STEP = 82;
+// Lấy đúng danh sách 8 từ đã chọn từ Bước 3 (sessionStorage)
+var storedWordsJson = sessionStorage.getItem('m1_selected_words');
+var userWords = [];
+if (storedWordsJson) {
+  try {
+    userWords = JSON.parse(storedWordsJson);
+  } catch (e) {
+    userWords = [];
+  }
+}
+
+// Fallback đủ 8 từ chuẩn nếu người dùng vào thẳng trang
+if (!userWords || userWords.length === 0) {
+  userWords = [
+    { id: 'w1', en: 'deforestation', vi: 'phá rừng' },
+    { id: 'w2', en: 'habitat', vi: 'môi trường sống' },
+    { id: 'w3', en: 'conserve', vi: 'bảo tồn' },
+    { id: 'w4', en: 'renewable', vi: 'tái tạo' },
+    { id: 'w5', en: 'pollution', vi: 'ô nhiễm' },
+    { id: 'w6', en: 'ecosystem', vi: 'hệ sinh thái' },
+    { id: 'w7', en: 'sustainable', vi: 'bền vững' },
+    { id: 'w8', en: 'recycle', vi: 'tái chế' }
+  ];
+}
+
+var PAIRS = userWords.map(function (w, i) {
+  return {
+    id: w.id || ('w' + (i + 1)),
+    en: w.en,
+    vi: w.vi
+  };
+});
+
+// Thứ tự xáo trộn bên phải (không trùng hàng ngang)
+var RIGHT_ORDER = PAIRS.map(function (p) { return p.id; });
+if (RIGHT_ORDER.length >= 8) {
+  RIGHT_ORDER = [PAIRS[4].id, PAIRS[0].id, PAIRS[7].id, PAIRS[2].id, PAIRS[5].id, PAIRS[1].id, PAIRS[6].id, PAIRS[3].id];
+} else {
+  RIGHT_ORDER.sort(function () { return 0.5 - Math.random(); });
+}
+
+var STEP = 54;
 var byId = {}; PAIRS.forEach(function (p) { byId[p.id] = p; });
 var leftIndex = {}; PAIRS.forEach(function (p, i) { leftIndex[p.id] = i; });
 var rightIndex = {}; RIGHT_ORDER.forEach(function (id, i) { rightIndex[id] = i; });
 
-var connections = { habitat: 'habitat', deforestation: 'deforestation' };
+var connections = {};
 var selected = null;
 
-var baseLeft = 'position: absolute; left: 0; width: 150px; height: 58px; border-radius: 14px; font-family: inherit; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 6px; padding: 0 12px; text-align: left; border: 0; cursor: pointer; transition: all 0.15s ease; box-sizing: border-box;';
-var baseRight = 'position: absolute; right: 0; width: 150px; height: 58px; border-radius: 14px; font-family: inherit; font-size: 14px; font-weight: 600; display: flex; align-items: center; padding: 0 12px; text-align: left; border: 0; cursor: pointer; transition: all 0.15s ease; box-sizing: border-box;';
+var baseLeft = 'position: absolute; left: 0; width: 152px; height: 46px; border-radius: 12px; font-family: inherit; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 5px; padding: 0 10px; text-align: left; border: 0; cursor: pointer; transition: all 0.15s ease; box-sizing: border-box;';
+var baseRight = 'position: absolute; right: 0; width: 152px; height: 46px; border-radius: 12px; font-family: inherit; font-size: 12px; font-weight: 600; display: flex; align-items: center; padding: 0 10px; text-align: left; border: 0; cursor: pointer; transition: all 0.15s ease; box-sizing: border-box;';
 var neutralStyle = 'border: 1.5px solid #BFD8F2; background: #EDF4FC; color: #1D4E89;';
 var correctStyle = 'border: 1.5px solid #B9E2C8; background: #E6F4EC; color: #0E6B42;';
 var wrongStyle = 'border: 1.5px solid #F3B4BD; background: #FDECEE; color: #A30D25;';
@@ -163,7 +195,7 @@ function render() {
   var perfect = correctCount === PAIRS.length;
 
   document.getElementById('bar').style.width = Math.round((connectedCount / PAIRS.length) * 100) + '%';
-  document.getElementById('pct').textContent = 'Đã nối ' + connectedCount + '/6';
+  document.getElementById('pct').textContent = 'Đã nối ' + connectedCount + '/' + PAIRS.length;
 
   var leftEl = document.getElementById('leftCards');
   leftEl.innerHTML = '';
@@ -205,8 +237,8 @@ function render() {
     var rightId = connections[leftId];
     var isCorrect = leftId === rightId;
     var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.setAttribute('x1', 150); line.setAttribute('y1', leftIndex[leftId] * STEP + 29);
-    line.setAttribute('x2', 208); line.setAttribute('y2', rightIndex[rightId] * STEP + 29);
+    line.setAttribute('x1', 152); line.setAttribute('y1', leftIndex[leftId] * STEP + 23);
+    line.setAttribute('x2', 206); line.setAttribute('y2', rightIndex[rightId] * STEP + 23);
     line.setAttribute('stroke', allDone ? (isCorrect ? '#0E6B42' : '#C8102E') : '#9CA3AF');
     line.setAttribute('stroke-width', '2.5'); line.setAttribute('stroke-linecap', 'round');
     linesSvg.appendChild(line);
@@ -217,7 +249,7 @@ function render() {
     var style2 = perfect
       ? 'background: #E6F4EC; color: #0E6B42; border-radius: 12px; padding: 10px 14px; font-size: 13.5px; font-weight: 600;'
       : 'background: #FEF3E2; color: #8A4006; border-radius: 12px; padding: 10px 14px; font-size: 13.5px; font-weight: 600;';
-    var text = perfect ? ('🎉 Chúc mừng! Bạn đã nối đúng ' + correctCount + '/6 từ.') : ('Bạn đã nối đúng ' + correctCount + '/6 từ. Các cặp màu đỏ là chưa đúng, ghi nhớ thêm nhé!');
+    var text = perfect ? ('🎉 Chúc mừng! Bạn đã nối đúng ' + correctCount + '/' + PAIRS.length + ' từ.') : ('Bạn đã nối đúng ' + correctCount + '/' + PAIRS.length + ' từ. Các cặp màu đỏ là chưa đúng, ghi nhớ thêm nhé!');
     feedbackEl.innerHTML = '<div style="' + style2 + '">' + text + '</div>';
   } else {
     feedbackEl.innerHTML = '';
@@ -226,8 +258,8 @@ function render() {
   renderMascot(document.getElementById('mascot'), {
     mood: allDone ? (perfect ? 'cheer' : 'idle') : 'idle',
     message: allDone
-      ? (perfect ? ('Xuất sắc! Bạn nối đúng hết ' + correctCount + '/6 rồi!') : ('Bạn nối đúng ' + correctCount + '/6 từ. Xem lại các cặp màu đỏ để nhớ kỹ hơn nhé.'))
-      : 'Tự đoán nghĩa rồi chạm nối cặp nhé, không gợi ý đâu đấy!'
+      ? (perfect ? ('Xuất sắc! Bạn nối đúng hết ' + correctCount + '/' + PAIRS.length + ' rồi!') : ('Bạn nối đúng ' + correctCount + '/' + PAIRS.length + ' từ. Xem lại các cặp màu đỏ để nhớ kỹ hơn nhé.'))
+      : 'Tự đoán nghĩa rồi chạm nối đủ ' + PAIRS.length + ' cặp từ nhé, không gợi ý đâu đấy!'
   });
 }
 

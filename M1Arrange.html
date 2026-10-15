@@ -97,7 +97,21 @@
 
 <script src="mascot.js"></script>
 <script>
-// Danh sách 10 từ tiếng Anh & nghĩa tiếng Việt tương ứng
+// Lấy câu đã ghép từ Bước 5-7 để luyện sắp xếp (hoặc dùng câu mặc định)
+var storedSentencesJson = sessionStorage.getItem('m1_generated_sentences');
+var arrangeSentence = null;
+if (storedSentencesJson) {
+  try {
+    var sentences = JSON.parse(storedSentencesJson);
+    if (sentences && sentences.length > 0 && sentences[0].chunks && sentences[0].chunks.length > 0) {
+      arrangeSentence = sentences[0];
+    }
+  } catch (e) {}
+}
+
+var FULL_SENTENCE_EN = "Deforestation destroys the natural habitat of many animals, so we must conserve forests.";
+var FULL_SENTENCE_VI = "Nạn phá rừng huỷ hoại môi trường sống tự nhiên của nhiều loài, vì vậy chúng ta phải bảo tồn rừng.";
+
 var STEPS = [
   { id: 'c1', en: 'Deforestation', vi: 'Nạn phá rừng' },
   { id: 'c2', en: 'destroys', vi: 'huỷ hoại' },
@@ -111,10 +125,23 @@ var STEPS = [
   { id: 'c10', en: 'forests.', vi: 'rừng.' }
 ];
 
-// Thứ tự xáo trộn ban đầu của các thẻ tiếng Việt trong pool
-var INITIAL_POOL_ORDER = ['c7', 'c3', 'c1', 'c9', 'c5', 'c2', 'c8', 'c4', 'c10', 'c6'];
+if (arrangeSentence) {
+  STEPS = arrangeSentence.chunks.map(function (c, idx) {
+    return {
+      id: 'c' + (idx + 1),
+      en: c.en,
+      vi: c.vi
+    };
+  });
+  FULL_SENTENCE_EN = arrangeSentence.fullTextEn;
+  FULL_SENTENCE_VI = arrangeSentence.chunks.map(function(c){ return c.vi; }).join(' ');
+}
 
-var currentStepIndex = 0; // Bắt đầu từ từ đầu tiên (c1: Deforestation)
+// Thứ tự xáo trộn ban đầu của các thẻ tiếng Việt trong pool
+var INITIAL_POOL_ORDER = STEPS.map(function (s) { return s.id; });
+INITIAL_POOL_ORDER.sort(function () { return 0.5 - Math.random(); });
+
+var currentStepIndex = 0; // Bắt đầu từ từ đầu tiên
 var placedItems = []; // Danh sách các từ tiếng Việt đã chọn đúng
 
 function speakWord(word) {
@@ -136,7 +163,7 @@ function speakWord(word) {
 function speakFullSentence() {
   if (!('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
-  var u = new SpeechSynthesisUtterance("Deforestation destroys the natural habitat of many animals, so we must conserve forests.");
+  var u = new SpeechSynthesisUtterance(FULL_SENTENCE_EN);
   u.lang = 'en-US';
   u.rate = 0.60;
   window.speechSynthesis.speak(u);
@@ -221,12 +248,12 @@ function render() {
     promptCard.style.background = '#FFFFFF';
   } else {
     // TRẠNG THÁI HOÀN THÀNH TOÀN BỘ CÂU
-    promptBadge.textContent = '✓ Hoàn thành 10/10 từ';
+    promptBadge.textContent = '✓ Hoàn thành ' + STEPS.length + '/' + STEPS.length + ' từ';
     promptBadge.style.background = '#DCFCE7';
     promptBadge.style.color = '#15803D';
 
-    promptWord.innerHTML = '<span style="font-size: 15.5px; font-weight: 700; color: #166534; line-height: 1.5">Deforestation destroys the natural <span style="color:#C8102E">habitat</span> of many animals, so we must <span style="color:#C8102E">conserve</span> forests.</span>' +
-      '<div style="font-size: 13px; color: #4B5563; font-weight: 500; margin-top: 6px; line-height: 1.45">(Nạn phá rừng huỷ hoại môi trường sống tự nhiên của nhiều loài, vì vậy chúng ta phải bảo tồn rừng.)</div>';
+    promptWord.innerHTML = '<span style="font-size: 15.5px; font-weight: 700; color: #166534; line-height: 1.5">' + FULL_SENTENCE_EN + '</span>' +
+      (FULL_SENTENCE_VI ? '<div style="font-size: 13px; color: #4B5563; font-weight: 500; margin-top: 6px; line-height: 1.45">(' + FULL_SENTENCE_VI + ')</div>' : '');
 
     promptInstruction.innerHTML = '<div style="display:flex;gap:8px;margin-top:8px">' +
       '<button type="button" onclick="speakFullSentence()" style="border:0;border-radius:999px;background:#15803D;color:#FFF;padding:6px 14px;font-size:12.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px"><svg width="13" height="13" viewBox="0 0 24 24" fill="#FFF"><path d="M7 5v14l11-7z"></path></svg>Nghe lại cả câu</button>' +

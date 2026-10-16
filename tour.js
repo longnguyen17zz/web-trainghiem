@@ -641,6 +641,17 @@
         }
       }
 
+      // Ngoài container cuộn bên trong (nếu có), bản thân TRANG/WINDOW cũng có thể cần cuộn:
+      // #appShell cao cố định (844px), trên điện thoại màn hình thật thấp hơn mức đó thì
+      // chính window mới là phần cần cuộn chứ không phải main. getScrollParent() trước đây
+      // bỏ qua hẳn trường hợp window nên tour "không tự cuộn theo", người dùng phải tự vuốt tay.
+      var winRect = targetEl.getBoundingClientRect();
+      var isVisibleInWindow = (winRect.top >= 0 && winRect.bottom <= window.innerHeight);
+      if (!isVisibleInWindow) {
+        var winDiff = winRect.top;
+        window.scrollTo(0, Math.max(0, (window.scrollY || window.pageYOffset) + winDiff - 8));
+      }
+
       // Render Phù thủy hướng dẫn kèm bong bóng tròn mini (BỎ HOÀN TOÀN KHUNG CHỮ NHẬT)
       if (!keepCollapseState) {
         this.bubbleVisible = true;

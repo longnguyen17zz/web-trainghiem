@@ -49,38 +49,42 @@
 
   <main style="flex: 1; overflow-y: auto; padding: 18px 16px 16px; display: flex; flex-direction: column; gap: 14px; padding-bottom: 104px">
     
-    <!-- THẺ TỪ TIẾNG ANH ĐANG ĐỌC (ĐỌC TỪNG TỪ/CỤM TRONG CẢ CÂU) -->
-    <div id="promptCard" style="background: #FFFFFF; border: 1.5px solid #FED7AA; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 2px 8px rgba(194,65,12,0.06); transition: all 0.25s ease">
-      <div style="display: flex; justify-content: space-between; align-items: center">
-        <span id="promptStepBadge" style="font-size: 11.5px; font-weight: 700; color: #C2410C; background: #FFEDD5; border-radius: 999px; padding: 3px 10px">🔊 Cụm 1/8</span>
-        <button id="btnReplayWord" type="button" onclick="speakCurrentWord()" style="height: 30px; border: 0; border-radius: 999px; background: #FFEDD5; color: #C2410C; font-family: inherit; font-size: 12.5px; font-weight: 700; padding: 0 12px; display: flex; align-items: center; gap: 5px; cursor: pointer; transition: all 0.15s ease">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="#C2410C"><path d="M7 5v14l11-7z"></path></svg>
-          <span id="replayBtnText">Nghe lại cụm</span>
-        </button>
+    <!-- BỌC CHUNG THẺ NGHE + KHU VỰC CHỌN NGHĨA: phải nghe (promptCard) mới chọn đúng được (sectionStep8),
+         nên tour cần khoanh vùng cả 2 cùng lúc thay vì chỉ 1 trong 2 -->
+    <div id="sectionStep8Full" style="display: flex; flex-direction: column; gap: 14px">
+      <!-- THẺ TỪ TIẾNG ANH ĐANG ĐỌC (ĐỌC TỪNG TỪ/CỤM TRONG CẢ CÂU) -->
+      <div id="promptCard" style="background: #FFFFFF; border: 1.5px solid #FED7AA; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 2px 8px rgba(194,65,12,0.06); transition: all 0.25s ease">
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <span id="promptStepBadge" style="font-size: 11.5px; font-weight: 700; color: #C2410C; background: #FFEDD5; border-radius: 999px; padding: 3px 10px">🔊 Cụm 1/8</span>
+          <button id="btnReplayWord" type="button" onclick="speakCurrentWord()" style="height: 30px; border: 0; border-radius: 999px; background: #FFEDD5; color: #C2410C; font-family: inherit; font-size: 12.5px; font-weight: 700; padding: 0 12px; display: flex; align-items: center; gap: 5px; cursor: pointer; transition: all 0.15s ease">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="#C2410C"><path d="M7 5v14l11-7z"></path></svg>
+            <span id="replayBtnText">Nghe lại cụm</span>
+          </button>
+        </div>
+
+        <div id="promptBody">
+          <div id="currentEnglishWord" style="font-size: 22px; font-weight: 800; color: #0F172A; letter-spacing: -0.3px; line-height: 1.25">To conserve</div>
+          <div id="promptInstruction" style="font-size: 12.5px; color: #64748B; margin-top: 4px">Lắng nghe giọng đọc và chạm từ/cụm tiếng Việt tương ứng bên dưới:</div>
+        </div>
       </div>
 
-      <div id="promptBody">
-        <div id="currentEnglishWord" style="font-size: 22px; font-weight: 800; color: #0F172A; letter-spacing: -0.3px; line-height: 1.25">To conserve</div>
-        <div id="promptInstruction" style="font-size: 12.5px; color: #64748B; margin-top: 4px">Lắng nghe giọng đọc và chạm từ/cụm tiếng Việt tương ứng bên dưới:</div>
-      </div>
-    </div>
+      <!-- KHỐI BƯỚC 8: CÂU DỊCH TIẾNG VIỆT ĐANG GHÉP -->
+      <div id="sectionStep8" style="display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <div style="font-size: 14px; font-weight: 700; color: #111827">Câu dịch tiếng Việt đang ghép:</div>
+          <span id="arrangeCounter" style="font-size: 11.5px; font-weight: 700; color: #C2410C; background: #FFEDD5; border-radius: 999px; padding: 2px 9px">Đã ghép 0/8</span>
+        </div>
 
-    <!-- KHỐI BƯỚC 8: CÂU DỊCH TIẾNG VIỆT ĐANG GHÉP -->
-    <div id="sectionStep8" style="display: flex; flex-direction: column; gap: 10px">
-      <div style="display: flex; justify-content: space-between; align-items: center">
-        <div style="font-size: 14px; font-weight: 700; color: #111827">Câu dịch tiếng Việt đang ghép:</div>
-        <span id="arrangeCounter" style="font-size: 11.5px; font-weight: 700; color: #C2410C; background: #FFEDD5; border-radius: 999px; padding: 2px 9px">Đã ghép 0/8</span>
-      </div>
+        <!-- Khay chứa các từ đã ghép -->
+        <div id="slots" style="background: #FFFFFF; border: 1.5px solid #DDE1E8; border-radius: 14px; padding: 12px; display: flex; flex-wrap: wrap; gap: 8px; min-height: 78px; align-content: flex-start; box-sizing: border-box"></div>
 
-      <!-- Khay chứa các từ đã ghép -->
-      <div id="slots" style="background: #FFFFFF; border: 1.5px solid #DDE1E8; border-radius: 14px; padding: 12px; display: flex; flex-wrap: wrap; gap: 8px; min-height: 78px; align-content: flex-start; box-sizing: border-box"></div>
+        <div id="feedback"></div>
 
-      <div id="feedback"></div>
-
-      <!-- Bể các từ tiếng Việt để chọn theo từ tiếng Anh đang đọc -->
-      <div id="poolSection" style="display: flex; flex-direction: column; gap: 8px">
-        <div style="font-size: 13px; font-weight: 600; color: #4B5563">Chạm từ tiếng Việt đúng theo thứ tự câu tiếng Anh đang đọc:</div>
-        <div id="pool" style="display: flex; flex-wrap: wrap; gap: 8px"></div>
+        <!-- Bể các từ tiếng Việt để chọn theo từ tiếng Anh đang đọc -->
+        <div id="poolSection" style="display: flex; flex-direction: column; gap: 8px">
+          <div style="font-size: 13px; font-weight: 600; color: #4B5563">Chạm từ tiếng Việt đúng theo thứ tự câu tiếng Anh đang đọc:</div>
+          <div id="pool" style="display: flex; flex-wrap: wrap; gap: 8px"></div>
+        </div>
       </div>
     </div>
 
@@ -105,7 +109,8 @@ var SENTENCE_TEMPLATES = {
     chunks: [
       { id: 'c1', en: 'To conserve', vi: 'Để bảo tồn' },
       { id: 'c2', en: 'our natural ecosystem', vi: 'hệ sinh thái tự nhiên' },
-      { id: 'c3', en: 'from severe pollution,', vi: 'khỏi ô nhiễm nghiêm trọng,' },
+      { id: 'c3', en: 'from', vi: 'khỏi' },
+      { id: 'c9', en: 'severe pollution,', vi: 'ô nhiễm nghiêm trọng,' },
       { id: 'c4', en: 'we must stop', vi: 'chúng ta phải ngăn chặn' },
       { id: 'c5', en: 'deforestation,', vi: 'nạn phá rừng,' },
       { id: 'c6', en: 'protect wildlife habitats,', vi: 'bảo vệ môi trường sống,' },
@@ -168,7 +173,7 @@ var FULL_SENTENCE_EN = activeTemplate.en;
 var FULL_SENTENCE_VI = activeTemplate.vi;
 
 // Thứ tự xáo trộn ban đầu của các thẻ tiếng Việt trong pool (để người học tìm và chạm)
-var INITIAL_POOL_ORDER = ['c5', 'c2', 'c8', 'c1', 'c6', 'c3', 'c7', 'c4'];
+var INITIAL_POOL_ORDER = ['c5', 'c2', 'c8', 'c1', 'c6', 'c3', 'c9', 'c7', 'c4'];
 if (INITIAL_POOL_ORDER.length > STEPS.length) {
   INITIAL_POOL_ORDER = STEPS.map(function (s) { return s.id; }).sort(function () { return 0.5 - Math.random(); });
 }
@@ -368,7 +373,7 @@ render();
 function startArrangeTour() {
   AppTour.start([
     {
-      target: '#sectionStep8',
+      target: '#sectionStep8Full',
       padding: 8,
       badge: 'Bước 8/10',
       title: 'Luyện nghe & chọn nghĩa từng từ',

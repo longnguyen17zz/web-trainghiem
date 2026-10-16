@@ -160,7 +160,7 @@
 
       <!-- KHU VỰC 1 (MẶC ĐỊNH): TÔI TỰ ĐẶT CÂU -->
       <div id="selfModePanel" style="display: flex; flex-direction: column; gap: 10px">
-        <div style="background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+        <div id="selfInputCard" style="background: #FFFFFF; border: 1px solid #DDE1E8; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px">
           <label for="userSentenceInput" style="font-size: 13.5px; font-weight: 600; color: #111827">Nhập câu tiếng Anh của bạn:</label>
           <textarea id="userSentenceInput" rows="3" style="width: 100%; border: 1.5px solid #DDE1E8; border-radius: 10px; padding: 10px; font-family: inherit; font-size: 14px; resize: vertical; box-sizing: border-box; outline: none; background: #F9FAFB; line-height: 1.5">Deforestation destroy natural habitat and cause pollution so we should recycle.</textarea>
 
@@ -305,7 +305,7 @@
 
   <!-- Footer -->
   <footer style="flex-shrink: 0; background: #FFFFFF; border-top: 1px solid #DDE1E8; padding: 8px 16px 20px; display: flex; flex-direction: column; gap: 4px">
-    <a href="M1Arrange.html" onclick="saveSentenceStateBeforeNav()" style="height: 52px; border-radius: 12px; background: #C2410C; color: #FFFFFF; font-size: 16px; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center">Tiếp tục: Luyện ghép từ</a>
+    <a id="btnContinueToArrange" href="M1Arrange.html" onclick="saveSentenceStateBeforeNav()" style="height: 52px; border-radius: 12px; background: #C2410C; color: #FFFFFF; font-size: 16px; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center">Tiếp tục: Luyện ghép từ</a>
     <button type="button" onclick="selectMode('ai'); triggerAiGeneration(true)" style="height: 40px; border: 0; background: transparent; color: #C2410C; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Đặt lại câu khác (tốn 1 lượt AI)</button>
   </footer>
 
@@ -574,6 +574,37 @@ var activeChunkTimer = null;
 var currentAiCredits = 2;
 var currentVoiceSpeed = 0.60; // Mặc định 0.60x để nghe chậm rãi, rõ từng từ cho người học
 
+// 1 "lượt nghe cả bài" = nghe trọn vẹn HẾT CẢ 2 câu (Câu 1 + Câu 2). Đủ 3 lượt (3 lần cả bài) -> chuyển bước.
+var sentenceHeardInRound = {}; // { [sentenceId]: true } các câu đã nghe xong trong lượt hiện tại
+var completedListenRounds = 0;
+
+// Gọi khi 1 câu (Câu 1 hoặc Câu 2) vừa được nghe trọn vẹn thật sự (voice đã phát xong).
+// Khi cả 2 câu đều đã nghe xong trong cùng 1 lượt -> tính là hoàn thành 1 "lần cả bài".
+// Đủ 3 lần cả bài -> tự chuyển spotlight của tour xuống nút Tiếp tục.
+function registerFullSentenceListen(sentenceId) {
+  sentenceHeardInRound[sentenceId] = true;
+
+  var allIds = CURRENT_DISPLAY_SENTENCES.map(function (s) { return s.id; });
+  var roundDone = allIds.length > 0 && allIds.every(function (id) { return sentenceHeardInRound[id]; });
+  if (!roundDone) return;
+
+  completedListenRounds++;
+  sentenceHeardInRound = {}; // reset cho lượt nghe kế tiếp
+
+  if (completedListenRounds >= 3 && window.AppTour && window.AppTour.isActive() && window.AppTour.getCurrentIndex() === 2) {
+    var stepListen = window.AppTour.steps[2];
+    if (stepListen) {
+      stepListen.target = '#btnContinueToArrange';
+      stepListen.padding = 6;
+      stepListen.title = 'Đã nghe đủ! Tiếp tục sang bước ghép từ';
+      stepListen.hintLabel = 'Đã nghe đủ 3 lần! Bấm Tiếp tục';
+    }
+    setTimeout(function () {
+      window.AppTour.showCurrentStep();
+    }, 300);
+  }
+}
+
 function setVoiceSpeed(speed) {
   currentVoiceSpeed = speed;
   var btns = {
@@ -628,6 +659,22 @@ function selectMode(mode) {
       mood: 'idle',
       message: 'Hãy thử gõ câu tiếng Anh có từ vựng ở trên, AI sẽ chấm và ghép nốt các từ còn lại cho bạn!'
     });
+
+    // Nếu Tour hướng dẫn đang mở ở Bước 5/10 (index 0) -> chuyển Bước 6/10 xuống khung nhập câu + nút gửi
+    if (window.AppTour && window.AppTour.isActive() && window.AppTour.getCurrentIndex() === 0) {
+      var stepSelf = window.AppTour.steps[1];
+      if (stepSelf) {
+        stepSelf.target = '#selfInputCard';
+        stepSelf.title = 'Nhập câu và gửi để AI chấm';
+        stepSelf.hintLabel = 'Nhập câu rồi bấm Gửi để AI chấm';
+        // Chưa phải điểm hoàn thành bước -> chỉ hiện chỉ dẫn, không gắn số "Bước 6/10"
+        // (số bước sẽ hiện lại khi có kết quả chấm, tránh cảm giác lặp lại cùng 1 số bước)
+        stepSelf.badge = false;
+      }
+      setTimeout(function () {
+        window.AppTour.next();
+      }, 220);
+    }
   } else {
     tabAi.style.background = '#FFFFFF';
     tabAi.style.fontWeight = '700';
@@ -642,7 +689,22 @@ function selectMode(mode) {
     panelSelf.style.display = 'none';
 
     // Khi chuyển tab thì quay (load) hiển thị câu AI đặt luôn (giống dạng AI chấm)
+    var tourShouldAdvance = window.AppTour && window.AppTour.isActive() && window.AppTour.getCurrentIndex() === 0;
+    if (tourShouldAdvance) {
+      var stepAi = window.AppTour.steps[1];
+      if (stepAi) {
+        stepAi.target = '#aiResultBox';
+        stepAi.title = 'AI đã đặt câu với 8 từ đã chọn';
+        stepAi.hintLabel = 'Xem câu AI vừa đặt & bấm Tiếp tục';
+      }
+    }
     triggerAiGeneration();
+    if (tourShouldAdvance) {
+      // triggerAiGeneration tự hiển thị kết quả sau 950ms -> đợi qua mốc đó rồi mới chuyển Bước 6/10
+      setTimeout(function () {
+        window.AppTour.next();
+      }, 1050);
+    }
   }
 }
 
@@ -739,6 +801,20 @@ function gradeUserSentence() {
       mood: 'happy',
       message: 'AI đã chấm câu của bạn và bổ sung thêm Câu 2 để ghép trọn vẹn đủ cả ' + TARGET_WORDS.length + '/' + TARGET_WORDS.length + ' từ vựng rồi nhé!'
     });
+
+    // Nếu Tour hướng dẫn đang mở ở Bước 6/10 (index 1) -> chuyển sang khung kết quả vừa chấm xong
+    if (window.AppTour && window.AppTour.isActive() && window.AppTour.getCurrentIndex() === 1) {
+      var stepResult = window.AppTour.steps[1];
+      if (stepResult) {
+        stepResult.target = '#gradeResultBox';
+        stepResult.title = 'Xem kết quả AI đã chấm';
+        stepResult.hintLabel = 'Xem kết quả & bấm Tiếp tục';
+        stepResult.badge = 'Bước 6/10'; // Đã có kết quả -> hiện lại số bước
+      }
+      setTimeout(function () {
+        window.AppTour.showCurrentStep();
+      }, 250);
+    }
   }, 1100);
 }
 
@@ -801,6 +877,13 @@ function continueToSection5(fromSource) {
     message: msg
   });
   speakMascotText(msg, document.querySelector('[data-mascot-avatar]'));
+
+  // Nếu Tour hướng dẫn đang mở ở Bước 6/10 (index 1) -> chuyển sang Bước 7/10 (Luyện nghe song song)
+  if (window.AppTour && window.AppTour.isActive() && window.AppTour.getCurrentIndex() === 1) {
+    setTimeout(function () {
+      window.AppTour.next();
+    }, 300);
+  }
 }
 
 function saveSentenceStateBeforeNav() {
@@ -907,6 +990,23 @@ function playKaraokeSentence(sentenceId) {
     if (viEl) viEl.className = 'chunk-vi chunk-hidden';
   });
 
+  // Chỉ tính là "đã nghe trọn vẹn 1 lần" khi CẢ 2 điều kiện đều đúng:
+  // (1) chữ đã hiển thị hết theo đúng nhịp giọng đọc, VÀ (2) voice thật sự đã phát xong
+  // (utterance.onend) - không tính ngay khi vừa bấm "Nghe".
+  var speechSupported = ('speechSynthesis' in window);
+  var chunksAnimationDone = false;
+  var voiceReallyEnded = false;
+  var listenCounted = false;
+
+  function tryCountFullListen() {
+    if (listenCounted) return;
+    if (!chunksAnimationDone) return;
+    if (speechSupported && !voiceReallyEnded) return;
+    listenCounted = true;
+
+    registerFullSentenceListen(sentenceId);
+  }
+
   // Trình tự hiển thị song song từng cụm theo giọng đọc
   var currentChunkIdx = 0;
 
@@ -957,12 +1057,31 @@ function playKaraokeSentence(sentenceId) {
         playBtn.style.background = '#C2410C';
       }
       if (cardEl) cardEl.style.borderColor = '#DDE1E8';
+
+      chunksAnimationDone = true;
+      tryCountFullListen();
+
+      // Lưới an toàn: nếu trình duyệt hỗ trợ speechSynthesis nhưng vì lý do nào đó
+      // onend/onerror không bao giờ fire (lỗi hiếm của 1 số trình duyệt/thiết bị),
+      // vẫn phải tính đủ sau 1 khoảng chờ hợp lý, tránh kẹt vĩnh viễn không qua được bước tiếp.
+      if (speechSupported && !voiceReallyEnded) {
+        setTimeout(function () {
+          if (!voiceReallyEnded) {
+            voiceReallyEnded = true;
+            tryCountFullListen();
+          }
+        }, 1200);
+      }
     }
   }
 
-  // Bắt đầu đọc audio câu tiếng Anh, khi voice thực sự cất tiếng thì bắt đầu stream chữ
+  // Bắt đầu đọc audio câu tiếng Anh, khi voice thực sự cất tiếng thì bắt đầu stream chữ,
+  // và khi voice thật sự phát xong (onend) thì mới đủ điều kiện tính là 1 lần nghe trọn vẹn.
   speakFullText(sentence.fullTextEn, function onStart() {
     streamNextChunk();
+  }, function onEnd() {
+    voiceReallyEnded = true;
+    tryCountFullListen();
   });
 }
 
@@ -1086,7 +1205,10 @@ renderWordChips([]);
 // ==================== TOUR ONBOARDING (BƯỚC 5 -> BƯỚC 7) ====================
 function startSentenceTour() {
   var isGraded = document.getElementById('gradeResultBox') && document.getElementById('gradeResultBox').style.display !== 'none';
-  var step6Target = isGraded ? '#gradeResultBox' : '#btnGradeSentence';
+  var isAiDone = document.getElementById('aiResultBox') && document.getElementById('aiResultBox').style.display !== 'none';
+  // Mặc định tab "Tôi tự đặt câu" -> Bước 6 trỏ vào khung nhập câu + nút gửi.
+  // Nếu người dùng đã chấm/đã có kết quả AI trước đó thì trỏ thẳng vào khung kết quả tương ứng.
+  var step6Target = isGraded ? '#gradeResultBox' : (isAiDone ? '#aiResultBox' : '#selfInputCard');
 
   AppTour.start([
     {
@@ -1103,8 +1225,9 @@ function startSentenceTour() {
       target: step6Target,
       padding: 8,
       badge: 'Bước 6/10',
-      title: 'Check kết quả & AI hoàn thiện',
-      desc: 'Bấm nút gửi câu để AI chấm ngữ pháp, sửa câu chuẩn và ghép đủ 8 từ vựng thành 2 câu tự nhiên.',
+      title: 'Nhập câu và gửi để AI chấm',
+      desc: 'Nhập câu tiếng Anh chứa các từ đã chọn rồi bấm "Gửi câu để AI chấm" để AI chấm ngữ pháp, sửa câu chuẩn và ghép đủ 8 từ vựng thành 2 câu tự nhiên.',
+      hintLabel: 'Nhập câu rồi bấm Gửi để AI chấm',
       btnLabel: 'Tiếp theo ➔',
       onNext: function () {
         // Nếu mục 5 chưa mở, mở mục 5 để tour chỉ vào Bước 7
@@ -1119,7 +1242,8 @@ function startSentenceTour() {
       padding: 8,
       badge: 'Bước 7/10',
       title: 'Luyện nghe song song Anh - Việt',
-      desc: 'Luyện nghe phát âm chuẩn bản xứ theo từng câu. Chữ tiếng Anh và bản dịch tiếng Việt sẽ sáng song song theo giọng đọc.',
+      desc: 'Luyện nghe phát âm chuẩn bản xứ theo từng câu. Chữ tiếng Anh và bản dịch tiếng Việt sẽ sáng song song theo giọng đọc. Nghe trọn vẹn cả Câu 1 và Câu 2, lặp lại đủ 3 lần cả bài để mở khoá bước tiếp theo.',
+      hintLabel: 'Nghe trọn cả 2 câu, đủ 3 lần để qua bước',
       btnLabel: 'Đã hiểu ➔'
     }
   ], '#appShell');

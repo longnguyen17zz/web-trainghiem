@@ -688,6 +688,9 @@ function toggleWordSelection(wordId) {
   if (idx !== -1) {
     selectedWordIds.splice(idx, 1);
   } else {
+    // Chặn chọn quá 8 từ: các bước sau (ghép câu, luyện nghe, nối nghĩa...) đều
+    // cố định cấu trúc cho đúng 8 từ, chọn dư sẽ sinh ra từ "mồ côi" không có cặp để ghép.
+    if (selectedWordIds.length >= 8) return;
     selectedWordIds.push(wordId);
   }
 

@@ -391,37 +391,43 @@
   <!-- MAIN SCROLLABLE CONTENT -->
   <main style="flex: 1; overflow-y: auto; padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 12px">
     
-    <!-- CARD 1: REVIEW LẠI LỖI NHẬN XÉT (BƯỚC 4/6) -->
-    <div id="goodPointsCard" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.02)">
-      <div style="display: flex; align-items: center; gap: 6px">
-        <span style="background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 2px 7.5px; flex-shrink: 0">Bước 4/6</span>
-        <div style="width: 22px; height: 22px; border-radius: 999px; background: #DCFCE7; display: flex; align-items: center; justify-content: center">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
+    <!-- BỌC CHUNG NHẬN XÉT + DANH SÁCH LỖI (BƯỚC 4/6): phải xem cả nhận xét lẫn lỗi cụ thể
+         mới "review" trọn vẹn được, nên tour cần khoanh vùng cả 2 cùng lúc.
+         onclick: cho phép người dùng chủ động chạm để qua bước tiếp khi đã đọc xong,
+         thay vì chỉ trông chờ hẹn giờ tự động (xem continueFromStep4Review). -->
+    <div id="sectionResultStep4" onclick="continueFromStep4Review()" style="display: flex; flex-direction: column; gap: 14px">
+      <!-- CARD 1: REVIEW LẠI LỖI NHẬN XÉT -->
+      <div id="goodPointsCard" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.02)">
+        <div style="display: flex; align-items: center; gap: 6px">
+          <span style="background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 2px 7.5px; flex-shrink: 0">Bước 4/6</span>
+          <div style="width: 22px; height: 22px; border-radius: 999px; background: #DCFCE7; display: flex; align-items: center; justify-content: center">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
+          </div>
+          <span style="font-size: 14.5px; font-weight: 700; color: #0F172A">Review lại lỗi - nhận xét</span>
         </div>
-        <span style="font-size: 14.5px; font-weight: 700; color: #0F172A">Review lại lỗi - nhận xét</span>
+        <div id="goodPointsDesc" style="font-size: 13.5px; line-height: 1.55; color: #334155">
+          Câu đầu nêu quan điểm rõ ràng, người đọc dễ theo dõi. Cụm từ <b>"talk with family who live far away"</b> ở câu sau dùng khá tự nhiên, đúng ngữ cảnh IELTS.
+        </div>
       </div>
-      <div id="goodPointsDesc" style="font-size: 13.5px; line-height: 1.55; color: #334155">
-        Câu đầu nêu quan điểm rõ ràng, người đọc dễ theo dõi. Cụm từ <b>"talk with family who live far away"</b> ở câu sau dùng khá tự nhiên, đúng ngữ cảnh IELTS.
-      </div>
-    </div>
 
-    <!-- CARD 2: LỖI CẦN SỬA -->
-    <div id="errorsCard" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 4px 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.02)">
-      <div style="font-size: 14.5px; font-weight: 700; color: #0F172A; padding: 12px 0 4px; display: flex; align-items: center; gap: 6px">
-        <div style="width: 22px; height: 22px; border-radius: 999px; background: #FEE2E2; display: flex; align-items: center; justify-content: center">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+      <!-- CARD 2: LỖI CẦN SỬA -->
+      <div id="errorsCard" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 4px 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.02)">
+        <div style="font-size: 14.5px; font-weight: 700; color: #0F172A; padding: 12px 0 4px; display: flex; align-items: center; gap: 6px">
+          <div style="width: 22px; height: 22px; border-radius: 999px; background: #FEE2E2; display: flex; align-items: center; justify-content: center">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          </div>
+          <span id="errorsCountTitle">3 lỗi ngữ pháp cần sửa</span>
         </div>
-        <span id="errorsCountTitle">3 lỗi ngữ pháp cần sửa</span>
-      </div>
-      <div id="errorsListContainer">
-        <div style="font-size: 14.5px; min-height: 42px; display: flex; align-items: center; border-bottom: 1px solid #F1F5F9">
-          people <span style="color: #DC2626; text-decoration: line-through; margin: 0 4px; font-weight: 500">thinks</span> → <span style="color: #0E6B42; font-weight: 700; margin-left: 4px">think</span>
-        </div>
-        <div style="font-size: 14.5px; min-height: 42px; display: flex; align-items: center; border-bottom: 1px solid #F1F5F9">
-          technology <span style="color: #DC2626; text-decoration: line-through; margin: 0 4px; font-weight: 500">make</span> → <span style="color: #0E6B42; font-weight: 700; margin-left: 4px">makes</span>
-        </div>
-        <div style="font-size: 14.5px; min-height: 42px; display: flex; align-items: center">
-          using <span style="color: #DC2626; text-decoration: line-through; margin: 0 4px; font-weight: 500">smartphone</span> → <span style="color: #0E6B42; font-weight: 700; margin-left: 4px">a smartphone</span>
+        <div id="errorsListContainer">
+          <div style="font-size: 14.5px; min-height: 42px; display: flex; align-items: center; border-bottom: 1px solid #F1F5F9">
+            people <span style="color: #DC2626; text-decoration: line-through; margin: 0 4px; font-weight: 500">thinks</span> → <span style="color: #0E6B42; font-weight: 700; margin-left: 4px">think</span>
+          </div>
+          <div style="font-size: 14.5px; min-height: 42px; display: flex; align-items: center; border-bottom: 1px solid #F1F5F9">
+            technology <span style="color: #DC2626; text-decoration: line-through; margin: 0 4px; font-weight: 500">make</span> → <span style="color: #0E6B42; font-weight: 700; margin-left: 4px">makes</span>
+          </div>
+          <div style="font-size: 14.5px; min-height: 42px; display: flex; align-items: center">
+            using <span style="color: #DC2626; text-decoration: line-through; margin: 0 4px; font-weight: 500">smartphone</span> → <span style="color: #0E6B42; font-weight: 700; margin-left: 4px">a smartphone</span>
+          </div>
         </div>
       </div>
     </div>
@@ -528,6 +534,7 @@ var selected = null;
 var appliedFactors = {};
 var usesLeft = 2;
 var isMagicAnimating = false;
+var factorPickCount = 0; // đếm số lần đảo/xem yếu tố (kể cả xem lại yếu tố đã chọn), đủ 3 lần mới mở Bước 6/6
 
 function pickFactor(id) {
   var locked = usesLeft <= 0;
@@ -539,6 +546,7 @@ function pickFactor(id) {
   if (!f) return;
 
   isMagicAnimating = true;
+  factorPickCount += 1;
   if (!appliedFactors[id]) {
     usesLeft -= 1;
     appliedFactors[id] = true;
@@ -599,9 +607,11 @@ function dismissFairyFlight() {
     fairy.classList.add('fairy-fly-away');
   }
 
-  // 3. HIỂN THỊ PHẦN THẦY PHÚC (FOOTER CTA) KHI BẤM "ĐÃ HIỂU" TỪ PHÙ THỦY
+  // 3. HIỂN THỊ PHẦN THẦY PHÚC (FOOTER CTA, gắn badge "Bước 6/6") - CHỈ khi đã đảo/xem đủ
+  // 3 lần yếu tố. Hiện sớm hơn sẽ khiến badge "Bước 6/6" xuất hiện trước khi người dùng
+  // thật sự hoàn thành Bước 5/6, không khớp với tiến độ tour.
   var cta = document.getElementById('leadCtaSection');
-  if (cta) {
+  if (cta && factorPickCount >= 3) {
     cta.style.display = 'flex';
     cta.classList.remove('footer-reveal-anim');
     void cta.offsetWidth; // Trigger reflow for smooth animation
@@ -622,8 +632,9 @@ function dismissFairyFlight() {
       });
     }
 
-    // Nếu Tour hướng dẫn đang mở -> Tự động chuyển ngay sang Bước 6/6 (Nhận bộ quy tắc & tư vấn)
-    if (window.AppTour && window.AppTour.isActive()) {
+    // Nếu Tour hướng dẫn đang mở ở Bước 5/6 VÀ đã đảo/xem đủ 3 lần yếu tố -> mới chuyển sang Bước 6/6.
+    // Mới đảo 1-2 lần thì chưa đủ, tour vẫn đứng ở Bước 5/6 để khuyến khích thử thêm yếu tố khác.
+    if (factorPickCount >= 3 && window.AppTour && window.AppTour.isActive() && window.AppTour.getCurrentIndex() === 1) {
       setTimeout(function () {
         startResultTour(2);
       }, 450);
@@ -839,11 +850,12 @@ function startResultTour(stepIndex) {
 
   var steps = [
     {
-      target: '#goodPointsCard',
+      target: '#sectionResultStep4',
       padding: 8,
       badge: 'Bước 4/6',
       title: 'Review lại lỗi - nhận xét',
       desc: 'AI chỉ ra điểm sáng trong câu và các lỗi ngữ pháp cụ thể cần chỉnh sửa để câu viết chuẩn xác hơn.',
+      hintLabel: 'Đọc xong, chạm vào đây để tiếp tục',
       btnLabel: 'Tiếp theo ➔'
     },
     {
@@ -868,6 +880,26 @@ function startResultTour(stepIndex) {
   }
 
   AppTour.start(steps, '#appShell', typeof stepIndex === 'number' ? stepIndex : 0);
+
+  // Bước 4/6 (sectionResultStep4) chỉ là thẻ xem nhận xét + danh sách lỗi, không có nút bấm nào
+  // bên trong để người dùng "hoàn thành". Cho thời gian đọc kỹ (nhận xét + 3 lỗi + giải thích)
+  // trước khi tự động chuyển sang Bước 5/6 - người đọc nhanh vẫn có thể chạm vào thẻ để qua
+  // ngay (xem continueFromStep4Review), không cần đợi hết giờ.
+  if (typeof stepIndex !== 'number' || stepIndex === 0) {
+    setTimeout(function () {
+      if (window.AppTour && window.AppTour.isActive() && window.AppTour.getCurrentIndex() === 0) {
+        window.AppTour.next();
+      }
+    }, 8000);
+  }
+}
+
+// Cho phép người dùng chủ động chạm vào thẻ Bước 4/6 để qua Bước 5/6 ngay khi đã đọc xong,
+// không bắt buộc phải đợi hết thời gian hẹn giờ tự động ở trên.
+function continueFromStep4Review() {
+  if (window.AppTour && window.AppTour.isActive() && window.AppTour.getCurrentIndex() === 0) {
+    window.AppTour.next();
+  }
 }
 
 // Tự động mở tour lần đầu nếu chưa xem

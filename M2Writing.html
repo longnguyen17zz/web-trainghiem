@@ -166,6 +166,45 @@
     line-height: 1.45;
     letter-spacing: -0.2px;
   }
+
+  /* Hide scrollbar for smooth native swiping (dùng cho carousel chủ đề, đồng bộ NT1) */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* ==================== CARD CHỦ ĐỀ DẠNG ẢNH LỚN (ĐỒNG BỘ UI VỚI M1Setup / NT1) ==================== */
+  .topic-card {
+    width: 295px;
+    min-width: 295px;
+    height: 154px;
+    flex-shrink: 0;
+    border-radius: 24px;
+    padding: 16px 16px 14px 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+    scroll-snap-align: start;
+    background-size: cover;
+    background-position: center right;
+    background-repeat: no-repeat;
+    opacity: 0.9;
+  }
+  .topic-card:hover { opacity: 1; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(15, 23, 42, 0.1); }
+  .topic-card.active { opacity: 1; transform: translateY(-2px); box-shadow: 0 10px 28px -4px rgba(15, 23, 42, 0.14), 0 2px 6px -1px rgba(15, 23, 42, 0.06); }
+
+  .topic-badge-wrapper { position: absolute; top: 12px; right: 14px; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; z-index: 3; }
+  .topic-badge-svg { position: absolute; top: 0; left: 0; width: 42px; height: 42px; transform: rotate(-90deg); }
+  .topic-badge-text { position: relative; z-index: 4; color: #FFFFFF; font-size: 11.5px; font-weight: 700; letter-spacing: -0.2px; }
+
+  .card-action-pill { font-size: 12px; font-weight: 700; padding: 6px 16px; border-radius: 9999px; display: inline-flex; align-items: center; gap: 5px; width: fit-content; transition: all 0.2s ease; z-index: 3; }
+  .card-action-pill.inactive { background: #FED7AA; color: #7C2D12; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .card-action-pill.active { background: #EA580C; color: #FFFFFF; box-shadow: 0 2px 8px rgba(234, 88, 12, 0.32); }
 </style>
 </head>
 <body>
@@ -203,11 +242,11 @@
           <span style="background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 2.5px 8px; display: inline-flex; align-items: center; white-space: nowrap; flex-shrink: 0">Bước 1/6</span>
           <span>Chọn chủ đề bài viết</span>
         </h1>
-        <span id="topicM2SelectedBadge" style="font-size: 11px; color: #15803D; font-weight: 700; background: #DCFCE7; border: 1px solid #86EFAC; padding: 2px 8px; border-radius: 999px">✓ Công nghệ</span>
+        <span style="font-size: 11.5px; color: #64748B; font-weight: 500; white-space: nowrap">Vuốt ngang để chọn ➔</span>
       </div>
 
-      <!-- Danh sách 4 thẻ chủ đề IELTS Task 2 lưới 2 cột -->
-      <div id="writingTopicsList" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"></div>
+      <!-- Carousel thẻ chủ đề dạng ảnh lớn cuộn ngang (đồng bộ UI với M1Setup / NT1) -->
+      <div id="writingTopicsList" class="no-scrollbar" style="display: flex; gap: 12px; overflow-x: auto; padding: 4px 2px 6px; margin: 0 -16px; padding-left: 16px; padding-right: 16px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch"></div>
     </div>
 
     <!-- ==================== BƯỚC 2/6: VIẾT 1-2 CÂU QUAN ĐIỂM ==================== -->
@@ -226,39 +265,43 @@
       </div>
     </div>
 
-    <!-- CARD 1: ĐỀ BÀI IELTS TASK 2 THEO CHỦ ĐỀ -->
-    <div id="topicCard" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.02)">
-      <div style="display: flex; justify-content: space-between; align-items: center">
-        <span style="font-size: 11.5px; font-weight: 700; color: #C2410C; background: #FFEDD5; border: 1px solid #FED7AA; border-radius: 999px; padding: 2.5px 9px">
-          Đề bài IELTS Writing
-        </span>
-        <span id="topicCategoryTag" style="font-size: 11.5px; font-weight: 600; color: #64748B">Chủ đề: Công nghệ</span>
+    <!-- BỌC CHUNG ĐỀ BÀI + KHUNG VIẾT CÂU: phải đọc đề mới viết đúng quan điểm được,
+         nên tour cần khoanh vùng cả 2 cùng lúc thay vì chỉ 1 trong 2 -->
+    <div id="sectionWritingStep2" style="display: flex; flex-direction: column; gap: 14px">
+      <!-- CARD 1: ĐỀ BÀI IELTS TASK 2 THEO CHỦ ĐỀ -->
+      <div id="topicCard" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.02)">
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <span style="font-size: 11.5px; font-weight: 700; color: #C2410C; background: #FFEDD5; border: 1px solid #FED7AA; border-radius: 999px; padding: 2.5px 9px">
+            Đề bài IELTS Writing
+          </span>
+          <span id="topicCategoryTag" style="font-size: 11.5px; font-weight: 600; color: #64748B">Chủ đề: Công nghệ</span>
+        </div>
+
+        <div id="topicText" class="topic-rotate-anim" style="font-size: 15px; line-height: 1.52; font-weight: 600; color: #0F172A">
+          Some people believe that technology has made our lives easier. To what extent do you agree?
+        </div>
       </div>
 
-      <div id="topicText" class="topic-rotate-anim" style="font-size: 15px; line-height: 1.52; font-weight: 600; color: #0F172A">
-        Some people believe that technology has made our lives easier. To what extent do you agree?
-      </div>
-    </div>
+      <!-- CARD 2: KHUNG VIẾT CÂU CỦA BẠN -->
+      <div id="essayInputCard" style="display: flex; flex-direction: column; gap: 8px">
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <label for="essay" style="font-size: 14.5px; font-weight: 700; color: #0F172A">Câu của bạn</label>
+          <button type="button" onclick="insertSampleText()" style="border: 0; background: transparent; color: #059669; font-size: 12px; font-weight: 600; cursor: pointer; padding: 2px 4px; display: flex; align-items: center; gap: 3px">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M1 4v6h6M23 20v-6h-6"></path><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg>
+            <span>Điền lại câu mẫu</span>
+          </button>
+        </div>
 
-    <!-- CARD 2: KHUNG VIẾT CÂU CỦA BẠN -->
-    <div id="essayInputCard" style="display: flex; flex-direction: column; gap: 8px">
-      <div style="display: flex; justify-content: space-between; align-items: center">
-        <label for="essay" style="font-size: 14.5px; font-weight: 700; color: #0F172A">Câu của bạn</label>
-        <button type="button" onclick="insertSampleText()" style="border: 0; background: transparent; color: #059669; font-size: 12px; font-weight: 600; cursor: pointer; padding: 2px 4px; display: flex; align-items: center; gap: 3px">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M1 4v6h6M23 20v-6h-6"></path><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg>
-          <span>Điền lại câu mẫu</span>
-        </button>
-      </div>
+        <div id="essayBox" style="position: relative; background: #FFFFFF; border: 1.5px solid #C2410C; border-radius: 16px; box-shadow: 0 0 0 4px #FFEDD5; display: flex; flex-direction: column; transition: all 0.2s">
+          <div id="laserScanLine" style="display: none" class="laser-scan-line"></div>
+          <textarea id="essay" oninput="onEssayInput()" style="height: 160px; border: 0; outline: none; border-radius: 16px; padding: 14px 14px 6px; font-family: inherit; font-size: 14.5px; line-height: 1.55; resize: none; box-sizing: border-box; background: transparent; color: #0F172A">Nowadays, many people thinks that technology make our life easier. For example, we can talk with family who live far away by using smartphone.</textarea>
 
-      <div id="essayBox" style="position: relative; background: #FFFFFF; border: 1.5px solid #C2410C; border-radius: 16px; box-shadow: 0 0 0 4px #FFEDD5; display: flex; flex-direction: column; transition: all 0.2s">
-        <div id="laserScanLine" style="display: none" class="laser-scan-line"></div>
-        <textarea id="essay" oninput="onEssayInput()" style="height: 160px; border: 0; outline: none; border-radius: 16px; padding: 14px 14px 6px; font-family: inherit; font-size: 14.5px; line-height: 1.55; resize: none; box-sizing: border-box; background: transparent; color: #0F172A">Nowadays, many people thinks that technology make our life easier. For example, we can talk with family who live far away by using smartphone.</textarea>
-        
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 8px 14px 12px">
-          <div style="flex: 1; height: 5px; border-radius: 5px; background: #EEF2F6; overflow: hidden">
-            <div id="essayBar" style="width: 100%; height: 5px; background: #0E6B42; transition: width 0.2s ease, background 0.2s ease"></div>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 8px 14px 12px">
+            <div style="flex: 1; height: 5px; border-radius: 5px; background: #EEF2F6; overflow: hidden">
+              <div id="essayBar" style="width: 100%; height: 5px; background: #0E6B42; transition: width 0.2s ease, background 0.2s ease"></div>
+            </div>
+            <span id="essayStatusText" style="font-size: 12px; font-weight: 700; color: #0E6B42; white-space: nowrap">Đã viết 2/2 câu · đủ để chấm</span>
           </div>
-          <span id="essayStatusText" style="font-size: 12px; font-weight: 700; color: #0E6B42; white-space: nowrap">Đã viết 2/2 câu · đủ để chấm</span>
         </div>
       </div>
     </div>
@@ -290,10 +333,13 @@ var WRITING_TOPICS = [
     id: 'technology',
     title: 'Công nghệ',
     titleEn: 'Technology',
-    themeColor: '#EA580C',
-    themeBg: '#FFF7ED',
-    themeBorder: '#FDBA74',
-    iconSvg: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>',
+    desc: 'Làm quen thuật toán, phần mềm và thế giới số.',
+    image: 'bg_tech.jpg',
+    cardBg: 'linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.88) 46%, rgba(255,255,255,0.32) 75%, rgba(255,255,255,0) 100%), url(bg_tech.jpg)',
+    bgColor: '#EEF2FF',
+    cardBorder: '1.5px solid #C7D2FE',
+    badgeRingColor: '#818CF8',
+    themeColor: '#4F46E5',
     prompt: 'Some people believe that technology has made our lives easier. To what extent do you agree?',
     sample: 'Nowadays, many people thinks that technology make our life easier. For example, we can talk with family who live far away by using smartphone.',
     goodPoint: 'Câu đầu nêu quan điểm rõ ràng, người đọc dễ theo dõi. Cụm từ "talk with family who live far away" ở câu sau dùng khá tự nhiên, đúng ngữ cảnh IELTS.',
@@ -307,10 +353,13 @@ var WRITING_TOPICS = [
     id: 'environment',
     title: 'Môi trường',
     titleEn: 'Environment',
-    themeColor: '#16A34A',
-    themeBg: '#F0FDF4',
-    themeBorder: '#86EFAC',
-    iconSvg: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 1 10 10c0 5.5-4.5 10-10 10S2 17.5 2 12A10 10 0 0 1 12 2z"></path><path d="M12 6v6l4 2"></path></svg>',
+    desc: 'Khám phá sinh thái, khí hậu và bảo tồn hành tinh.',
+    image: 'bg_env.jpg',
+    cardBg: 'linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.88) 46%, rgba(255,255,255,0.32) 75%, rgba(255,255,255,0) 100%), url(bg_env.jpg)',
+    bgColor: '#E0F2FE',
+    cardBorder: '1.5px solid #BAE6FD',
+    badgeRingColor: '#38BDF8',
+    themeColor: '#059669',
     prompt: 'Environmental problems such as air pollution are worsening in big cities. What solutions can you suggest?',
     sample: 'Air pollution is become a serious challenge in many big cities. Government should makes stricter regulations to protect public health.',
     goodPoint: 'Đặt vấn đề trực diện và giải pháp sát thực tế. Cụm từ "protect public health" dùng rất chuẩn ngữ cảnh IELTS Writing.',
@@ -324,10 +373,13 @@ var WRITING_TOPICS = [
     id: 'education',
     title: 'Giáo dục',
     titleEn: 'Education',
-    themeColor: '#2563EB',
-    themeBg: '#EFF6FF',
-    themeBorder: '#93C5FD',
-    iconSvg: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>',
+    desc: 'Chương trình học thuật, tri thức và nghiên cứu.',
+    image: 'bg_edu.jpg',
+    cardBg: 'linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.88) 46%, rgba(255,255,255,0.32) 75%, rgba(255,255,255,0) 100%), url(bg_edu.jpg)',
+    bgColor: '#FEF9C3',
+    cardBorder: '1.5px solid #FDE68A',
+    badgeRingColor: '#F59E0B',
+    themeColor: '#D97706',
     prompt: 'Some people think that university education should be free for everyone. What is your opinion?',
     sample: 'In modern society, free education for all students play an important role. It helps poor people gets more opportunity to find good job.',
     goodPoint: 'Lập luận nhân văn, rõ ràng và có dẫn chứng bổ trợ. Cụm "play an important role" rất chuẩn academic.',
@@ -341,10 +393,13 @@ var WRITING_TOPICS = [
     id: 'health',
     title: 'Sức khỏe',
     titleEn: 'Health',
-    themeColor: '#9333EA',
-    themeBg: '#FAF5FF',
-    themeBorder: '#D8B4FE',
-    iconSvg: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>',
+    desc: 'Lối sống lành mạnh, dinh dưỡng và thể chất.',
+    image: 'bg_health.jpg',
+    cardBg: 'linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.88) 46%, rgba(255,255,255,0.32) 75%, rgba(255,255,255,0) 100%), url(bg_health.jpg)',
+    bgColor: '#FFE4E6',
+    cardBorder: '1.5px solid #FECDD3',
+    badgeRingColor: '#FB7185',
+    themeColor: '#E11D48',
     prompt: 'Fast food consumption has increased dramatically worldwide. What are the negative effects on society?',
     sample: 'Fast food has became very popular among young people today. However, eating too much junk food leads to severe health issue.',
     goodPoint: 'Sử dụng liên từ đối lập "However" rất khéo léo. Cụm từ "severe health issues" thể hiện vốn từ vựng học thuật tốt.',
@@ -357,6 +412,7 @@ var WRITING_TOPICS = [
 ];
 
 var selectedTopicId = 'technology';
+var essayAdvanceScheduled = false; // chặn gọi next() nhiều lần khi oninput bắn liên tục lúc gõ
 
 function renderWritingTopicsList() {
   var container = document.getElementById('writingTopicsList');
@@ -365,22 +421,37 @@ function renderWritingTopicsList() {
 
   WRITING_TOPICS.forEach(function (t) {
     var isActive = t.id === selectedTopicId;
-    var border = isActive ? ('2px solid ' + t.themeColor) : '1.5px solid #E2E8F0';
-    var bg = isActive ? t.themeBg : '#FFFFFF';
-    var shadow = isActive ? ('0 3px 12px rgba(0,0,0,0.06)') : '0 1px 3px rgba(0,0,0,0.02)';
-    var textColor = isActive ? '#0F172A' : '#334155';
+    var ringOffset = isActive ? 0 : 85;
+    var cardBorder = isActive ? ('2px solid ' + t.themeColor) : '1.5px solid #CBD5E1';
 
-    html += '<div id="writing_topic_card_' + t.id + '" onclick="selectWritingTopic(\'' + t.id + '\')" style="background: ' + bg + '; border: ' + border + '; border-radius: 12px; padding: 10px 11px; cursor: pointer; transition: all 0.2s ease; display: flex; flex-direction: column; justify-content: space-between; min-height: 64px; box-shadow: ' + shadow + '">';
-    html += '<div style="display: flex; justify-content: space-between; align-items: center">';
-    html += '<div style="display: flex; align-items: center; gap: 6px; color: ' + t.themeColor + '">';
-    html += t.iconSvg;
-    html += '<span style="font-size: 13.5px; font-weight: 700; color: ' + textColor + '">' + t.title + '</span>';
+    html += '<div id="writing_topic_card_' + t.id + '" class="topic-card ' + (isActive ? 'active' : '') + '" onclick="selectWritingTopic(\'' + t.id + '\')" style="background-color: ' + t.bgColor + '; background-image: ' + t.cardBg + '; border: ' + cardBorder + '">';
+
+    // Vòng tròn báo trạng thái chọn ở góc trên phải (đồng bộ M1Setup, không có số đếm vì chọn đơn)
+    html += '<div class="topic-badge-wrapper">';
+    html += '<svg class="topic-badge-svg" viewBox="0 0 42 42">';
+    html += '<circle cx="21" cy="21" r="17" fill="#0F172A" stroke="rgba(255,255,255,0.18)" stroke-width="2.5"></circle>';
+    html += '<circle cx="21" cy="21" r="17" fill="none" stroke="' + t.badgeRingColor + '" stroke-width="2.5" stroke-dasharray="106.8" stroke-dashoffset="' + ringOffset + '" stroke-linecap="round"></circle>';
+    html += '</svg>';
+    html += '<span class="topic-badge-text">' + (isActive ? '✓' : '') + '</span>';
     html += '</div>';
+
+    html += '<div style="display: flex; flex-direction: column; max-width: 172px; z-index: 2">';
+    html += '<div style="font-size: 17px; font-weight: 700; color: #0F172A; line-height: 1.25; letter-spacing: -0.01em">' + t.titleEn + '</div>';
+    html += '<div style="font-size: 11.5px; color: #475569; line-height: 1.35; margin: 5px 0 10px">' + t.desc + '</div>';
+
     if (isActive) {
-      html += '<span style="width: 17px; height: 17px; border-radius: 999px; background: ' + t.themeColor + '; color: #FFF; display: inline-flex; align-items: center; justify-content: center; font-size: 10px">✓</span>';
+      html += '<span class="card-action-pill" style="background: ' + t.themeColor + '; color: #FFFFFF; box-shadow: 0 2px 8px rgba(0,0,0,0.18)">';
+      html += '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6L9 17l-5-5"></path></svg>';
+      html += '<span>Đang chọn</span>';
+      html += '</span>';
+    } else {
+      html += '<span class="card-action-pill inactive">';
+      html += '<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="opacity:0.85"><path d="M5 3l14 9-14 9V3z"></path></svg>';
+      html += '<span>Chọn chủ đề</span>';
+      html += '</span>';
     }
+
     html += '</div>';
-    html += '<div style="font-size: 11px; color: #64748B; font-weight: 500; margin-top: 4px">' + t.titleEn + '</div>';
     html += '</div>';
   });
 
@@ -397,13 +468,6 @@ function selectWritingTopic(topicId) {
   } catch (e) {}
 
   renderWritingTopicsList();
-
-  var badgeEl = document.getElementById('topicM2SelectedBadge');
-  if (badgeEl) {
-    badgeEl.textContent = '✓ ' + t.title;
-    badgeEl.style.color = t.themeColor;
-    badgeEl.style.borderColor = t.themeBorder;
-  }
 
   var catTag = document.getElementById('topicCategoryTag');
   if (catTag) {
@@ -486,6 +550,17 @@ function onEssayInput() {
     statusText.style.color = '#0E6B42';
     btn.disabled = false;
   }
+
+  // Nếu tour đang mở ở Bước 2/6 (index 1) và người dùng tự gõ đủ câu (không bấm "Điền lại câu mẫu")
+  // -> cũng phải tự động chuyển spotlight xuống Bước 3/6 (nút Chấm bài ngay), không để tour đứng yên.
+  // Chặn bằng cờ essayAdvanceScheduled vì oninput bắn liên tục theo từng ký tự gõ - nếu không chặn,
+  // mỗi lần gõ thêm trong lúc chờ 280ms sẽ xếp chồng nhiều lệnh next() khiến tour nhảy vọt quá 1 bước.
+  if (count >= 1 && !essayAdvanceScheduled && window.AppTour && window.AppTour.isActive() && window.AppTour.getCurrentIndex() === 1) {
+    essayAdvanceScheduled = true;
+    setTimeout(function () {
+      window.AppTour.next();
+    }, 280);
+  }
 }
 
 function submitEssay() {
@@ -493,6 +568,11 @@ function submitEssay() {
   var essayBox = document.getElementById('essayBox');
   var laserLine = document.getElementById('laserScanLine');
   var curtain = document.getElementById('pageTransitionCurtain');
+
+  // Đóng tour hướng dẫn (nếu còn đang mở) để khung spotlight + phù thủy không đè lên màn hình loading
+  if (window.AppTour && window.AppTour.isActive()) {
+    window.AppTour.stop();
+  }
 
   btn.disabled = true;
   btn.style.background = '#9A3412';
@@ -557,6 +637,7 @@ function runHandDrumLoader(onComplete) {
 
 // ==================== TOUR ONBOARDING ĐỒNG HÀNH CHO NT2 (QUY TRÌNH 6 BƯỚC) ====================
 function startWritingTour() {
+  essayAdvanceScheduled = false; // reset để vẫn tự chuyển bước đúng khi mở lại tour qua nút "Hướng dẫn"
   AppTour.start([
     {
       target: '#sectionTopicM2',
@@ -567,7 +648,7 @@ function startWritingTour() {
       hintLabel: 'Chạm chọn 1 chủ đề'
     },
     {
-      target: '#essayInputCard',
+      target: '#sectionWritingStep2',
       padding: 8,
       badge: 'Bước 2/6',
       title: 'Viết 1–2 câu quan điểm',

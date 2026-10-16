@@ -647,9 +647,14 @@
         this.startAutoCollapseTimer();
       }
 
+      // step.badge === false -> chỉ dẫn thuần, không gắn số bước (dùng cho các trạng thái
+      // trung gian trong cùng 1 bước, tránh cảm giác "lặp lại" số bước đã hiện trước đó).
+      var badgeText = step.badge === false ? '' : (step.badge || 'Bước ' + (this.currentIndex + 1));
+      var badgeHtml = badgeText ? '<span class="tour-round-badge">' + badgeText + '</span>' : '';
+
       this.card.innerHTML = `
         <div id="tourRoundBubble" class="tour-round-bubble ${this.bubbleVisible ? '' : 'is-hidden'}" onclick="event.stopPropagation(); AppTour.hideBubble()" title="Bấm để ẩn bong bóng">
-          <span class="tour-round-badge">${step.badge || 'Bước ' + (this.currentIndex + 1)}</span>
+          ${badgeHtml}
           <span class="tour-round-text">${step.hintLabel || step.title}</span>
           <span class="tour-round-spark">✨</span>
         </div>
@@ -753,11 +758,24 @@
       // Định vị Phù thủy hẳn xuống dưới Spotlight Frame, chừa khoảng cách rõ ràng
       // để vầng sáng của khung và viền của bong bóng KHÔNG chạm/chồng vào nhau.
       var fairyLeft = Math.max(10, Math.round(left - 12));
-      var fairyTop = Math.round(top + height + 32);
+      var viewportBottom = containerRect.height - 10;
+      var belowTop = Math.round(top + height + 32);
+      var fairyTop;
 
-      // Nếu target ở quá sát đáy màn hình: đặt phù thủy phía trên frame, cũng chừa khoảng cách với viền
-      if (fairyTop + 85 > containerRect.height - 10) {
-        fairyTop = Math.max(headerBottom + 10, Math.round(top - 148));
+      if (belowTop + 85 <= viewportBottom) {
+        // Đủ chỗ bên dưới khung trong vùng đang nhìn thấy
+        fairyTop = belowTop;
+      } else {
+        var aboveTop = Math.round(top - 148);
+        if (aboveTop >= headerBottom + 10) {
+          // Khung nằm ở cuối trang ngắn, còn đủ chỗ phía trên khung -> đặt lên trên
+          fairyTop = aboveTop;
+        } else {
+          // Khung quá cao / tràn khỏi màn hình (vd mục luyện nghe dài nhiều thẻ câu):
+          // không còn chỗ trên lẫn dưới -> neo phù thủy gần mép dưới vùng đang nhìn thấy,
+          // tuyệt đối không đặt sát header vì sẽ đè lên tiêu đề/badge của khung.
+          fairyTop = Math.max(headerBottom + 10, viewportBottom - 90);
+        }
       }
 
       this.card.style.left = fairyLeft + 'px';

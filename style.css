@@ -16,6 +16,14 @@ button{cursor:pointer}
 @keyframes pulseRing{0%{transform:scale(1);opacity:0.55}100%{transform:scale(1.9);opacity:0}}
 @keyframes waveBar{0%,100%{transform:scaleY(0.3)}50%{transform:scaleY(1)}}
 @keyframes openPanel{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+@keyframes fireworkFlash{0%{transform:scale(0.2);opacity:0.9}100%{transform:scale(2.6);opacity:0}}
+@keyframes celebrateIconPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@keyframes celebrateRayRotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes celebrateGlowRing{0%{transform:scale(0.85);opacity:0.9}100%{transform:scale(1.35);opacity:0}}
+/* Dạng 1: tia pháo hoa toả thẳng dài dần ra rồi mờ dần (giống pháo hoa tia dài thật) */
+@keyframes fireworkRayShoot{0%{transform:rotate(var(--ang)) scaleX(0);opacity:1}55%{opacity:1}100%{transform:rotate(var(--ang)) scaleX(1);opacity:0}}
+/* Dạng 2: mảnh sao lấp lánh văng ra, xoay vòng kèm nhấp nháy */
+@keyframes fireworkSparkleBurst{0%{opacity:0;transform:translate(0,0) scale(0.2) rotate(0deg)}18%{opacity:1}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(1) rotate(260deg)}}
 
 /* Tạm thời ẩn hình ảnh bot Pi / Mascot Thầy Phúc */
 #mascot, #mascotSmall, .mascot-container, [data-mascot-avatar], [data-mascot-bubble] {

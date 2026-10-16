@@ -682,15 +682,13 @@ function renderWordGrid(topic) {
   grid.innerHTML = html;
 }
 
-// Bật / tắt chọn từ
+// Bật / tắt chọn từ. 8 từ là mức TỐI THIỂU để qua bước tiếp, không phải mức tối đa -
+// người dùng vẫn được chọn thêm bao nhiêu từ tuỳ thích sau khi đã đủ 8.
 function toggleWordSelection(wordId) {
   var idx = selectedWordIds.indexOf(wordId);
   if (idx !== -1) {
     selectedWordIds.splice(idx, 1);
   } else {
-    // Chặn chọn quá 8 từ: các bước sau (ghép câu, luyện nghe, nối nghĩa...) đều
-    // cố định cấu trúc cho đúng 8 từ, chọn dư sẽ sinh ra từ "mồ côi" không có cặp để ghép.
-    if (selectedWordIds.length >= 8) return;
     selectedWordIds.push(wordId);
   }
 
@@ -778,7 +776,10 @@ function updateSelectionSummary() {
   // Đồng bộ lưu trạng thái từ vựng vào sessionStorage
   saveSelectedWordsState();
 
-  // Nếu Tour hướng dẫn đang mở ở Bước 3/10 (index 2) và người dùng vừa chọn đủ 8 từ -> chuyển ngay sang Bước 4/10
+  // Nếu Tour hướng dẫn đang mở ở Bước 3/10 (index 2) và người dùng vừa chọn đủ 8 từ -> chuyển ngay sang Bước 4/10.
+  // Bước 4/10 (nút Tiếp tục) được đánh dấu passthrough: true trong định nghĩa step bên dưới, nghĩa là
+  // phần nền tối ngoài spotlight vẫn hiển thị để nhắc hướng, nhưng KHÔNG chặn thao tác - người dùng
+  // vẫn bấm chọn thêm từ vựng trong lưới (đang bị làm tối) được bình thường nếu muốn chọn trên 8 từ.
   if (count >= 8 && window.AppTour && window.AppTour.isActive() && window.AppTour.getCurrentIndex() === 2) {
     setTimeout(function () {
       window.AppTour.next();
@@ -881,8 +882,9 @@ function startSetupTour() {
       padding: 6,
       badge: 'Bước 4/10',
       title: 'Tiếp tục tạo câu AI',
-      desc: '👉 Đã chọn đủ 8 từ! Bấm nút "Tiếp tục với 8 từ" bên dưới để chuyển sang bước ghép câu AI thông minh.',
-      hintLabel: 'Bấm nút tiếp tục'
+      desc: '👉 Đã chọn đủ 8 từ! Muốn chọn thêm từ nữa cũng được, hoặc bấm nút "Tiếp tục" bên dưới để chuyển sang bước ghép câu AI thông minh.',
+      hintLabel: 'Chọn thêm từ hoặc bấm Tiếp tục',
+      passthrough: true
     }
   ], '#appShell');
 }

@@ -730,6 +730,15 @@
       var safeBottom = Math.min(cH, Math.round(top + height));
 
       if (this.bTop && this.bBottom && this.bLeft && this.bRight) {
+        // step.passthrough = true -> vùng tối ngoài spotlight vẫn hiển thị (nhắc nhẹ nên tập trung
+        // vào đâu) nhưng KHÔNG chặn thao tác, cho phép người dùng vẫn bấm được vào nội dung bị làm
+        // tối phía sau (vd: vẫn chọn thêm từ vựng được dù spotlight đã chuyển sang nút Tiếp tục).
+        var blockerPointerEvents = step.passthrough ? 'none' : 'auto';
+        this.bTop.style.pointerEvents = blockerPointerEvents;
+        this.bBottom.style.pointerEvents = blockerPointerEvents;
+        this.bLeft.style.pointerEvents = blockerPointerEvents;
+        this.bRight.style.pointerEvents = blockerPointerEvents;
+
         // Blocker trên
         this.bTop.style.top = '0px';
         this.bTop.style.left = '0px';

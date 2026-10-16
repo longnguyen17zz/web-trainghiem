@@ -302,6 +302,14 @@ function render() {
   document.getElementById('bar').style.width = Math.round((connectedCount / PAIRS.length) * 100) + '%';
   document.getElementById('pct').textContent = 'Đã nối ' + connectedCount + '/' + PAIRS.length;
 
+  // 8 từ là mức TỐI THIỂU chứ không giới hạn trên, nên số cặp (PAIRS.length) có thể > 8.
+  // Khung #matchingBoard và svg#lines trước đây cao cố định 440px (vừa đúng 8 hàng x 54px),
+  // chọn nhiều hơn 8 từ sẽ khiến các hàng cuối bị tràn/che mất -> tính chiều cao động theo
+  // đúng số cặp thực tế.
+  var boardHeight = Math.max(440, PAIRS.length * STEP + 20);
+  document.getElementById('matchingBoard').style.height = boardHeight + 'px';
+  document.getElementById('lines').setAttribute('height', boardHeight);
+
   var leftEl = document.getElementById('leftCards');
   leftEl.innerHTML = '';
   PAIRS.forEach(function (p, i) {
